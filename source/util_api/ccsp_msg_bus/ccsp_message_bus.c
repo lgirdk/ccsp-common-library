@@ -2724,7 +2724,6 @@ CCSP_Message_Bus_Send_Msg
         cb_data->message = message;
         cb_data->succeed = 0;
 
-        pthread_mutex_init(&cb_data->count_mutex, NULL);
         if (NewCondVar(&cb_data->count_threshold_cv) == -1)
         {
             dbus_connection_unlock(conn);
@@ -2733,6 +2732,13 @@ CCSP_Message_Bus_Send_Msg
             goto EXIT;
         }
 
+        if (pthread_mutex_init(&cb_data->count_mutex, NULL) != 0)
+        {
+            dbus_connection_unlock(conn);
+            CcspTraceError(("<%s>: Couldn't initialize count_mutex!\n", __FUNCTION__));
+            ret = CCSP_Message_Bus_OOM;
+            goto EXIT;
+        }
 
         pthread_mutex_lock(&cb_data->count_mutex);
         dbus_pending_call_set_notify (pcall, ccsp_msg_check_resp_sync, (void *)cb_data, NULL);
