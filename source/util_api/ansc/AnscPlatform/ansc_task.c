@@ -477,6 +477,7 @@ AnscSpawnTask3Trace
     PFN_ANSC_TASK_ROUTINE           pTaskRoutine = (PFN_ANSC_TASK_ROUTINE)pTaskEntry;
 
     PANSC_TASK_RECORD               pTaskRecord  = NULL;
+    void                            *taskHandle; 
 
     if ( g_bTraceEnabled )
     {
@@ -531,16 +532,22 @@ AnscSpawnTask3Trace
 #endif
 
     if (
-    		AnscCreateTask
+            (taskHandle = AnscCreateTask
             (
                 AnscActiveTaskRoutine,
                 stack_size,
                 priority,
                 (void *)pTaskRecord,
                 (void *)name
-            ) == NULL
+            )) == NULL
         ) {
     	returnStatus = ANSC_STATUS_FAILURE;
+    }
+    else
+    {
+#ifdef _ANSC_LINUX
+        pthread_detach((pthread_t)taskHandle);
+#endif
     }
 }
 
@@ -608,6 +615,7 @@ AnscInitializeTpm
 {
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
     ULONG                           i            = 0;
+    void                            *handle;
 
     if ( !g_bTpmEnabled )
     {
@@ -620,7 +628,7 @@ AnscInitializeTpm
 
     for ( i = 0; i < ulPoolSize; i++ )
     {
-        AnscCreateTask
+        handle = AnscCreateTask
             (
                 AnscPoolableTaskRoutine,
                 ANSC_DEFAULT_TASK_STACK_SIZE,
@@ -628,6 +636,9 @@ AnscInitializeTpm
                 NULL,
                 "anscPooledTask"
             );
+#ifdef _ANSC_LINUX
+        pthread_detach((pthread_t)handle);
+#endif
     }
 
     AnscSleep(ANSC_TASK_BREAK_INTERVAL);
@@ -643,6 +654,7 @@ AnscInitializeTpj
     )
 {
     ANSC_STATUS                     returnStatus = ANSC_STATUS_SUCCESS;
+    void                            *handle; 
 
     if ( !g_bTpjEnabled )
     {
@@ -658,7 +670,7 @@ AnscInitializeTpj
         AnscInitializeSpinLock   (&g_TpjTaskSListSpinLock);
     }
 
-    AnscCreateTask
+    handle = AnscCreateTask
         (
             AnscJanitorTaskRoutine,
             ANSC_DEFAULT_TASK_STACK_SIZE,
@@ -666,6 +678,10 @@ AnscInitializeTpj
             NULL,
             "anscJanitorTask"
         );
+
+#ifdef _ANSC_LINUX
+    pthread_detach((pthread_t)handle);
+#endif
 
     return  ANSC_STATUS_SUCCESS;
 }
