@@ -459,7 +459,15 @@ int CcspBaseIf_setParameterValues(
         if(dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRING)
         {
             dbus_message_iter_get_basic (&iter, &str);
-            if(str)
+            /*
+               Add check for (strlen(str) > 0) to avoid memory leak (1 byte of '\0')
+               since we usually ignore the output - *invalidParameterName
+               Fixme: This needs more review. Why is *invalidParameterName not
+               freed by the caller of this function if it points to an empty
+               string? Do other similar code sequences of dbus_message_iter_get_basic()
+               followed by if(str) need to same change?
+            */
+            if(str && strlen(str) > 0)
             {
                 *invalidParameterName = bus_info->mallocfunc(strlen(str)+1);
                 rc = strcpy_s(*invalidParameterName, (strlen(str)+1), str);
