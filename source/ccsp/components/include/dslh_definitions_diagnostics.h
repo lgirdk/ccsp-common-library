@@ -111,6 +111,7 @@
 
 #define DSLH_DIAG_STATE_TYPE_TRAC_Error_HostName    3
 #define DSLH_DIAG_STATE_TYPE_TRAC_Error_MaxHopCount 4
+#define DSLH_DIAG_STATE_TYPE_TRAC_Canceled          5
 
 #define DSLH_DIAG_STATE_TYPE_Canceled               10
 #define DSLH_DIAG_STATE_TYPE_Inprogress             11
