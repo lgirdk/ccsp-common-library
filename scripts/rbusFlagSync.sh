@@ -25,7 +25,7 @@ if [ "$1" = 1 ]; then
     if [ -e /nvram/rbus_support_off_pending ]; then
          rm /nvram/rbus_support_off_pending
     fi
-    if [ "$BOX_TYPE" = "XB3" ]; then
+    if [ "$BOX_TYPE" = "XB3" ] || [ "$BOX_TYPE" = "MV1" ]; then
         rpcclient2 "touch /nvram/rbus_support_on_pending && rm /nvram/rbus_support_off_pending"
     fi
 else
@@ -33,7 +33,7 @@ else
     if [ -e /nvram/rbus_support_on_pending ]; then
          rm /nvram/rbus_support_on_pending
     fi
-    if [ "$BOX_TYPE" = "XB3" ]; then 
+    if [ "$BOX_TYPE" = "XB3" ] || [ "$BOX_TYPE" = "MV1" ]; then
          rpcclient2 "touch /nvram/rbus_support_off_pending && rm /nvram/rbus_support_on_pending"
     fi
 fi
