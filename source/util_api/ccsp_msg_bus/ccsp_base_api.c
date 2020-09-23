@@ -2017,7 +2017,7 @@ int CcspBaseIf_registerCapabilities_rbus(
         rtMessage_Create(&request);
         rbus_AppendString(request, component_name);
         RBUS_LOG("%s : object_name: %s  :: event_name : %s :: \n", __FUNCTION__, bus_info->component_id, METHOD_REGISTERCAPABILITIES);
-        if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.CR", METHOD_REGISTERCAPABILITIES, request, 1000, &response))) != CCSP_Message_Bus_OK)
+        if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.CR", METHOD_REGISTERCAPABILITIES, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
         {
             RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for %s for %s returns with Err: %d\n", __FUNCTION__, METHOD_REGISTERCAPABILITIES, component_name, ret);
             ret = CCSP_FAILURE;
