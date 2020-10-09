@@ -506,7 +506,7 @@ DslhVarroSetNotification
     }
 
 	pFullName = pMyObject->GetFullName(pMyObject);
-	if(strstr(pFullName,"NumberOfEntries"))
+	if(strstr(pFullName,"NumberOfEntries") && !strstr(pFullName,"ManageableDeviceNumberOfEntries"))
 	{
 
 #if defined(DEVICE_GATEWAY_ASSOCIATION_FEATURE)
