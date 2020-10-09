@@ -508,7 +508,7 @@ DslhVarroSetNotification
     }
 
 	pFullName = pMyObject->GetFullName(pMyObject);
-	if(strstr(pFullName,"NumberOfEntries"))
+	if(strstr(pFullName,"NumberOfEntries") && !strstr(pFullName,"ManageableDeviceNumberOfEntries"))
 	{
 		AnscTraceEntry(("Param '%s' cannot be set to Notification Active.\n", pFullName));
                 AnscFreeMemory(pFullName);
