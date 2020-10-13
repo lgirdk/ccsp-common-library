@@ -49,6 +49,15 @@
     #define  AnscTrace                              printf
 #endif
 
+#define DEVICE_CERT "/nvram/1/security/cm_cert.cer"
+#define MANUFACTURER_CERT "/nvram/1/security/mfg_cert.cer"
+#define PRIVATE_KEY "/nvram/1/security/cm_key_prv.bin"
+#define SERVER_CA_CERT "/nvram/1/security/ACS_SERVER_CA.pem"
+
+/* Below buffer needs to be filled by the caller of the openssl APIs */
+static char openSSLServerURL[256];
+char *g_openSSLServerURL = openSSLServerURL;
+
 /* static SSL context, once initialized will stay!  */
 static SSL_CTX *g_ssl_ctx[SSL_CTX_NUM];
 
@@ -57,6 +66,8 @@ static int *lock_count;
 
 static pthread_once_t openssl_is_initialized = PTHREAD_ONCE_INIT;
 static void openssl_thread_setup(void);
+
+static int sslVerifyMode = SSL_VERIFY_PEER;
 
 void initialize_openssl_lib()
 {
@@ -209,6 +220,12 @@ int openssl_load_ca_certificates(int who_calls)
 int openssl_init (int who_calls)
 {
   SSL_CTX *ssl_ctx = NULL;
+  X509 *dev_cert = NULL;
+  X509 *man_cert = NULL;
+  FILE *f_cert = NULL;
+  FILE *f_man = NULL;
+  int ret = -1;
+  int return_status = 1;
   
   if (who_calls != SSL_SERVER_CALLS && who_calls != SSL_CLIENT_CALLS)
       return 0;
@@ -238,7 +255,79 @@ int openssl_init (int who_calls)
 
   if (who_calls == SSL_CLIENT_CALLS)
   {
-      openssl_priv_verify(ssl_ctx);
+      f_cert = fopen(DEVICE_CERT, "rb");
+      f_man = fopen(MANUFACTURER_CERT, "rb");
+      //Load Certificate chain
+      if (f_cert == NULL || f_man == NULL)
+      {
+        AnscTraceWarning(("openssl_init - Unable to open device, manufacturer certificates!!!\n"));
+        goto EXIT0;
+      }
+      /* Load device certificate to ssl-ctx structure*/
+      if (f_cert)
+      {
+        dev_cert = d2i_X509_fp(f_cert, NULL);
+        if (dev_cert)
+        {
+          ret = SSL_CTX_use_certificate(ssl_ctx, dev_cert);
+        }
+
+        if (ret != 1)
+        {
+          AnscTraceWarning(("openssl_init - Unable to use certificates!!!\n"));
+          return_status = 0;
+        }
+        fclose(f_cert);
+        f_cert = NULL;
+      }
+
+      if (return_status == 1)
+      {
+        /* Form a certificate chain by Concatenating manufacturer certificate to device certificate */
+        if (f_man)
+        {
+          ret = -1;
+          man_cert = d2i_X509_fp(f_man, NULL);
+          if (man_cert)
+          {
+            /* The x509 certificate provided to SSL_CTX_add_extra_chain_cert() will be freed by the library when the SSL_CTX is destroyed. 
+            we should not free man_cert */
+            ret = SSL_CTX_add_extra_chain_cert(ssl_ctx, man_cert);
+          }
+
+          if (ret != 1)
+          {
+            AnscTraceWarning(("openssl_init - Failed to concatenate manufacturer certificate to device certificate!!!\n"));
+            return_status = 0;
+          }
+          fclose(f_man);
+          f_man = NULL;
+        }
+      }
+
+      if (dev_cert)
+      {
+        /* SSL_CTX_use_certificate function copy the certificate to ssl using SSL_new() function. So it is safe to free dev_cert */
+        X509_free(dev_cert);
+        dev_cert = NULL;
+      }
+
+      if (return_status == 0)
+      {
+        AnscTraceWarning(("openssl_init - Certificate loading failed!!!\n"));
+        goto EXIT0;
+      }
+
+      /* Load private key to ssl-ctx structure*/
+      /* If the private key cannot be loaded directly, then we need to decrypt it use*/
+      if( (SSL_CTX_use_PrivateKey_file((SSL_CTX *)ssl_ctx, PRIVATE_KEY, SSL_FILETYPE_PEM) != 1) )
+      {
+        AnscTraceWarning(("openssl_init - Private key loading failed!!!\n"));
+        SSL_CTX_free (ssl_ctx);
+        openssl_print_errors (NULL);
+        goto EXIT0;
+      }
+      SSL_CTX_set_verify (ssl_ctx, SSL_VERIFY_NONE, NULL);
   }
   else 
   {
@@ -263,6 +352,19 @@ int openssl_init (int who_calls)
   openssl_load_ca_certificates(who_calls);
 
   return 1;
+
+EXIT0:
+
+  if (f_cert)
+  {
+      fclose(f_cert);
+  }
+  if (f_man)
+  {
+      fclose(f_man);
+  }
+
+  return 0;
 }
 
 int openssl_read (int fd, char *buf, int bufsize, void *ctx)
@@ -341,7 +443,30 @@ int openssl_poll (int fd, long timeout, int set, void *ctx)
 SSL * openssl_connect (int fd, hostNames *hosts)
 {
   SSL *ssl = NULL;
+  char *servername = NULL;
   X509_VERIFY_PARAM *param = NULL;
+
+  AnscTraceWarning(("openssl_connect - openSSLServerURL is %s\n", openSSLServerURL));
+
+  if (strncmp (openSSLServerURL, "https://", 8) == 0)
+  {
+     char *ch;
+
+     servername = openSSLServerURL + 8;
+
+     if ((ch = strchr(servername, ':')) ||
+         (ch = strchr(servername, '/')))
+     {
+        *ch = '\0';
+     }
+
+     AnscTraceWarning(("openssl_connect - servername is %s\n", servername));
+  }
+  else
+  {
+     AnscTraceWarning(("openssl_connect - servername is %s\n", "null"));
+     goto error;
+  }
 
   SSL_CTX *ssl_ctx = g_ssl_ctx[SSL_CLIENT_CALLS];
 
@@ -354,43 +479,129 @@ SSL * openssl_connect (int fd, hostNames *hosts)
   if (!ssl)
     goto error;
 
-  if ( hosts->peerVerify ) {
-     int i = 0;
+  /*
+     Temp solution: ccsp-tr069-pa may not be setting up hosts->peerVerify yet, so don't rely on it.
+  */
+  if ( 1 /* hosts->peerVerify */ ) {
   
      //RDKB-9319 : Add host validation
      param = SSL_get0_param(ssl);
   
      /* Enable automatic hostname checks */
      X509_VERIFY_PARAM_set_hostflags(param,X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
+
+#if 1
+     /*
+        Fixme: using servername rather than hosts->hostNames[0] is a temp solution. Needs more investigation.
+     */
+     X509_VERIFY_PARAM_set1_host(param, servername, 0);
+#else
+     int i = 0;
+
      X509_VERIFY_PARAM_set1_host(param, hosts->hostNames[0], 0);
 
      for( i = 1; i<hosts->numHosts; i++)
      {
          X509_VERIFY_PARAM_add1_host(param, hosts->hostNames[i],0);
      }
-     SSL_set_verify(ssl, SSL_VERIFY_PEER, 0);
+#endif
+
+     SSL_set_verify(ssl, sslVerifyMode, 0);
 
      AnscTraceWarning(("openssl_connect - Hostnames added to verify\n"));
   }
-  
-  if (!SSL_set_fd (ssl, fd))
+
+  if (SSL_set_tlsext_host_name(ssl, servername) == 0)
+  {
+    AnscTraceError(("openssl_connect - Unable to set SNI : %s \n", servername));
+  }
+
+  // Make the socket non-blocking
+  int ret = fcntl(fd, F_GETFL, 0);
+  if (ret == -1) {
+    AnscTraceWarning(("openssl_connect - failed fcntl\n"));
     goto error;
+  }
+  ret = fcntl(fd, F_SETFL, ret | O_NONBLOCK);
+  if (ret == -1) {
+    AnscTraceWarning(("openssl_connect - failed fcntl\n"));
+    goto error;
+  }
 
-  SSL_set_connect_state (ssl);
+  // Associate socket with SSL object
+  if (!SSL_set_fd(ssl, fd)) {
+    AnscTraceWarning(("openssl_connect - failed to associate socket %d to SSL handle %p\n", fd, ssl));
+    goto error;
+  }
 
+  AnscTraceWarning(("openssl_connect - associated socket %d to SSL handle %p\n", fd, ssl));
+  SSL_set_connect_state(ssl);
+  AnscTraceWarning(("openssl_connect - set the SSL object into the connect state SSL handle %p \n", ssl));
+
+  // Define timeout for select
+  struct timeval timeout;
+  timeout.tv_sec = 30;
+  timeout.tv_usec = 0;
+
+  fd_set read_fds;
+  FD_ZERO(&read_fds);
+  FD_SET(fd, &read_fds);
+
+  // Loop for non-blocking SSL_connect
+  while (1) {
+    int ret = SSL_connect(ssl);
+    if (ret == -1) {
+      int ssl_err = SSL_get_error(ssl, ret);
+      if (ssl_err == SSL_ERROR_WANT_READ || ssl_err == SSL_ERROR_WANT_WRITE) {
+        ret = select(fd + 1, NULL, &read_fds, NULL, &timeout);
+        if (ret == -1) {
+          AnscTraceWarning(("openssl_connect - select failed! \n"));
+          goto error;
+        } else if (ret == 0) {
+          // Timeout occurred
+          AnscTraceWarning(("openssl_connect - timeout waiting for read\n"));
+          goto error;
+        }
+        // Continue the loop after checking for read availability
+        continue;
+      } else {
+        AnscTraceWarning(("openssl_connect - failed in SSL_connect, error: %d\n", ssl_err));
+        goto error;
+      }
+      } else if (ret == 0) {
+        // SSL handshake needs more negotiation, continue the loop
+        AnscTraceWarning(("openssl_connect - ret = 0 so needs more time \n"));
+        continue;
+      } else {
+        // Successful connection established, break out of the loop
+        AnscTraceWarning(("openssl_connect - Successful connection established \n"));
+        break;
+      }
+  }
+
+  // Check SSL state after successful connect
 #if (OPENSSL_VERSION_NUMBER >= 0x10101000L)
-  if (SSL_connect (ssl) <= 0 || SSL_get_state(ssl) != TLS_ST_OK)
+  if ( SSL_get_state(ssl) != TLS_ST_OK)
 #elif (OPENSSL_VERSION_NUMBER >= 0x10100000L)
-  if (SSL_connect (ssl) <= 0 || SSL_state(ssl) != TLS_ST_OK)
+  if (SSL_state(ssl) != TLS_ST_OK)
 #else
-  if (SSL_connect (ssl) <= 0 || ssl->state != SSL_ST_OK)
+  if (ssl->state != SSL_ST_OK)
 #endif
   {
     AnscTraceWarning(("openssl_connect - failed in SSL_set_connect_state \n"));
     goto error;
   }
 
-  if ( hosts->peerVerify ) {
+  AnscTraceWarning(("openssl_connect - SSL_connect is successful SSL handle %p \n", ssl));
+
+  if (fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK) == -1) {
+    AnscTraceWarning(("openssl_connect - failed to set socket back to blocking mode \n"));
+  }
+
+  /*
+     Temp solution: ccsp-tr069-pa may not be setting up hosts->peerVerify yet, so don't rely on it.
+  */
+  if ( 1 /* hosts->peerVerify */ ) {
      AnscTraceWarning(("openssl_connect - get peer certificate result\n"));
      X509 *cert = SSL_get_peer_certificate(ssl);
      if(cert) {
@@ -416,9 +627,18 @@ error:
     AnscTraceWarning(("openssl_connect - SSL handshake failed -- ssl state = %s.\n", SSL_state_string(ssl)));
     openssl_print_errors (ssl);
     SSL_free (ssl);
+    // Restore socket to blocking mode if it was previously set to non-blocking
+    if (fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK) == -1) {
+      AnscTraceWarning(("openssl_connect - failed to set socket back to blocking mode\n"));
+    }
   }
 
   return NULL;
+}
+
+void openssl_set_verify_mode (int mode)
+{
+    sslVerifyMode = mode;
 }
 
 SSL * openssl_accept (int conn_fd)
@@ -519,6 +739,17 @@ static int _client_openssl_validate_certificate (int fd,  char *host, SSL *ssl, 
     OPENSSL_free (subject);
     OPENSSL_free (issuer);
 
+    /*
+     * Since SSL_VERIFY_PEER mode allows self-signed certificates,
+     * also allows self-signed certificates when the verify mode is SSL_VERIFY_NONE.
+     */
+    if ((sslVerifyMode == SSL_VERIFY_NONE) &&
+        (vresult == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN) ||
+        (vresult == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT))
+    {
+        success = 1;
+    }
+
     if ( success ) {
         common_name[0] = '\0';
         X509_NAME_get_text_by_NID (X509_get_subject_name (cert),
@@ -532,7 +763,10 @@ static int _client_openssl_validate_certificate (int fd,  char *host, SSL *ssl, 
         AnscTraceWarning(("%s - X509 certificate successfully verified on host %s\n", __FUNCTION__,
                    host));
 
-    if ( isSecure ) {
+    /*
+       Temp solution: ccsp-tr069-pa may not be setting up hosts->peerVerify yet, so don't rely on it.
+    */
+    if ( 1 /* isSecure */ ) {
        //RDKB-9319: Get TLS version and log
        const char* sslVersion = SSL_get_version(ssl);
        AnscTraceWarning(("%s - SSL version is : %s\n",__FUNCTION__,sslVersion));
