@@ -47,6 +47,14 @@
     #define  AnscTraceWarning(msg)                  printf msg
     #define  AnscTrace                              printf
 #endif
+#define DEVICE_CERT "/nvram/1/security/cm_cert.cer"
+#define MANUFACTURER_CERT "/nvram/1/security/mfg_cert.cer"
+#define PRIVATE_KEY "/nvram/1/security/cm_key_prv.bin"
+#define SERVER_CA_CERT "/nvram/1/security/ACS_SERVER_CA.pem"
+
+/* Below buffer needs to be filled by the caller of the openssl APIs */
+static char openSSLServerURL[64];
+char *g_openSSLServerURL = openSSLServerURL;
 
 /* static SSL context, once initialized will stay!  */
 static SSL_CTX *g_ssl_ctx[SSL_CTX_NUM];
@@ -224,6 +232,12 @@ int openssl_init (int who_calls)
 {
   int rc = 0;
   SSL_CTX *ssl_ctx = NULL;
+  X509 *dev_cert = NULL;
+  X509 *man_cert = NULL;
+  FILE *f_cert = fopen(DEVICE_CERT, "rb");
+  FILE *f_man = fopen(MANUFACTURER_CERT, "rb");
+  int ret = -1;
+  int return_status = 1;
   
   if (who_calls != SSL_SERVER_CALLS && who_calls != SSL_CLIENT_CALLS)
       return 0;
@@ -248,7 +262,80 @@ int openssl_init (int who_calls)
 
   if (who_calls == SSL_CLIENT_CALLS)
   {
-      openssl_priv_verify(ssl_ctx);
+      //Load Certificate chain
+      if (f_cert == NULL || f_man == NULL)
+      {
+        if (f_cert)
+           fclose(f_cert);
+        if (f_man)
+           fclose(f_man);
+        AnscTraceWarning((" openssl_connect - Unable to open device, manufacturer certificates!!!\n"));
+        return_status = 0;
+      }
+      /* Load device certificate to ssl-ctx structure*/
+      if (f_cert)
+      {
+        dev_cert = d2i_X509_fp(f_cert, NULL);
+        if (dev_cert)
+        {
+          ret = SSL_CTX_use_certificate(ssl_ctx, dev_cert);
+        }
+
+        if (ret != 1)
+        {
+          AnscTraceWarning((" openssl_connect - Unable to use certificates!!!\n"));
+          return_status = 0;
+        }
+        fclose(f_cert);
+      }
+
+      if (return_status == 1)
+      {
+        /* Form a certificate chain by Concatenating manufacturer certificate to device certificate */
+        if (f_man)
+        {
+          ret = -1;
+          man_cert = d2i_X509_fp(f_man, NULL);
+          if (man_cert)
+          {
+            /* The x509 certificate provided to SSL_CTX_add_extra_chain_cert() will be freed by the library when the SSL_CTX is destroyed. 
+            we should not free man_cert */
+            ret = SSL_CTX_add_extra_chain_cert(ssl_ctx, man_cert);
+          }
+
+          if (ret != 1)
+          {
+            AnscTraceWarning((" openssl_connect - Failed to concatenate manufacturer certificate to device certificate!!!\n"));
+            return_status = 0;
+          }
+          fclose(f_man);
+        }
+      }
+
+      if (dev_cert)
+      {
+        /* SSL_CTX_use_certificate function copy the certificate to ssl using SSL_new() function. So it is safe to free dev_cert */
+        X509_free(dev_cert);
+        dev_cert = NULL;
+      }
+
+      if (return_status == 0)
+      {
+        AnscTraceWarning((" openssl_connect - Certificate loading failed!!!\n"));
+        return 0;
+      }
+
+      /* Load private key to ssl-ctx structure*/
+      /* If the private key cannot be loaded directly, then we need to decrypt it use*/
+      if( (SSL_CTX_use_PrivateKey_file((SSL_CTX *)ssl_ctx, PRIVATE_KEY, SSL_FILETYPE_PEM) != 1) )
+      {
+        AnscTraceWarning((" openssl_connect - Private key loading failed!!!\n"));
+        SSL_CTX_free (ssl_ctx);
+        openssl_print_errors (NULL);
+        return 0;
+      }
+      SSL_CTX_set_verify (ssl_ctx, SSL_VERIFY_NONE, NULL);
+
   }
   else 
   {
@@ -351,10 +438,38 @@ SSL * openssl_connect (int fd)
   SSL *ssl = NULL;
   const char *servername = NULL;
   X509_VERIFY_PARAM *param = NULL;
-
+//bIsComcastImage is wrongly validating to a true. Needs to be fixed.
+#if 0
   if ( bIsComcastImage() ) { 
      servername = "acs-dt-ai-vip.comcast.net";
   }
+  else
+  {
+#endif
+
+  AnscTraceWarning(("openssl_connect - openSSLServerURL is %s\n", openSSLServerURL));
+  if(strstr(openSSLServerURL, "https://"))
+  {
+     char *ch;
+
+     servername = openSSLServerURL + strlen("https://");
+
+     if((ch = strchr(servername, ':')) ||
+        (ch = strchr(servername, '/')))
+     {
+        *ch = '\0';
+     }
+     AnscTraceWarning((" openssl_connect - servername is %s\n", servername));
+  }
+  else
+  {
+     AnscTraceWarning(("openssl_connect - servername is null\n"));
+     goto error;
+  }
+
+#if 0
+  }
+#endif
 
   SSL_CTX *ssl_ctx = g_ssl_ctx[SSL_CLIENT_CALLS];
 
@@ -363,7 +478,8 @@ SSL * openssl_connect (int fd)
   }
 
   ssl = SSL_new (ssl_ctx);
-  
+//bIsComcastImage is wrongly validating to a true. Needs to be fixed.
+
   if ( bIsComcastImage() ) {
   
      //RDKB-9319 : Add host validation
@@ -372,10 +488,14 @@ SSL * openssl_connect (int fd)
      /* Enable automatic hostname checks */
      X509_VERIFY_PARAM_set_hostflags(param,X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
      X509_VERIFY_PARAM_set1_host(param, servername, 0);
-
+#if 0 /* Comcast Specific */
      X509_VERIFY_PARAM_add1_host(param,"acswg.g.comcast.net",0);
      X509_VERIFY_PARAM_add1_host(param,"acs.g.comcast.net",0);
      X509_VERIFY_PARAM_add1_host(param,"acswg-dt-ai-vip.comcast.net",0);
+#endif
+  /* Similar way more hosts can be added for authentication */
+     AnscTraceWarning((" openssl_connect - servername is %s\n", servername));
+     X509_VERIFY_PARAM_add1_host(param, servername, 0);
 
      SSL_set_verify(ssl, SSL_VERIFY_PEER, 0);
   }
