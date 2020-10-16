@@ -113,7 +113,7 @@ AnscSctoEngage
     ansc_socket_addr_in             ansc_server_addr;
     xskt_socket_addr_in             xskt_client_addr;
     xskt_socket_addr_in             xskt_server_addr;
-
+    int                             IPv4flag         = 0; /* To be set if the socket is IPv4 based */
 #ifdef _ANSC_IPV6_COMPATIBLE_
     ansc_addrinfo                   ansc_hints            = {0};
     ansc_addrinfo*                  pansc_server_addrinfo = NULL;
@@ -296,8 +296,14 @@ AnscSctoEngage
     {
 #ifdef _ANSC_IPV6_COMPATIBLE_
         pMyObject->Socket = (ANSC_SOCKET)_xskt_socket(pxskt_server_addrinfo->ai_family, pxskt_server_addrinfo->ai_socktype, 0);
+        if(pxskt_server_addrinfo->ai_family == AF_INET)
+        {
+            IPv4flag = 1;
+        }
+
 #else
         pMyObject->Socket = (ANSC_SOCKET)_xskt_socket(XSKT_SOCKET_AF_INET, XSKT_SOCKET_STREAM, 0);
+        IPv4flag = 1;
 #endif
 
         if ( (XSKT_SOCKET)pMyObject->Socket == XSKT_SOCKET_INVALID_SOCKET )
@@ -323,8 +329,13 @@ AnscSctoEngage
     {
 #ifdef _ANSC_IPV6_COMPATIBLE_
         pMyObject->Socket = _ansc_socket(pansc_server_addrinfo->ai_family, pansc_server_addrinfo->ai_socktype, 0);
+        if(pxskt_server_addrinfo->ai_family == AF_INET)
+        {
+            IPv4flag = 1;
+        }
 #else
         pMyObject->Socket = _ansc_socket(ANSC_SOCKET_AF_INET, ANSC_SOCKET_STREAM, 0);
+        IPv4flag = 1;
 #endif
 
         if ( pMyObject->Socket == ANSC_SOCKET_INVALID_SOCKET )
@@ -347,145 +358,146 @@ AnscSctoEngage
     /*
      * Normally we don't need to know which local network interface we shall bind to, and the
      * underlying operating system usually supports such notation as "any address".
+     * When the socket initiated is a IPv4 socket, it is preferable to bind it to a known
+     * binding interface
      */
-#ifndef _ANSC_IPV6_COMPATIBLE_
-    if ( pMyObject->Mode & ANSC_SCTO_MODE_XSOCKET )
+    if(IPv4flag == 1)
     {
-        xskt_client_addr.sin_family = XSKT_SOCKET_AF_INET;
-        xskt_client_addr.sin_port   = _xskt_htons(pMyObject->HostPort);
-
-        if (pMyObject->bSocketBindToDevice && *(pMyObject->SocketDeviceName)) 
+        if ( pMyObject->Mode & ANSC_SCTO_MODE_XSOCKET )
         {
-            if (_xskt_setsocketopt
-                    (
-                         pMyObject->Socket, 
-                         XSKT_SOCKET_SOL_SOCKET, 
-                         XSKT_SOCKET_SO_BINDTODEVICE, 
-                         pMyObject->SocketDeviceName, 
-                         _ansc_strlen(pMyObject->SocketDeviceName) + 1
-                    )
-                < 0)
+            xskt_client_addr.sin_family = XSKT_SOCKET_AF_INET;
+            xskt_client_addr.sin_port   = _xskt_htons(pMyObject->HostPort);
+
+            if (pMyObject->bSocketBindToDevice && *(pMyObject->SocketDeviceName))
             {
-                perror("setsockopt-SOL_SOCKET-SO_BINDTODEVICE");
-                returnStatus = ANSC_STATUS_FAILURE;
-                goto EXIT2;
+                if (_xskt_setsocketopt
+                        (
+                             pMyObject->Socket,
+                             XSKT_SOCKET_SOL_SOCKET,
+                             XSKT_SOCKET_SO_BINDTODEVICE,
+                             pMyObject->SocketDeviceName,
+                             _ansc_strlen(pMyObject->SocketDeviceName) + 1
+                        )
+                    < 0)
+                {
+                    perror("setsockopt-SOL_SOCKET-SO_BINDTODEVICE");
+                    returnStatus = ANSC_STATUS_FAILURE;
+                    goto EXIT2;
+                }
             }
-        }
         //        fprintf(stderr, "<RT XSKT> Binding socket to Device '%s'.\n", pMyObject->SocketDeviceName); 
 
-        if ( pMyObject->HostAddress.Value == 0 )
-        {
-            ((pansc_socket_addr_in)&xskt_client_addr)->sin_addr.s_addr = XSKT_SOCKET_ANY_ADDRESS;
-        }
-        else
-        {
-            ((pansc_socket_addr_in)&xskt_client_addr)->sin_addr.s_addr = pMyObject->HostAddress.Value;
-        }
-
-        if ( _xskt_bind((XSKT_SOCKET)pMyObject->Socket, (xskt_socket_addr*)&xskt_client_addr, sizeof(xskt_client_addr)) != 0 )
-        {
-            AnscTrace("!!!!!!!!!! _xskt_bind error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno);
+            if ( pMyObject->HostAddress.Value == 0 )
             {
-                int j;                 
-                char s[256];
-                char *ptr1 = ((xskt_socket_addr*)(&xskt_client_addr))->sa_data;
-                char stmp[16];
+                ((pansc_socket_addr_in)&xskt_client_addr)->sin_addr.s_addr = XSKT_SOCKET_ANY_ADDRESS;
+            }
+            else
+            {
+                ((pansc_socket_addr_in)&xskt_client_addr)->sin_addr.s_addr = pMyObject->HostAddress.Value;
+            }
 
-                s[0] = '\0';                  
-                for(j=0; j<13; j++) {
-                    sprintf(stmp, "%.2x:", *(ptr1++));
+            if ( _xskt_bind((XSKT_SOCKET)pMyObject->Socket, (xskt_socket_addr*)&xskt_client_addr, sizeof(xskt_client_addr)) != 0 )
+            {
+                AnscTrace("!!!!!!!!!! _xskt_bind error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno);
+                {
+                    int j;
+                    char s[256];
+                    char *ptr1 = ((xskt_socket_addr*)(&xskt_client_addr))->sa_data;
+                    char stmp[16];
+
+                    s[0] = '\0';
+                    for(j=0; j<13; j++) {
+                        sprintf(stmp, "%.2x:", *(ptr1++));
+                        strcat(s, stmp);
+                    }
+                    sprintf(stmp, "%.2x", *ptr1);
                     strcat(s, stmp);
                 }
-                sprintf(stmp, "%.2x", *ptr1); 
-                strcat(s, stmp);
-                AnscTrace("!!!!!!!!!! _xskt_bind error: client_addr=%s\n", s);
-            }
-            perror("_xskt_bind error");
+                perror("_xskt_bind error");
 
-            if ( pMyObject->Mode & ANSC_SCTO_MODE_NO_BSP_NOTIFY_CONN_ERR == 0 )
-            {
-                pWorker->Notify
+                if ( pMyObject->Mode & ANSC_SCTO_MODE_NO_BSP_NOTIFY_CONN_ERR == 0 )
+                {
+                    pWorker->Notify
 	    			(
 		    			pWorker->hWorkerContext,
 			    		ANSC_SCTOWO_EVENT_SOCKET_ERROR,
 				    	(ANSC_HANDLE)NULL
     				);
-            }
-            returnStatus = ANSC_STATUS_FAILURE;
-
-            goto  EXIT2;
-        }
-    }
-    else
-    {
-        ansc_client_addr.sin_family = ANSC_SOCKET_AF_INET;
-        ansc_client_addr.sin_port   = _ansc_htons(pMyObject->HostPort);
-
-        if (pMyObject->bSocketBindToDevice && *(pMyObject->SocketDeviceName)) 
-        {
-            if (_xskt_setsocketopt
-                    (
-                         pMyObject->Socket, 
-                         ANSC_SOCKET_SOL_SOCKET, 
-                         ANSC_SOCKET_SO_BINDTODEVICE, 
-                         pMyObject->SocketDeviceName, 
-                         _ansc_strlen(pMyObject->SocketDeviceName) + 1
-                    )
-                < 0)
-            {
-                perror("setsockopt-SOL_SOCKET-SO_BINDTODEVICE");
+                }
                 returnStatus = ANSC_STATUS_FAILURE;
-                goto EXIT2;
+
+                goto  EXIT2;
             }
         }
+        else
+        {
+            ansc_client_addr.sin_family = ANSC_SOCKET_AF_INET;
+            ansc_client_addr.sin_port   = _ansc_htons(pMyObject->HostPort);
+
+            if (pMyObject->bSocketBindToDevice && *(pMyObject->SocketDeviceName))
+            {
+                if (_xskt_setsocketopt
+                        (
+                             pMyObject->Socket,
+                             ANSC_SOCKET_SOL_SOCKET,
+                             ANSC_SOCKET_SO_BINDTODEVICE,
+                             pMyObject->SocketDeviceName,
+                             _ansc_strlen(pMyObject->SocketDeviceName) + 1
+                        )
+                    < 0)
+                {
+                    perror("setsockopt-SOL_SOCKET-SO_BINDTODEVICE");
+                    returnStatus = ANSC_STATUS_FAILURE;
+                    goto EXIT2;
+                }
+            }
         // fprintf(stderr, "<RT AnscSKT> Binding socket to Device '%s'.\n", pMyObject->SocketDeviceName); 
 
-
-        if ( pMyObject->HostAddress.Value == 0 )
-        {
-            ansc_client_addr.sin_addr.s_addr = ANSC_SOCKET_ANY_ADDRESS;
-        }
-        else
-        {
-            ansc_client_addr.sin_addr.s_addr = pMyObject->HostAddress.Value;
-        }
-
-        if ( _ansc_bind(pMyObject->Socket, (ansc_socket_addr*)&ansc_client_addr, sizeof(ansc_client_addr)) != 0 )
-        {
-            AnscTrace("!!!!!!!!!! _ansc_bind error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno);
+            if ( pMyObject->HostAddress.Value == 0 )
             {
-                int j;                 
-                char s[256];
-                char *ptr1 = ((ansc_socket_addr*)(&ansc_client_addr))->sa_data;
-                char stmp[16];
+                CcspTraceInfo(("%s: %d -----Ajay------ Bind to Any Address\n"));
+                ansc_client_addr.sin_addr.s_addr = ANSC_SOCKET_ANY_ADDRESS;
+            }
+            else
+            {
+                ansc_client_addr.sin_addr.s_addr = pMyObject->HostAddress.Value;
+            }
 
-                s[0] = '\0';                  
-                for(j=0; j<13; j++) {
-                    sprintf(stmp, "%.2x:", *(ptr1++));
+            if ( _ansc_bind(pMyObject->Socket, (ansc_socket_addr*)&ansc_client_addr, sizeof(ansc_client_addr)) != 0 )
+            {
+                AnscTrace("!!!!!!!!!! _ansc_bind error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno);
+                {
+                    int j;
+                    char s[256];
+                    char *ptr1 = ((ansc_socket_addr*)(&ansc_client_addr))->sa_data;
+                    char stmp[16];
+
+                    s[0] = '\0';
+                    for(j=0; j<13; j++) {
+                        sprintf(stmp, "%.2x:", *(ptr1++));
+                        strcat(s, stmp);
+                    }
+                    sprintf(stmp, "%.2x", *ptr1);
                     strcat(s, stmp);
                 }
-                sprintf(stmp, "%.2x", *ptr1); 
-                strcat(s, stmp);
-                AnscTrace("!!!!!!!!!! _ansc_bind error: client_addr=%s\n", s);
-            }
-            perror("_ansc_bind error");
+                perror("_ansc_bind error");
 
-            if ( pMyObject->Mode & ANSC_SCTO_MODE_NO_BSP_NOTIFY_CONN_ERR == 0 )
-            {
-                pWorker->Notify
+                if ( pMyObject->Mode & ANSC_SCTO_MODE_NO_BSP_NOTIFY_CONN_ERR == 0 )
+                {
+                    pWorker->Notify
 	    			(
 		    			pWorker->hWorkerContext,
 			    		ANSC_SCTOWO_EVENT_SOCKET_ERROR,
 				    	(ANSC_HANDLE)NULL
     				);
+                }
+
+                returnStatus = ANSC_STATUS_FAILURE;
+
+                goto  EXIT2;
             }
-
-            returnStatus = ANSC_STATUS_FAILURE;
-
-            goto  EXIT2;
         }
     }
-#endif
 
     /*
      * As a Tcp client application, we now try to connect the network server, whose address is
