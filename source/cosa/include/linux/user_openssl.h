@@ -78,6 +78,8 @@ void openssl_close (int fd, void *ctx);
 
 SSL * openssl_connect (int fd);
 
+void openssl_set_verify_mode (int mode);
+
 enum
 {
     SSL_SERVER_CALLS,  /*act as SSL server*/
