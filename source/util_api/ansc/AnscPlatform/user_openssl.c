@@ -66,6 +66,8 @@ static int *lock_count;
 static pthread_once_t openssl_is_initialized = PTHREAD_ONCE_INIT;
 static void openssl_thread_setup(void);
 
+static int sslVerifyMode = SSL_VERIFY_PEER;
+
 void initialize_openssl_lib()
 {
     openssl_thread_setup();
@@ -500,8 +502,9 @@ SSL * openssl_connect (int fd, hostNames *hosts)
      }
 #endif
 
-     SSL_set_verify(ssl, SSL_VERIFY_PEER, 0);
   }
+
+    SSL_set_verify(ssl, sslVerifyMode, 0);
   
   if (!ssl)
     goto error;
@@ -565,6 +568,11 @@ error:
     SSL_free (ssl);
 
   return NULL;
+}
+
+void openssl_set_verify_mode (int mode)
+{
+    sslVerifyMode = mode;
 }
 
 SSL * openssl_accept (int conn_fd)
@@ -664,6 +672,16 @@ static int _client_openssl_validate_certificate (int fd,  char *host, SSL *ssl, 
 
     OPENSSL_free (subject);
     OPENSSL_free (issuer);
+
+    /*
+     * Since SSL_VERIFY_PEER mode allows self-signed certificates,
+     * also allows self-signed certificates when the verify mode is SSL_VERIFY_NONE.
+     */
+    if ( (sslVerifyMode == SSL_VERIFY_NONE) &&
+         (vresult == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN) || (vresult == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT) )
+    {
+        success = 1;
+    }
 
     if ( success ) {
         common_name[0] = '\0';
