@@ -139,27 +139,14 @@ static  ANSC_SPINLOCK   g_tMemPoolTableSpinLock;
 /**********************************************************************
     Functions with no size counting and detail recording.
 **********************************************************************/
-PVOID
-AnscAllocateMemoryOrig(ULONG  ulMemorySize)
+static void *AnscAllocateMemoryOrig(size_t MemorySize)
 {
-    PVOID p =  malloc(ulMemorySize);
-    if ( !p )
-    {
-        return  p;
-    }
-    memset(p, 0, ulMemorySize);
-    return p;
+    return calloc(1, MemorySize);
 }
 
-VOID
-AnscFreeMemoryOrig(PVOID  pMemoryBlock)
+static void AnscFreeMemoryOrig(void *MemoryBlock)
 {
-    if (pMemoryBlock)
-    {
-        free(pMemoryBlock);
-        pMemoryBlock = NULL;
-    }
-    return;
+    free(MemoryBlock);
 }
 
 PVOID
