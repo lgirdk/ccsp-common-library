@@ -94,7 +94,7 @@ extern    char *                  pComponentName;
     realloc((pMemory), (size))
 
 #define AnscFreeMemory(pMemory) \
-    AnscFreeMemoryOrig(pMemory)
+    free((pMemory))
 
 #define AnscResizeMemory(pMemory, size) \
     realloc((pMemory), (size))
@@ -132,13 +132,6 @@ extern    char *                  pComponentName;
 #define AnscZeroMemory(pMemory, size) \
             (void) memset((pMemory), 0, (size))
 
-VOID
-AnscFreeMemoryOrig
-(
-     PVOID  pMemoryBlock
-);
-VOID        
-
 #define AnscCopyMemory(pDestination, pSource, size) \
             (void) memcpy((pDestination), (pSource), (size))
 
@@ -150,11 +143,6 @@ AnscReallocMemory
         ULONG ulNewMemorySize
     );
 
-VOID
-AnscFreeMemoryOrig
-    (
-        PVOID  pMemoryBlock
-    );
 /**********************************************************************
     Only count size, no detail recording.
 **********************************************************************/
