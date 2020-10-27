@@ -151,29 +151,6 @@ static void AnscFreeMemoryOrig(void *MemoryBlock)
     free(MemoryBlock);
 }
 
-VOID
-AnscZeroMemory
-    (
-        PVOID  pMemory,
-        ULONG  ulMemorySize
-    )
-{
-    memset(pMemory, 0, ulMemorySize);
-    return;
-}
-
-VOID        
-AnscCopyMemory
-    (
-        PVOID  pDestination, 
-        PVOID  pSource, 
-        ULONG  ulMemorySize
-)
-{   
-    memcpy(pDestination, pSource, ulMemorySize);        
-    return;
-}
-
 PVOID
 AnscReallocMemory
     (
@@ -838,8 +815,6 @@ void AnscPrintFileLineMemoryTable
     ULONG                           i                = 0;
     char                            owner_desp[128] = {0}; /*RDKB-6143, CID-24780 ; initialize before use*/
     char*                           pFileNameChar  = pFileName;
-
-    AnscZeroMemory(owner_desp, 128);
 
     if ( pFileName )
     {
