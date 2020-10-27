@@ -129,20 +129,11 @@ extern    char *                  pComponentName;
 
 #endif
 
-VOID    
-AnscZeroMemory
-(
-    PVOID  pMemory,
-    ULONG  ulMemorySize
-);
+#define AnscZeroMemory(pMemory, size) \
+            (void) memset((pMemory), 0, (size))
 
-VOID        
-AnscCopyMemory
-(
-    PVOID  pDestination, 
-    PVOID  pSource, 
-    ULONG  ulMemorySize
-);
+#define AnscCopyMemory(pDestination, pSource, size) \
+            (void) memcpy((pDestination), (pSource), (size))
 
 PVOID
 AnscReallocMemory
