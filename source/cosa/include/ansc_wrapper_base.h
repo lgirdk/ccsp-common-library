@@ -733,14 +733,6 @@ ANSC_UINT64,  *PANSC_UINT64;
             *(PULONG)pb = u32;
         }
 
-        #define  AnscEqualUshort(a, b)                                                      \
-                 ( (*((PUCHAR)&a) == *((PUCHAR)&b)) && (*((PUCHAR)&a + 1) == *((PUCHAR)&b + 1)) )
-        #define  AnscEqualUlong(a, b)                                                       \
-                 ( (*((PUCHAR)&a) == *((PUCHAR)&b)) && (*((PUCHAR)&a + 1) == *((PUCHAR)&b + 1)) && (*((PUCHAR)&a + 2) == *((PUCHAR)&b + 2)) && (*((PUCHAR)&a + 3) == *((PUCHAR)&b + 3)) )
-
-        #define  AnscUcharToUshort(f_uchar)                                                 \
-                 (USHORT)(f_uchar)
-
     #else
 
         ANSC_FORCEINLINE
@@ -819,15 +811,6 @@ ANSC_UINT64,  *PANSC_UINT64;
             *(PULONG)pb = u32;
         }
 
-
-        #define  AnscEqualUshort(a, b)                                                      \
-                 ( (*((PUCHAR)&a) == *((PUCHAR)&b)) && (*((PUCHAR)&a + 1) == *((PUCHAR)&b + 1)) )
-        #define  AnscEqualUlong(a, b)                                                       \
-                 ( (*((PUCHAR)&a) == *((PUCHAR)&b)) && (*((PUCHAR)&a + 1) == *((PUCHAR)&b + 1)) && (*((PUCHAR)&a + 2) == *((PUCHAR)&b + 2)) && (*((PUCHAR)&a + 3) == *((PUCHAR)&b + 3)) )
-
-        #define  AnscUcharToUshort(f_uchar)                                                 \
-                 (USHORT)(f_uchar) * 0x100
-
     #endif
 
 #else
@@ -840,11 +823,6 @@ ANSC_UINT64,  *PANSC_UINT64;
         #define  AnscWriteUshort(addr, data)        *(PUSHORT)(addr) = data
         #define  AnscWriteUlong(addr, data)         *(PULONG )(addr) = data
 
-        #define  AnscEqualUshort(a, b)              ( a == b )
-        #define  AnscEqualUlong(a, b)               ( a == b )
-
-        #define  AnscUcharToUshort(f_uchar)         (USHORT)(f_uchar)
-
     #else
 
         #define  AnscReadUshort(addr)               (*(PUSHORT)(addr))
@@ -852,11 +830,6 @@ ANSC_UINT64,  *PANSC_UINT64;
 
         #define  AnscWriteUshort(addr, data)        *(PUSHORT)(addr) = data
         #define  AnscWriteUlong(addr, data)         *(PULONG )(addr) = data
-
-        #define  AnscEqualUshort(a, b)              ( a == b )
-        #define  AnscEqualUlong(a, b)               ( a == b )
-
-        #define  AnscUcharToUshort(f_uchar)         (USHORT)(f_uchar) * 0x100
 
     #endif
 
