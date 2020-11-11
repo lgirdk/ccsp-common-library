@@ -230,7 +230,7 @@ AnscAllocateBdo2
     );
 
 
-ANSC_FORCEINLINE
+static
 ANSC_HANDLE
 AnscAcquirePdo
     (
@@ -1677,7 +1677,7 @@ AnscPdoShrinkMiddle
 }
 */
 
-ANSC_FORCEINLINE
+static
 ANSC_HANDLE
 AnscAcquireBdo
     (
