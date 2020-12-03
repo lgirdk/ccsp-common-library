@@ -379,3 +379,12 @@ fi
 
 echo_t "Launching UI after all CCSP processes are up"
 /etc/start_lighttpd.sh start &
+
+if [ "$(syscfg get telemetry_enable)" = "true" ]
+then
+	# Set "T2Enable" before starting the Telemetary agent.
+	# The Telemetry agent receives events only if T2Enable is enabled.
+	# (Fixme: why two syscfg options telemetry_enable and T2Enable?)
+	syscfg set T2Enable true
+	telemetry2_0 &
+fi
