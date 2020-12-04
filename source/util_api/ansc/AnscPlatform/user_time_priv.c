@@ -160,8 +160,8 @@ UserGetTickInSeconds()
     /*return UserGetTickInMilliSeconds()/1000;*/
 }
 
-__inline void
-UserSetDelta()
+void
+UserSetDelta(void)
 {
     struct timeval                  tv = {0};
     struct timezone                 tz = {0};
