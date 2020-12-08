@@ -61,15 +61,6 @@ else
 	echo_t "Triggered cosa_start_rem script and created tmp/cosa_start_rem_triggered file"
 fi
 
-if [ -f "/etc/AKER_ENABLE" ]; then
-    echo "/usr/bin/aker -p $PARODUS_URL -c $AKER_URL -w parcon -d /nvram/pcs.bin -f /nvram/pcs.bin.md5" > /tmp/aker_cmd.cmd
-    aker_cmd=`cat /tmp/aker_cmd.cmd`
-    $aker_cmd &
-    echo_t "aker process should have been started"
-else
-    echo_t "aker NOT enabled"
-fi
-
 if [ "x$ENABLE_SNMPv3" == "xtrue" ]; then
     if [ -f /lib/rdk/run_snmpv3_master.sh ]; then
         /lib/rdk/run_snmpv3_master.sh &
