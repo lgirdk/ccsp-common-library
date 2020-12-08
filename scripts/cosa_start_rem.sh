@@ -183,9 +183,6 @@ fi
 echo_t "PWD is `pwd`"
 
 
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ]; then
-echo_t "Disabling MTA for BWG "
-else
 if [ -e ./mta ]; then
     cd mta
     if [ "x"$Subsys = "x" ];then
@@ -195,7 +192,6 @@ if [ -e ./mta ]; then
         $BINPATH/CcspMtaAgentSsp -subsys $Subsys
     fi
     cd ..
-fi
 fi
 
 if [ -e ./moca ]; then
@@ -215,9 +211,6 @@ fi
 
 # Tr069Pa, as well as SecureSoftwareDownload and FirmwareUpgrade
 
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ]; then
-    echo_t "Disabling TR069Pa for BWG "
-else
 if [ -e ./tr069pa ]; then
      cd tr069pa
      enable_TR69_Binary=`syscfg get EnableTR69Binary`
@@ -234,7 +227,6 @@ if [ -e ./tr069pa ]; then
 #        sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
 #        sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
 	cd ..
-fi
 fi
 
 if [ -e ./tad ]; then
@@ -389,64 +381,4 @@ if [ "x$BOX_TYPE" == "xTCCBR" ]; then
         /rdklogger/update_journal_log.sh &
 fi
 
-# Setting maintenance window default values for BWG devices
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ] ; then
-  rebootReason=`syscfg get X_RDKCENTRAL-COM_LastRebootReason`
-  if [ "$rebootReason" = "factory-reset" ]; then
-  dmcli eRT setv Device.DeviceInfo.X_RDKCENTRAL-COM_MaintenanceWindow.FirmwareUpgradeStartTime string "0"
-  dmcli eRT setv Device.DeviceInfo.X_RDKCENTRAL-COM_MaintenanceWindow.FirmwareUpgradeEndTime string "10800"
-  fi
-fi
-
-
 rm -rf /tmp/.dropbear
-
-
-#Setting bridge mode value during flip from Native to RDKB
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ] ; then
-    Old_Path=$(pwd)
-    tar -tf /nvram/nativeConfigData.tar | grep native_bridge
-    if [ $? -ne 0 ]; then
-        mkdir /tmp/bck_bridge
-        tar xvf /nvram/nativeConfigData.tar -C /tmp/bck_bridge
-        bridgemode=`grep ^bridge_mode /tmp/bck_bridge/syscfg.db  | awk -F = '{print $2}'`
-        eroutermode=`grep last_erouter_mode /tmp/bck_bridge/syscfg.db  | awk -F = '{print $2}'`
-        if [ "$bridgemode" == 2 ] && [  "$eroutermode" == 0 ]; then
-		   echo "Setting Basic bridge mode after flip"
-           dmcli eRT setv Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode string full-bridge-static
-        else
-           if [ "$bridgemode" == 2 ] && [ "$eroutermode" == 3 ]; then
-		      echo "Setting Advanced bridge mode after flip"
-              dmcli eRT setv Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode string bridge-static
-           fi
-        fi
-	#Enabling HTTP if it is enabled in Native
-	HTTP_Enable=`grep mgmt_wan_httpaccess= /tmp/bck_bridge/syscfg.db  | awk -F = '{print $2}'`
-	if [ "$HTTP_Enable" == 1 ]; then
-	   echo "Enabling HTTP support if it is enabled in Native"
-	   dmcli eRT setv Device.UserInterface.X_CISCO_COM_RemoteAccess.HttpEnable bool true
-	fi
-        cd /tmp/bck_bridge
-        touch /nvram/native_bridge
-        tar cvf nativeConfigData.tar bbhm_cur_cfg.xml syscfg.db dnsmasq.leases /nvram/native_bridge /nvram/native_dns
-        cp nativeConfigData.tar /nvram/nativeConfigData.tar
-    fi
-    cd $Old_Path
-    rm -rf /tmp/bck_bridge
-fi
-
-
-#Check ARM and ATOM are in Time Sync
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ]; then
-ATOM_DATE=$(rpcclient 169.254.101.2 date | cut -d "*" -f 2  | cut -d ":" -f 1)
-echo_t "TIMESYNC: ATOM Date and Time $ATOM_DATE"
-ARM_DATE=$(rpcclient 169.254.101.1 date | cut -d "*" -f 2  | cut -d ":" -f 1)
-echo_t "TIMESYNC: ARM Date and Time $ARM_DATE"
-
-if [ "$ARM_DATE" != "$ATOM_DATE" ]; then
-        echo_t "TIMESYNC: ARM and ATOM not in time sync"
-else
-        echo_t "TIMESYNC: ARM and ATOM are in time sync"
-fi
-fi
-
