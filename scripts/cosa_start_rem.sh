@@ -35,10 +35,6 @@ if [ -f /etc/mount-utils/getConfigFile.sh ];then
    . /etc/mount-utils/getConfigFile.sh
 fi
 
-if [ -f $RDK_PATH/sub_utils.sh ]; then
-   . $RDK_PATH/sub_utils.sh
-fi
-
 export LD_LIBRARY_PATH=$PWD:.:$PWD/../../lib:$PWD/../../.:/lib:/usr/lib:$LD_LIBRARY_PATH
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
 
@@ -78,16 +74,6 @@ else
 
 	touch  /tmp/cosa_start_rem_triggered
 	echo_t "Triggered cosa_start_rem script and created tmp/cosa_start_rem_triggered file"
-fi
-
-if [ -f "/etc/AKER_ENABLE" ]; then
-    MAC_ADDR=`echo $(getMacAddressWithoutColon)`
-    echo "/usr/bin/aker -p $PARODUS_URL -c $AKER_URL -w parcon -d /nvram/pcs.bin -f /nvram/pcs.bin.md5 -i mac:$MAC_ADDR" > /tmp/aker_cmd.cmd
-    aker_cmd=`cat /tmp/aker_cmd.cmd`
-    $aker_cmd &
-    echo_t "aker process should have been started"
-else
-    echo_t "aker NOT enabled"
 fi
 
 if [ "x$ENABLE_SNMPv3" == "xtrue" ]; then
