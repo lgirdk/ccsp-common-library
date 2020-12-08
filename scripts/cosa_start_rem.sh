@@ -390,19 +390,6 @@ if [ -f /lib/rdk/shortsDownload.sh ]; then
    /bin/sh /lib/rdk/shortsDownload.sh &
 fi
 
-if [ "$MODEL_NUM" = "DPC3939B" ] || [ "$MODEL_NUM" = "DPC3941B" ] ; then
-   echo "BWG does not support Advanced security"
-else
-if [ "$DEVICE_MODEL" = "TCHXB3" ]; then
-    /usr/sbin/cujo_download.sh &
-elif [ -e ./advsec ]; then
-    cd advsec
-    echo_t "$BINPATH/CcspAdvSecuritySsp -subsys $Subsys &"
-    $BINPATH/CcspAdvSecuritySsp -subsys $Subsys &
-    cd ..
-fi
-fi
-
 #TCCBR-3882: Initializing log_journal.service from here until all dependent services are implemented
 if [ "x$BOX_TYPE" == "xTCCBR" ]; then
         /rdklogger/update_journal_log.sh &
