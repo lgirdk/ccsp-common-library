@@ -185,9 +185,7 @@ fi
         #((sh /etc/email_notification_monitor.sh 12 &) &)
         #cd ..
 #fi
-echo_t "Enabling ssh by default"
-syscfg set mgmt_wan_sshaccess 1
-syscfg commit 
+
 echo_t "PWD is `pwd`"
 
 # Enable XCONF Conf config fetch
