@@ -96,15 +96,6 @@ if [ "x$ENABLE_SNMPv3" == "xtrue" ]; then
     fi
 fi
 
-
-isCloudCapable=1
-isCloudCapable=`syscfg get cloud_capable_flag`
-if [ $isCloudCapable -eq 0 ]
-then
-	syscfg set cloud_capable_flag 1
-	syscfg commit
-fi
-
 if [ -f /tmp/cp_subsys_ert ]; then
         Subsys="eRT."
 elif [ -e /tmp/cp_subsys_emg ]; then
