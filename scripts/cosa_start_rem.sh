@@ -189,9 +189,6 @@ if [ -f /lib/rdk/start-upnp-service ]; then
     /lib/rdk/start-upnp-service start &
 fi
 
-echo_t "Enabling ssh by default"
-syscfg set mgmt_wan_sshaccess 1
-syscfg commit 
 echo_t "PWD is `pwd`"
 
 
