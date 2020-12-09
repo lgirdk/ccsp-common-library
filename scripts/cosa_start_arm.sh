@@ -39,6 +39,8 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
+print_uptime "cosa_service_start"
+
 ulimit -c unlimited
 if [ "$BUILD_TYPE" != "prod" ]; then
       echo /tmp/%t_core.prog_%e.signal_%s > /proc/sys/kernel/core_pattern
