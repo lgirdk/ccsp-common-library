@@ -39,6 +39,8 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
+print_uptime "cosa_service_start"
+
 if [ -f /etc/mount-utils/getConfigFile.sh ];then
    . /etc/mount-utils/getConfigFile.sh
 fi
