@@ -39,6 +39,8 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
+print_uptime "cosa_service_start"
+
 #upstreamed cosa_start_wifi_telemetry.patch as part of RDKB-41493
 if [ "$MODEL_NUM" = "CGA4131COM" ]; then
 	CRONPATH="/var/spool/cron/crontabs/"
