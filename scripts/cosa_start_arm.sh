@@ -95,12 +95,6 @@ else
     echo "bbhm patch is not required for other platforms"
 fi
 
-#Update bbhm values during flip for DPC3939B/DPC3941B platforms
-if [ $MODEL_NUM == "DPC3939B" ] || [ $MODEL_NUM == "DPC3941B" ]; then
-    echo "Updating secure xfinity client limit during flip"
-    /usr/ccsp/psm/bbhm_flip.sh -f /tmp/bbhm_cur_cfg.xml
-fi
-
 # Start coredump
 if [ -f "$PWD/core_compr" ]; then
 	if ! [ -e "/var/core" ]; then
@@ -236,10 +230,4 @@ then
     echo "Found TDK-B launcher script!!!"
     echo "Invoking TDK-B launcher script!!!"
     sh /usr/sbin/tdkb_launcher.sh &
-fi
-
-#running dibbler init script 
-if [ $MODEL_NUM == "DPC3941B" ] || [ $MODEL_NUM == "DPC3939B" ] || [ "$MODEL_NUM" = "CGA4131COM" ] || [ "$MODEL_NUM" = "CGA4332COM" ]; then
-echo "Coping server-notify.sh into /var/lib/dibbler"
-sh /lib/rdk/dibbler-server-init.sh
 fi
