@@ -194,6 +194,7 @@ AnscDetoStop
 
     AnscWaitEvent(&pMyObject->RecvEvent, ANSC_DETO_TASK_CLEANUP_TIME);
     AnscWaitEvent(&pMyObject->SendEvent, ANSC_DETO_TASK_CLEANUP_TIME);
+    AnscWaitEvent(&pMyObject->NewSocketEvent, ANSC_DETO_TASK_CLEANUP_TIME);
 
     pMyObject->Reset((ANSC_HANDLE)pMyObject);
 
