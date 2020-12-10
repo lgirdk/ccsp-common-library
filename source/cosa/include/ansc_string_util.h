@@ -89,8 +89,6 @@
 #define  AnscString2Double                          _ansc_atof
 #define  AnscInt2String                             _ansc_ultoa
 
-#define  AnscStrEqualNoCase(s1, s2)                 AnscEqualString1(s1, s2, FALSE)
-
 
 /*
  *  AnscStrGetCharNum counts the specified character in a string
