@@ -104,18 +104,7 @@
             !((bCase)? (strncmp(s1,s2,len)):(strncasecmp(s1, s2, len)))     \
          )
 
-__static_inline  void
-UserCopyString(char*  destination, char*  source)
-{
-	if ( !source )
-    {
-		destination[0] = 0;
-    }
-	else
-    {
-        strcpy(destination, source);
-    }
-}
+#define  UserCopyString                             strcpy
 
 #define  UserCharInString(s, c)                     (BOOLEAN)(!(!(strchr(s, c))))
 
