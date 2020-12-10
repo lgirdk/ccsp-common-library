@@ -119,17 +119,40 @@ static inline BOOL UserEqualString2 (char *s1, char *s2, ULONG len, BOOL bCaseSe
     return (strncasecmp (s1, s2, len) == 0) ? TRUE : FALSE;
 }
 
-__static_inline  void
-UserCopyString(char*  destination, char*  source)
+static inline void UserCopyString (char *d, const char *s)
 {
-	if ( !source )
-    {
-		destination[0] = 0;
-    }
-	else
-    {
-        strcpy(destination, source);
-    }
+#if 1
+
+    /*
+       Simple passthrough to strcpy (if either source or destination are NULL
+       pointers then register dump will show a crash inside strcpy()).
+    */
+    strcpy (d,s);
+
+#elif 1
+
+    /*
+       If either source or destination are NULL pointers then trigger a crash
+       here in the inline wrapper function (rather than within strcpy()) so
+       that the PC in the register dump points directly at the buggy function.
+    */
+    char t = *s;
+    *d = t;
+    if (t)
+        strcpy (++d,++s);
+
+#else
+
+    /*
+       Hide NULL pointer bugs. Don't use this version unless your code crashes
+       and you've given up hope of fixing the real issue...
+    */
+    if (!s)
+        *d = 0;
+    else
+        strcpy (d,s);
+
+#endif
 }
 
 #define  UserCharInString(s, c)                     (BOOLEAN)(!(!(strchr(s, c))))
