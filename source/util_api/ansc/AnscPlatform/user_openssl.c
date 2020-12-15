@@ -226,7 +226,13 @@ int openssl_init (int who_calls)
     return 0;
   }
 
-  SSL_CTX_set_options(ssl_ctx,SSL_OP_NO_SSLv2);
+  /*
+     SSL_OP_NO_SSLv2 is set by default for later versions of openssl 1.0.2 (and
+     all versions of 1.1.x). Add SSL_OP_NO_SSLv3 explicitly. Eventually
+     SSL_OP_NO_TLSv1 and SSL_OP_NO_TLSv1_1 should probably be set too (ie force
+     TLSv1_2) ?
+  */
+  SSL_CTX_set_options(ssl_ctx, (SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3));
 
   if (who_calls == SSL_CLIENT_CALLS)
   {
