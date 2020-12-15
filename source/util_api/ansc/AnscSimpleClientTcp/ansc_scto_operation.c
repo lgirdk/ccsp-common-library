@@ -75,6 +75,8 @@
 
 #include "ansc_scto_global.h"
 
+#define CWMP_DEF_INTERFACE "erouter0"
+
 /**********************************************************************
 
     caller:     owner of this object
@@ -172,6 +174,41 @@ AnscSctoEngage
     if ( pMyObject->Mode & ANSC_SCTO_MODE_XSOCKET )
     {
         xskt_hints.ai_family   = AF_UNSPEC;
+
+        /* Check if the bind request to made to the default CWMP interface */
+
+        if (pMyObject->bSocketBindToDevice && (strncmp((pMyObject->SocketDeviceName), CWMP_DEF_INTERFACE, strlen(CWMP_DEF_INTERFACE)) == 0))
+        {
+            FILE *file;
+            char sysbuf[8];
+
+            /* Check if the modem is operating in an IPv4 only mode */
+
+            sysbuf[0] = 0;
+            file = popen ("syscfg get last_erouter_mode", "r");
+            if (file)
+            {
+                char *pos;
+                pos = fgets (sysbuf, sizeof(sysbuf), file);
+                pclose (file);
+                if (pos)
+                {
+                    if ((pos = strchr (pos, '\n')) != NULL) {
+                        *pos = '\0';
+                    }
+                }
+            }
+
+            CcspTraceInfo(("%s, sysbuf is %s\n",__FUNCTION__, sysbuf));
+
+            if (strcmp(sysbuf, "1") == 0)
+            {
+                CcspTraceInfo(("%s, Router Mode\n",__FUNCTION__));
+
+                xskt_hints.ai_family = AF_INET;
+            }
+        }
+
         xskt_hints.ai_socktype = XSKT_SOCKET_STREAM;
         xskt_hints.ai_flags    = AI_CANONNAME;
 
@@ -358,7 +395,7 @@ AnscSctoEngage
     /*
      * Normally we don't need to know which local network interface we shall bind to, and the
      * underlying operating system usually supports such notation as "any address".
-     * When the socket initiated is a IPv4 socket, it is preferable to bind it to a known
+     * However, When the socket is initiated, it is preferable to bind it to a known
      * binding interface
      */
     if(IPv4flag == 1)
@@ -452,10 +489,9 @@ AnscSctoEngage
                 }
             }
         // fprintf(stderr, "<RT AnscSKT> Binding socket to Device '%s'.\n", pMyObject->SocketDeviceName); 
-
+            CcspTraceDebug(("%s: %d <RT AnscSKT> Binding socket to Device '%s'.\n",__FUNCTION__, __LINE__, pMyObject->SocketDeviceName));
             if ( pMyObject->HostAddress.Value == 0 )
             {
-                CcspTraceInfo(("%s: %d -----Ajay------ Bind to Any Address\n"));
                 ansc_client_addr.sin_addr.s_addr = ANSC_SOCKET_ANY_ADDRESS;
             }
             else
@@ -498,7 +534,29 @@ AnscSctoEngage
             }
         }
     }
+    else
+    {
 
+        CcspTraceDebug(("%s: %d <RT AnscSKT> Binding socket to Device '%s'.\n",__FUNCTION__, __LINE__, pMyObject->SocketDeviceName));
+        if (pMyObject->bSocketBindToDevice && *(pMyObject->SocketDeviceName))
+            {
+                if (_xskt_setsocketopt
+                        (
+                             pMyObject->Socket,
+                             ANSC_SOCKET_SOL_SOCKET,
+                             ANSC_SOCKET_SO_BINDTODEVICE,
+                             pMyObject->SocketDeviceName,
+                             _ansc_strlen(pMyObject->SocketDeviceName) + 1
+                        )
+                    < 0)
+                {
+                    perror("setsockopt-SOL_SOCKET-SO_BINDTODEVICE");
+                    returnStatus = ANSC_STATUS_FAILURE;
+                    goto EXIT2;
+                }
+            }
+
+    }
     /*
      * As a Tcp client application, we now try to connect the network server, whose address is
      * specified by the "peer address" and "peer port" fields.
@@ -534,6 +592,7 @@ AnscSctoEngage
 #endif
         {
             AnscTrace("!!!!!!!!!! _xskt_connect error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno);
+            CcspTraceDebug(("AnscSctoEngage !!!!!!!!!! _xskt_connect error: socket=%d, error=%d !!!!!!!!!!\n", (XSKT_SOCKET)pMyObject->Socket, errno));
             {
                 int j;                 
                 char s[256];
@@ -550,6 +609,11 @@ AnscSctoEngage
                 AnscTrace("!!!!!!!!!! _xskt_connect error: server_addr=%s\n", s);
             }
             perror("_xskt_connect error");
+            CcspTraceDebug
+            ((
+                "AnscSctoEngage -- failed to connect to the socket, error code is %d!!!\n",
+                (pMyObject->Mode & ANSC_SCTO_MODE_XSOCKET) ? _xskt_get_last_error() : _ansc_get_last_error()
+            ));
 
             s_error = _xskt_get_last_error();
 
