@@ -161,35 +161,17 @@ USER_FILE_PROPERTY,  *PUSER_FILE_PROPERTY;
 #define  user_write_gzip_file                            gzwrite
 #define  user_seek_gzip_file                             gzseek
 
-extern inline int
-user_rename_file(char* old_file_name, char* new_file_name);
+extern int user_rename_file(char* old_file_name, char* new_file_name);
+extern int user_create_directory(char* dir_name);
+extern int user_get_file_stat(char* file_name, void* h_file_property);
+extern int user_move_file(char* srcFile, char* dstFile);
+extern int user_copy_directory(char* srcDir, char* dstDir);
+extern int user_delete_directory(char* dir);
+extern int user_delete_file(char *filename);
+extern int user_get_file_size(PVOID h);
+extern int user_copy_file(char *src, char *dst, int fail_if_exists);
 
-extern inline int
-user_create_directory(char* dir_name);
-
-extern inline  int
-user_get_file_stat(char* file_name, void* h_file_property);
-
-extern inline int
-user_move_file(char* srcFile, char* dstFile);
-
-extern inline int
-user_copy_directory(char* srcDir, char* dstDir);
-
-extern inline int
-user_delete_directory(char* dir);
-
-extern inline int
-user_delete_file(char *filename);
-
-extern inline int
-user_get_file_size(PVOID h);
-
-int
-user_copy_file(char *src, char *dst, int fail_if_exists);
-
-extern inline  int
-user_find_first_file
+extern int user_find_first_file
     (
         char*                       dir_name,
         char*                       tar_file_name,
@@ -198,20 +180,16 @@ user_find_first_file
         char*                       first_file_name
     );
 
-extern inline  int
-user_find_next_file
+extern int user_find_next_file
     (
         void*                       h_find_context,
         char*                       pb_directory,
         char*                       next_file_name
     );
 
-extern inline  void
-user_find_close
+extern void user_find_close
     (
         void*                      h_find_context
     );
 
 #endif
-
-

@@ -187,10 +187,7 @@ make_command
 }
 
 
-static
-inline
-int
-exec_command
+static int exec_command
     (
         int                         arg_count,
         COMMOND_ARG                 args[]
@@ -214,8 +211,7 @@ exec_command
 }
 
 
-inline int
-user_rename_file
+int user_rename_file
     (
         char*                       old_file_name,
         char*                       new_file_name
@@ -224,8 +220,7 @@ user_rename_file
     return  !rename(old_file_name, new_file_name); /* changed since 0 is success */
 }
 
-inline int
-user_create_directory(char* dir_name)
+int user_create_directory(char* dir_name)
 {
     COMMOND_ARG                     args[2] = {{"mkdir", 0}, {NULL, 1}};
 
@@ -234,8 +229,7 @@ user_create_directory(char* dir_name)
     return exec_command(2, args);
 }
 
-inline  int
-user_get_file_stat
+int user_get_file_stat
     (
         char*                       file_name,
         void*                       h_file_property
@@ -305,9 +299,7 @@ user_get_file_stat
     return  (!ret);  /* In WindowsNT, it is return ret == 0 */
 }
 
-
-inline  int
-user_move_file
+int user_move_file
     (
         char*                       srcFile,
         char*                       dstFile
@@ -322,9 +314,7 @@ user_move_file
     return exec_command(3, args);
 }
 
-
-inline  int
-user_copy_directory
+int user_copy_directory
     (
         char*                       srcDir,
         char*                       dstDir
@@ -338,9 +328,7 @@ user_copy_directory
     return exec_command(4, args);
 }
 
-
-inline  int
-user_delete_directory
+int user_delete_directory
     (
         char*                       dir
     )
@@ -352,8 +340,7 @@ user_delete_directory
     return exec_command(3, args);
 }
 
-inline int
-user_delete_file(char *filename)
+int user_delete_file (char *filename)
 {
     if ( ! unlink(filename) )
     {
@@ -363,8 +350,7 @@ user_delete_file(char *filename)
 	return 0;
 }
 
-inline int
-user_get_file_size(PVOID h)
+int user_get_file_size (PVOID h)
 {
 	int 							length = 0;
 	length = lseek((int)h, 0, SEEK_END);
@@ -375,8 +361,7 @@ user_get_file_size(PVOID h)
 /*
  * Note: return 1 if success, 0 if failure.
  */
-int
-user_copy_file(char *src, char *dst, int fail_if_exists)
+int user_copy_file (char *src, char *dst, int fail_if_exists)
 {
     int src_fd, dst_fd;
     unsigned char buf[1024];
@@ -427,8 +412,7 @@ fail:
     return 0;
 }
 
-int
-check_legal_filename_char
+static int check_legal_filename_char
     (
         char                         ch
     )
@@ -446,8 +430,7 @@ check_legal_filename_char
  *
  *-------------------------------------------------------------------------------------*/
 
-int
-match_wildcard_file_name
+static int match_wildcard_file_name
     (
         char*                  pattern,
         char*                  name,
@@ -534,8 +517,7 @@ match_wildcard_file_name
  *  return:     Ansc status.
  *
  *-----------------------------------------------------------------------------*/
-int
-user_make_path_name
+static int user_make_path_name
     (
         char *                  dir_name,
         char *                  file_name,
@@ -582,9 +564,7 @@ user_make_path_name
     return 1;
 }
 
-
-int
-user_find_first_file
+int user_find_first_file
     (
         char*                       dir_name,
         char*                       tar_file_name,
@@ -668,9 +648,7 @@ EXIT2:
     return  bResult;
 }
 
-
-int
-user_find_next_file
+int user_find_next_file
     (
         void*                       h_find_context,
         char*                       pb_directory,
@@ -734,9 +712,7 @@ EXIT1:
     return  bResult;
 }
 
-
-inline  void
-user_find_close
+void user_find_close
     (
         void*                      h_find_context
     )
