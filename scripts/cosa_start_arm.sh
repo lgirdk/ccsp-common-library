@@ -125,13 +125,7 @@ mkdir -p $LOG_PATH
 
 touch /tmp/cp_subsys_ert
 
-if [ -f /tmp/cp_subsys_ert ]; then
-	Subsys="eRT."
-elif [ -e ./cp_subsys_emg ]; then
-	Subsys="eMG."
-else
-	Subsys=""
-fi
+Subsys="eRT."
 
 # Remove all disable flags
 if [ -e /nvram/disablewecb ]; then
@@ -143,55 +137,36 @@ echo "Elected subsystem is $Subsys"
 
 if [ "$CR_IN_PEER" != "yes" ]
 then
-	if [ "x"$Subsys = "x" ];then
-		$BINPATH/CcspCrSsp
-	else
-		echo "$BINPATH/CcspCrSsp -subsys $Subsys"
-		$BINPATH/CcspCrSsp -subsys $Subsys
-	fi
+	echo "$BINPATH/CcspCrSsp -subsys $Subsys"
+	$BINPATH/CcspCrSsp -subsys $Subsys
 fi
 
-if [ "x"$Subsys = "x" ];then
-	$BINPATH/PsmSsp
-else
-    echo "$BINPATH/PsmSsp -subsys $Subsys"
-	$BINPATH/PsmSsp -subsys $Subsys
-fi
+echo "$BINPATH/PsmSsp -subsys $Subsys"
+$BINPATH/PsmSsp -subsys $Subsys
 
 sleep 5
 
-if [ -e ./notify-comp ]; then
-        cd notify-comp
-
-        if [ "x"$Subsys = "x" ];then
-                $BINPATH/notify_comp
-        else
-                echo "$BINPATH/notify_comp -subsys $Subsys"
-                $BINPATH/notify_comp -subsys $Subsys
-        fi
-        cd ..
+if [ -e ./notify-comp ]
+then
+	cd notify-comp
+	echo "$BINPATH/notify_comp -subsys $Subsys"
+	$BINPATH/notify_comp -subsys $Subsys
+	cd ..
 fi
 
-if [ -e ./cm ]; then
-        cd cm
-        if [ "x"$Subsys = "x" ];then
-        $BINPATH/CcspCMAgentSsp
-        else
-        echo_t "$BINPATH/CcspCMAgentSsp -subsys $Subsys"
-                $BINPATH/CcspCMAgentSsp -subsys $Subsys
-        fi
-        cd ..
+if [ -e ./cm ]
+then
+	cd cm
+	echo_t "$BINPATH/CcspCMAgentSsp -subsys $Subsys"
+	$BINPATH/CcspCMAgentSsp -subsys $Subsys
+	cd ..
 fi
 
-if [ -e ./pam ]; then
+if [ -e ./pam ]
+then
 	cd pam
-
-	if [ "x"$Subsys = "x" ];then
-		$BINPATH/CcspPandMSsp
-	else
-		echo "$BINPATH/CcspPandMSsp -subsys $Subsys"
-		$BINPATH/CcspPandMSsp -subsys $Subsys
-	fi
+	echo "$BINPATH/CcspPandMSsp -subsys $Subsys"
+	$BINPATH/CcspPandMSsp -subsys $Subsys
 	cd ..
 fi
 
