@@ -78,7 +78,65 @@
 
 void Trace_Client_Server_address(char *ptr);
 
+#ifdef _ANSC_IPV6_COMPATIBLE_
 #define CWMP_DEF_INTERFACE "erouter0"
+#define HTTP_STR "http://"
+#define HTTPS_STR "https://"
+#define CRURLVAL "eRT.com.cisco.spvtg.ccsp.tr069pa.Device.ManagementServer.ConnectionRequestURL.Value"
+
+static int getConnectionRequestIpType(char *pStr)
+{
+  char *str1end = NULL;
+  int af_ipv6 = 0;
+  if(pStr && AnscSizeOfString(pStr) > 0 )
+  {
+    char *str1 = strstr(pStr, HTTPS_STR);
+    if(str1)
+    {
+      str1 += strlen(HTTPS_STR);
+    }
+    else
+    {
+      str1 = strstr(pStr, HTTP_STR);
+      if(str1)
+      {
+        str1 += strlen(HTTP_STR);
+      }
+    }
+    if (str1 == NULL)
+    {
+      CcspTraceError(("%s:%d Could not parse URL, str1 == NULL\n",__FUNCTION__,__LINE__));
+      return AF_UNSPEC;
+    }
+
+    if (str1[0] == '[')
+    {
+      str1++;
+      str1end = strchr(str1, ']');
+      af_ipv6 = 1;
+    }
+    else
+    {
+      str1end = strchr(str1, ':');
+    }
+    if (str1end == NULL)
+    {
+      CcspTraceError(("%s Could not parse URL \n",__FUNCTION__));
+      return AF_UNSPEC;
+    }
+    if(af_ipv6)
+    {
+      return AF_INET6;
+    }
+    return AF_INET;
+   }
+   else
+   {
+     CcspTraceError(("%s:%d ManagementServerConnectionRequestURL not set \n",__FUNCTION__,__LINE__));
+     return AF_UNSPEC;
+   }
+}
+#endif
 
 /**********************************************************************
 
@@ -184,16 +242,15 @@ AnscSctoEngage
         if (pMyObject->bSocketBindToDevice && (strncmp((pMyObject->SocketDeviceName), CWMP_DEF_INTERFACE, strlen(CWMP_DEF_INTERFACE)) == 0))
         {
             FILE *file;
-            char sysbuf[8];
-
-            /* Check if the modem is operating in an IPv4 only mode */
-
-            sysbuf[0] = 0;
-            file = popen ("syscfg get last_erouter_mode", "r");
+            char crurl[256];
+            char cmdBuff[256];
+            /* If a device binding is defined, ensure that the type of socket initialised for CWMP is as per the CWMP URL */
+            snprintf(cmdBuff, sizeof(cmdBuff), "psmcli get %s", CRURLVAL);
+            file = popen (cmdBuff, "r");
             if (file)
             {
                 char *pos;
-                pos = fgets (sysbuf, sizeof(sysbuf), file);
+                pos = fgets (crurl, sizeof(crurl), file);
                 pclose (file);
                 if (pos)
                 {
@@ -202,15 +259,12 @@ AnscSctoEngage
                     }
                 }
             }
-
-            CcspTraceInfo(("%s, sysbuf is %s\n",__FUNCTION__, sysbuf));
-
-            if (strcmp(sysbuf, "1") == 0)
+            CcspTraceDebug(("%s, crurl is %s\n",__FUNCTION__, crurl));
+            if (crurl)
             {
-                CcspTraceInfo(("%s, Router Mode\n",__FUNCTION__));
-
-                xskt_hints.ai_family = AF_INET;
+               xskt_hints.ai_family = getConnectionRequestIpType(crurl);
             }
+            CcspTraceDebug(("%s, xskt_hints.ai_family is %d\n",__FUNCTION__, xskt_hints.ai_family));
         }
 
         xskt_hints.ai_socktype = XSKT_SOCKET_STREAM;
