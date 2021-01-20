@@ -522,6 +522,12 @@
     <Param invisible="true">
       <Name>Device.X_CISCO_COM_DeviceControl.DeviceMode</Name>
     </Param>
+    <Param>
+      <Name>Device.WiFi.SSID.{i}.X_LGI-COM_DefaultSSID</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Name>
+    </Param>
     <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Name>
     </Param>
@@ -1723,6 +1729,10 @@
     <Alias>
       <External>Device.X_LGI-COM_DeviceControl.DeviceMode</External>
       <Internal>Device.X_CISCO_COM_DeviceControl.DeviceMode</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.SSID.{i}.X_LGI-COM_DefaultSSID</External>
+      <Internal>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Internal>
     </Alias>
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</External>
