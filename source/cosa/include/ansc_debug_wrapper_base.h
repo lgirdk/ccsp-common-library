@@ -87,27 +87,12 @@
 
   #define ANSC_FORCEINLINE                  static inline __attribute__((always_inline))
 
-#if 0
-  #if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 96)
-    #define ansc_likely(x)                  (x)
-    #define ansc_unlikely(x)                (x)
-  #else
-    #define ansc_likely(x)                  __builtin_expect(!!(x), 1)
-    #define ansc_unlikely(x)                __builtin_expect(!!(x), 0)
-  #endif
-#endif
-
 #elif defined(_MSC_VER)
 
   #define ANSC_FORCEINLINE                  __inline
 
   #pragma warning(disable: 4200)   /* zero-sized array in struct/union */
   #pragma warning(disable: 4201)   /* nameless struct/union */
-
-#if 0
-  #define ansc_likely(x)                    (x)
-  #define ansc_unlikely(x)                  (x)
-#endif
 
 #else 
 
