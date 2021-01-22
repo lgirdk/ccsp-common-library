@@ -88,27 +88,12 @@
 
   #define ANSC_FORCEINLINE                  static inline __attribute__((always_inline))
 
-#if 0
-  #if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 96)
-    #define ansc_likely(x)                  (x)
-    #define ansc_unlikely(x)                (x)
-  #else
-    #define ansc_likely(x)                  __builtin_expect(!!(x), 1)
-    #define ansc_unlikely(x)                __builtin_expect(!!(x), 0)
-  #endif
-#endif
-
 #elif defined(_MSC_VER)
 
   #define ANSC_FORCEINLINE                  __inline
 
   #pragma warning(disable: 4200)   /* zero-sized array in struct/union */
   #pragma warning(disable: 4201)   /* nameless struct/union */
-
-#if 0
-  #define ansc_likely(x)                    (x)
-  #define ansc_unlikely(x)                  (x)
-#endif
 
 #else 
 
@@ -670,7 +655,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 return (USHORT)*pb + ((USHORT)*(pb + 1) << 8);
             }
@@ -686,7 +671,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 return (ULONG)*pb + ((ULONG)*(PUSHORT)(pb+1) << 8) + ((ULONG)*(pb+3) << 24);
             }
@@ -705,7 +690,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 *pb             = (UCHAR)u16;
                 *(pb+1)         = (UCHAR)(u16 >> 8);
@@ -722,7 +707,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
         
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 *pb             = (UCHAR )u32;   
                 *(PUSHORT)(pb+1)= (USHORT)(u32 >> 8);
@@ -748,7 +733,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 return ((USHORT)*pb << 8) + (USHORT)*(pb+1);
             }
@@ -764,7 +749,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 return ((ULONG)*(pb) << 24) + ((ULONG)*(PUSHORT)(pb+1) << 8) + (ULONG)*(pb+3);
             }
@@ -783,7 +768,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
 
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 *pb             = (UCHAR)(u16 >> 8);
                 *(pb+1)         = (UCHAR)u16;
@@ -800,7 +785,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         {
             PUCHAR          pb = (PUCHAR)addr;
         
-            if( ansc_unlikely((ULONG)pb & 1) )
+            if( ((ULONG)pb & 1) )
             {
                 *pb             = (UCHAR )(u32 >> 24);   
                 *(PUSHORT)(pb+1)= (USHORT)(u32 >> 8);
