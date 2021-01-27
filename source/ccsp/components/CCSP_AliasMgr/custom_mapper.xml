@@ -361,6 +361,18 @@
       <Name>Device.X_CISCO_COM_CableModem.DocsisLogNumberOfEntries</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Time</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventID</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventLevel</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Description</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_CISCO_COM_CableModem.DownstreamChannelNumberOfEntries</Name>
     </Param>
     <Param invisible="true">
@@ -530,6 +542,9 @@
     </Param>
     <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Name>
     </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
@@ -880,6 +895,18 @@
       <Name>Device.X_LGI-COM_CableModem.DocsisLogNumberOfEntries</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_CableModem.DocsisLog.{i}.Time</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_CableModem.DocsisLog.{i}.EventID</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_CableModem.DocsisLog.{i}.EventLevel</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_CableModem.DocsisLog.{i}.Description</Name>
+    </Param>
+    <Param>
       <Name>Device.X_LGI-COM_CableModem.DownstreamChannelNumberOfEntries</Name>
     </Param>
     <Param>
@@ -1043,6 +1070,9 @@
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_ShadowPassphrase</Name>
     </Param>
 </ParamList>
 <AliasList>
@@ -1511,6 +1541,23 @@
       <Internal>Device.X_CISCO_COM_CableModem.DocsisLogNumberOfEntries</Internal>
     </Alias>
     <Alias>
+      <External>Device.X_LGI-COM_CableModem.DocsisLog.{i}.Time</External>
+      <Internal>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Time</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_CableModem.DocsisLog.{i}.EventID</External>
+      <Internal>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventID</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_CableModem.DocsisLog.{i}.EventLevel</External>
+      <Internal>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.EventLevel</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_CableModem.DocsisLog.{i}.Description</External>
+      <Internal>Device.X_CISCO_COM_CableModem.DocsisLog.{i}.Description</Internal>
+    </Alias>
+
+    <Alias>
       <External>Device.X_LGI-COM_CableModem.DownstreamChannelNumberOfEntries</External>
       <Internal>Device.X_CISCO_COM_CableModem.DownstreamChannelNumberOfEntries</Internal>
     </Alias>
@@ -1737,6 +1784,10 @@
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</External>
       <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_ShadowPassphrase</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
