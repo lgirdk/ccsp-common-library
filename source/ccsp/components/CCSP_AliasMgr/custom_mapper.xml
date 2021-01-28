@@ -1774,10 +1774,6 @@
       <Internal>Device.DeviceInfo.X_COMCAST-COM_WAN_IPv6</Internal>
     </Alias>
     <Alias>
-      <External>Device.X_LGI-COM_DeviceControl.DeviceMode</External>
-      <Internal>Device.X_CISCO_COM_DeviceControl.DeviceMode</Internal>
-    </Alias>
-    <Alias>
       <External>Device.WiFi.SSID.{i}.X_LGI-COM_DefaultSSID</External>
       <Internal>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Internal>
     </Alias>
