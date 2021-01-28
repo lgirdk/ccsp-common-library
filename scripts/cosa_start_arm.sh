@@ -75,6 +75,11 @@ export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
 export LOG4C_RCPATH=/etc
 export BOX_TYPE ATOM_ARPING_IP
 
+if [ -f /usr/ccsp/psm/lg_bbhm_patch.sh ]
+then
+	/usr/ccsp/psm/lg_bbhm_patch.sh /nvram/bbhm_cur_cfg.xml
+fi
+
 cp ccsp_msg.cfg /tmp
 
 # have IP address for dbus config generated
