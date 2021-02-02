@@ -1734,7 +1734,7 @@ ALCertAcquireIDByHandle
         /*
          *  DH  AL_CERT user requires keys in host order
          */
-#if defined(_ANSC_LITTLE_ENDIAN_) && !defined(_COSA_INTEL_XB3_ARM_)
+#if defined(_ANSC_LITTLE_ENDIAN_)
         AnscMemoryFromNToH((char*)inPublicKey->Key.RSAPublicKey.Modulus.Data,                  inPublicKey->Key.RSAPublicKey.Modulus.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.RSAPublicKey.PublicExponent.Data.ucData,    inPublicKey->Key.RSAPublicKey.PublicExponent.Length);
 
@@ -1773,7 +1773,7 @@ ALCertAcquireIDByHandle
         /*
          *  DH  AL_CERT user requires keys in host order
          */
-#if defined(_ANSC_LITTLE_ENDIAN_) && !defined(_COSA_INTEL_XB3_ARM_)
+#if defined(_ANSC_LITTLE_ENDIAN_)
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamP.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamP.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamQ.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamQ.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamG.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamG.Length);
