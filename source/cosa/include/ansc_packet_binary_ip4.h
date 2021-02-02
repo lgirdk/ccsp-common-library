@@ -115,12 +115,20 @@
 ***********************************************************/
 
 /*
+ * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
+ * the expected way...
+ */
+#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
+#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
+#endif
+
+/*
  * There are three types of IP addresses: unicast (destined for a single host), broadcast (destined
  * for all hosts on a given network), and multicast (destined for a set of hosts that belong to a
  * multicast group). Note: all static IP address value appeared in macros and functions MUST be
  * defined in the network order.
  */
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
 
     #define  IPV4_LOOPBACK_ADDRESS                  0x0100007F      /* 127.0.0.1       */
     #define  IPV4_DEFAULT_BROADCAST_ADDRESS         0xFFFFFFFF      /* 255.255.255.255 */

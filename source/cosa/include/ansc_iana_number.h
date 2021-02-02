@@ -553,12 +553,20 @@
 ***********************************************************/
 
 /*
+ * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
+ * the expected way...
+ */
+#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
+#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
+#endif
+
+/*
  * Host Extensions for IP Multicasting [RFC1112] specifies the extensions required of a host
  * implementation of the Internet Protocol (IP) to support multicasting. Current addresses are
  * listed below. Note: all static IP address value appeared in macros and functions MUST be
  * defined in the network order.
  */
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
 
     #define  IPV4_MCAST_ADDR_BASE                   0x000000E0      /* 224.0.0.0  */
     #define  IPV4_MCAST_ADDR_ALL_SYSTEMS            0x010000E0      /* 224.0.0.1  */

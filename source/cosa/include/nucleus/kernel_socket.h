@@ -107,7 +107,7 @@ typedef  struct sockaddr_in_1
 
 typedef  struct sockaddr_in_1		ansc_socket_add_in,		*pansc_socket_add_in;
 
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
 
 ULONG
 _ansc_ntohl
