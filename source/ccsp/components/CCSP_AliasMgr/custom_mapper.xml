@@ -1990,7 +1990,7 @@
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.Interface.{i}.LowerLayers</External>
-      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.LocalInterfaces</Internal>
+      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.AssociatedBridgesWiFiPort</Internal>
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.Interface.{i}.X_LGI-COM_VLANID</External>
