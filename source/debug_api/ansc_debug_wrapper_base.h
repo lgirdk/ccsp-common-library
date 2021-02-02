@@ -601,10 +601,18 @@ ANSC_UINT64,  *PANSC_UINT64;
 ***********************************************************/
 
 /*
+ * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
+ * the expected way...
+ */
+#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
+#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
+#endif
+
+/*
  * These macros and inline functions shield the rest of the container from dealing with the byte-order
  * issue caused by different endian types supported by different cpu.
  */
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
 
     #define  AnscMemoryFromNToH                     AnscSwapMemory
     #define  AnscUlongFromNToH                      AnscSwapUlong
@@ -644,7 +652,7 @@ ANSC_UINT64,  *PANSC_UINT64;
         #error "Need half-word access support!"
     #endif /* _ANSC_NO_HALFWORD_SUPPORT_ */
 
-    #ifdef  _ANSC_LITTLE_ENDIAN_
+    #if defined(_ANSC_LITTLE_ENDIAN_)
 
         ANSC_FORCEINLINE
         USHORT
@@ -804,23 +812,11 @@ ANSC_UINT64,  *PANSC_UINT64;
 
 #else
 
-    #ifdef  _ANSC_LITTLE_ENDIAN_
+    #define  AnscReadUshort(addr)               (*(PUSHORT)(addr))
+    #define  AnscReadUlong(addr)                (*(PULONG )(addr))
 
-        #define  AnscReadUshort(addr)               (*(PUSHORT)(addr))
-        #define  AnscReadUlong(addr)                (*(PULONG )(addr))
-
-        #define  AnscWriteUshort(addr, data)        *(PUSHORT)(addr) = data
-        #define  AnscWriteUlong(addr, data)         *(PULONG )(addr) = data
-
-    #else
-
-        #define  AnscReadUshort(addr)               (*(PUSHORT)(addr))
-        #define  AnscReadUlong(addr)                (*(PULONG )(addr))
-
-        #define  AnscWriteUshort(addr, data)        *(PUSHORT)(addr) = data
-        #define  AnscWriteUlong(addr, data)         *(PULONG )(addr) = data
-
-    #endif
+    #define  AnscWriteUshort(addr, data)        *(PUSHORT)(addr) = data
+    #define  AnscWriteUlong(addr, data)         *(PULONG )(addr) = data
 
 #endif
 

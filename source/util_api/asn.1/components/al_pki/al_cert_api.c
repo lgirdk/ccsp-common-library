@@ -116,6 +116,14 @@
 #include "cert_exported_api.h"
 #include "alcert_internal.h"
 
+/*
+ * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
+ * the expected way...
+ */
+#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
+#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
+#endif
+
 /**********************************************************************
 
     AL_CERT API FUNCTION
@@ -1742,7 +1750,7 @@ ALCertAcquireIDByHandle
         /*
          *  DH  AL_CERT user requires keys in host order
          */
-#if defined(_ANSC_LITTLE_ENDIAN_) && !defined(_COSA_INTEL_XB3_ARM_)
+#if defined(_ANSC_LITTLE_ENDIAN_)
         AnscMemoryFromNToH((char*)inPublicKey->Key.RSAPublicKey.Modulus.Data,                  inPublicKey->Key.RSAPublicKey.Modulus.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.RSAPublicKey.PublicExponent.Data.ucData,    inPublicKey->Key.RSAPublicKey.PublicExponent.Length);
 
@@ -1781,7 +1789,7 @@ ALCertAcquireIDByHandle
         /*
          *  DH  AL_CERT user requires keys in host order
          */
-#if defined(_ANSC_LITTLE_ENDIAN_) && !defined(_COSA_INTEL_XB3_ARM_)
+#if defined(_ANSC_LITTLE_ENDIAN_)
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamP.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamP.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamQ.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamQ.Length);
         AnscMemoryFromNToH((char*)inPublicKey->Key.DSAPublicKey.ParamG.Data.ucData,    inPublicKey->Key.DSAPublicKey.ParamG.Length);
