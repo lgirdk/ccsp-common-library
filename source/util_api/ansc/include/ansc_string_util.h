@@ -79,6 +79,14 @@
 
 #include "ansc_memory_complement.h"
 
+/*
+ * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
+ * the expected way...
+ */
+#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
+#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
+#endif
+
 #define  ANSC_STRING_FORMAT                         _ansc_sprintf
 #define  AnscStrStr                                 _ansc_strstr
 #define  AnscStrChr                                 _ansc_strchr
@@ -273,7 +281,7 @@ AnscMbstoWcs
 {
     int                             nRet    = -1;
 
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
     *pbLittleEndian     = TRUE;
 #else
     *pbLittleEndian     = FALSE;
@@ -309,7 +317,7 @@ AnscMbstoWcs
 {
     int                             nRet    = -1;
 
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
     *pbLittleEndian     = TRUE;
 #else
     *pbLittleEndian     = FALSE;
@@ -334,7 +342,7 @@ AnscMbstoWcs
 {
     int                             nRet    = -1;
 
-#ifdef   _ANSC_LITTLE_ENDIAN_
+#if defined(_ANSC_LITTLE_ENDIAN_)
     *pbLittleEndian     = TRUE;
 #else
     *pbLittleEndian     = FALSE;
