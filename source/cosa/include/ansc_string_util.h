@@ -138,21 +138,6 @@ AnscDupString2
         ULONG                       ulNumPadding
     );
 
- 
-PUCHAR
-AnscDupIp4Addr
-    (
-        PUCHAR                      pStr
-    );
-
-
-PUCHAR
-AnscDupMacAddr
-    (
-        PUCHAR                      pStr
-    );
-
- 
 void
 AnscStr2Ip4Addr
     (
