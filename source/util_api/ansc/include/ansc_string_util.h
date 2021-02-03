@@ -130,14 +130,6 @@ AnscDupString
     );
 
 
-void
-AnscStr2Ip4Addr
-    (
-        PUCHAR                      pStr,
-        PUCHAR                      pIp4Addr
-    );
-
-
 PVOID
 AnscMemUtilRealloc
     (
