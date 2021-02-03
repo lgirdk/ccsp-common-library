@@ -298,49 +298,6 @@ AnscDupString
 
     prototype:
 
-        void
-        AnscStr2Ip4Addr
-            (
-                PUCHAR                      pStr,
-                PUCHAR                      pIp4Addr
-            )
-
-    description:
-
-        This function is called to convert a string to IP address.
-
-    argument:   PUCHAR                      pStr
-                The string to be processed.
-
-                PUCHAR                      pIp4Addr
-                The buffer for IP address.
-
-    return:     void.
-
-**********************************************************************/
-
-void
-AnscStr2Ip4Addr
-    (
-        PUCHAR                      pStr,
-        PUCHAR                      pIp4Addr
-    )
-{
-    if (pStr && pIp4Addr)
-    {
-        /* we don't valid the format of string format IP4 address */
-
-        *(PULONG)pIp4Addr   = _ansc_inet_addr((char *)pStr);
-    }
-}
-
-
-/**********************************************************************
-
-    caller:     owner of this object
-
-    prototype:
-
         PVOID
         AnscMemUtilRealloc
             (
