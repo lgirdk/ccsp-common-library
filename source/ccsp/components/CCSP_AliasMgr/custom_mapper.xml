@@ -1353,6 +1353,12 @@
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</Name>
     </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Name>
+    </Param>
 </ParamList>
 <AliasList>
     <Alias>
@@ -1990,7 +1996,7 @@
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.Interface.{i}.LowerLayers</External>
-      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.AssociatedBridgesWiFiPort</Internal>
+      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Interface.{i}.LocalInterfaces</Internal>
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.Interface.{i}.X_LGI-COM_VLANID</External>
@@ -2251,6 +2257,10 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
