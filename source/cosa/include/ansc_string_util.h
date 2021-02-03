@@ -79,7 +79,6 @@
 
 #include "ansc_memory_complement.h"
 
-#define  ANSC_STRING_FORMAT                         _ansc_sprintf
 #define  AnscStrStr                                 _ansc_strstr
 #define  AnscStrChr                                 _ansc_strchr
 #define  AnscStrSpn                                 _ansc_strspn
