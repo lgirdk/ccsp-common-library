@@ -130,15 +130,6 @@ AnscDupString
     );
 
 
-PUCHAR
-AnscDupString2
-    (
-        PUCHAR                      pStr,
-        ULONG                       ulStrLen,
-        ULONG                       ulNumPadding
-    );
-
-
 void
 AnscStr2Ip4Addr
     (
