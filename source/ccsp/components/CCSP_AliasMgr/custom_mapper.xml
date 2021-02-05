@@ -537,6 +537,9 @@
     <Param invisible="true">
       <Name>Device.X_CISCO_COM_DeviceControl.DeviceMode</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.UserInterface.X_CISCO_COM_RemoteAccess.SSHEnable</Name>
+    </Param>
     <Param>
       <Name>Device.WiFi.SSID.{i}.X_LGI-COM_DefaultSSID</Name>
     </Param>
@@ -1213,6 +1216,9 @@
       <Name>Device.X_LGI-COM_DeviceControl.DeviceMode</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_DeviceControl.SSH.Enable</Name>
+    </Param>
+    <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</Name>
     </Param>
     <Param>
@@ -1522,6 +1528,10 @@
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Enable</External>
       <Internal>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_DeviceControl.SSH.Enable</External>
+      <Internal>Device.UserInterface.X_CISCO_COM_RemoteAccess.SSHEnable</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.X_LGI-COM_DMZ.Enable</External>
