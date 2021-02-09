@@ -172,6 +172,9 @@
       <Name>Device.X_LGI-COM_General_Internal.CPE.DataModelVersion</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable</Name>
     </Param>
     <Param invisible="true">
@@ -842,6 +845,9 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.CPE.DataModelVersion</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.UserBridgeModeAllowed</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.CloudUIEnable</Name>
@@ -1572,6 +1578,10 @@
     <Alias>
       <External>Device.X_LGI-COM_General.CPE.DataModelVersion</External>
       <Internal>Device.X_LGI-COM_General_Internal.CPE.DataModelVersion</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.UserBridgeModeAllowed</External>
+      <Internal>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_General.CloudUIEnable</External>
