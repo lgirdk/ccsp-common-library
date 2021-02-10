@@ -562,6 +562,24 @@
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.MACAddress</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.DayOfWeekNumberOfEntries</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.BlockFragIPPkts</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFloodDetect</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.PortScanProtect</Name>
+    </Param>    
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.DayOfWeekNumberOfEntries</Name>
+    </Param>            
+    <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.ScheduleEnable</Name>
     </Param>
     <Param invisible="true">
@@ -609,6 +627,21 @@
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.ScheduleEnable</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.BlockFragIPPkts</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFloodDetect</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.PortScanProtect</Name>
+    </Param>    
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.DayOfWeekNumberOfEntries</Name>
+    </Param>    
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.ServiceNumberOfEntries</Name>
     </Param>
@@ -1198,7 +1231,25 @@
       <Name>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.Device.{i}.MACAddress</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.DayOfWeekNumberOfEntries</Name>
+    </Param>
+    <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.ScheduleEnable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.BlockFragIPPkts</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFloodDetect</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.PortScanProtect</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.DayOfWeekNumberOfEntries</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.ServiceNumberOfEntries</Name>
@@ -1244,6 +1295,21 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.ScheduleEnable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.BlockFragIPPkts</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFloodDetect</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.PortScanProtect</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeekNumberOfEntries</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.ServiceNumberOfEntries</Name>
@@ -2023,8 +2089,32 @@
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.MACAddress</Internal>
     </Alias>
     <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.DayOfWeekNumberOfEntries</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.DayOfWeekNumberOfEntries</Internal>      
+    </Alias>
+    <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.ScheduleEnable</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.ScheduleEnable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.BlockFragIPPkts</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.BlockFragIPPkts</Internal>
+    </Alias>
+        <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.Enable</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFloodDetect</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFloodDetect</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.PortScanProtect</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.PortScanProtect</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.DayOfWeekNumberOfEntries</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.DayOfWeekNumberOfEntries</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.ServiceNumberOfEntries</External>
@@ -2085,6 +2175,26 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.ScheduleEnable</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.ScheduleEnable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.BlockFragIPPkts</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.BlockFragIPPkts</Internal>
+    </Alias>
+        <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.Enable</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFloodDetect</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFloodDetect</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.PortScanProtect</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.PortScanProtect</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeekNumberOfEntries</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.DayOfWeekNumberOfEntries</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.ServiceNumberOfEntries</External>
