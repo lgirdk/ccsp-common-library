@@ -1371,6 +1371,12 @@
     <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Name>
     </Param>
+    <Param>
+      <Name>Device.DynamicDNS.X_LGI-COM_Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.DynamicDNS.X_RDK-COM_Enable</Name>
+    </Param>
 </ParamList>
 <AliasList>
     <Alias>
@@ -2281,6 +2287,10 @@
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</External>
       <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DynamicDNS.X_LGI-COM_Enable</External>
+      <Internal>Device.DynamicDNS.X_RDK-COM_Enable</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
