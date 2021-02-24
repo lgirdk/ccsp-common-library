@@ -282,17 +282,6 @@ AnscSecondToLocalCalendar
 
 }
 
-ANSC_STATUS
-AnscGetWholeTickInMicroSeconds
-    (
-        PANSC_UINT64                pWholeTicks
-    )
-{
-    AnscGetTickInMicroSeconds64(&pWholeTicks->HiPart, &pWholeTicks->LoPart);
-
-    return  ANSC_STATUS_SUCCESS;
-}
-
 
 #ifdef	_ANSC_SIMPLE_TIMEZONE
 

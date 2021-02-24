@@ -448,12 +448,6 @@ AnscSecondToCalendar
         ANSC_HANDLE                 hCalendar
     );
 
-ANSC_STATUS
-AnscGetWholeTickInMicroSeconds
-    (
-        PANSC_UINT64                pWholeTicks
-    );
-
 
 /***********************************************************
            FUNCTIONS IMPLEMENTED IN ANSC_MEMORY.C
