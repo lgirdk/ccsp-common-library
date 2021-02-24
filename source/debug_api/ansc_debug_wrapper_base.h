@@ -558,12 +558,6 @@
  * its value. While some compilers may provide support for a 64-bit integer, we want to define our
  * own here to make it platform-independent.
  */
-#if 0    
-typedef  UCHAR   ANSC_UINT08,  *PANSC_UINT08;
-typedef  USHORT  ANSC_UINT16,  *PANSC_UINT16;
-typedef  ULONG   ANSC_UINT32,  *PANSC_UINT32;
-#endif
-
 typedef  struct
 _ANSC_UINT64
 {
