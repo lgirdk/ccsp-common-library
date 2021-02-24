@@ -1382,14 +1382,6 @@ AnscSecondToLocalCalendar
         ANSC_HANDLE                 hCalendar
     );
 
-#if 0
-ANSC_STATUS
-AnscGetWholeTickInMicroSeconds
-    (
-        PANSC_UINT64                pWholeTicks
-    );
-#endif
-
 /***********************************************************
             FUNCTIONS IMPLEMENTED IN ANSC_TIMER.C
 ***********************************************************/
