@@ -28,15 +28,8 @@ AM_CFLAGS += -D_BBHM_SSE_FILE_IO
 AM_CFLAGS += -DENABLE_SA_KEY
 AM_CFLAGS += -D_ANSC_IPV6_COMPATIBLE_
 AM_CFLAGS += -DBUILD_WEB
-AM_LDFLAGS = -lpthread
-AM_LDFLAGS += -lrt
-AM_LDFLAGS +=
-AM_LDFLAGS +=
-AM_LDFLAGS += -lz
 
-AM_CPPFLAGS = -Wall -Werror
 ACLOCAL_AMFLAGS = -I m4
-hardware_platform = i686-linux-gnu
 
 noinst_LTLIBRARIES = libCcspCommonLibrary_DslhObjController.la
 
