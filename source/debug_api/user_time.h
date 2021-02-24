@@ -125,12 +125,6 @@ UserGetTickInMilliSeconds2();
 
 #define UserGetTickInMilliSecondsAbs UserGetTickInMilliSeconds2
 
-ULONG
-UserGetTickInMicroSeconds();
-VOID
-UserGetTickInMicroSeconds64(
-        ULONG*                      hi_part,
-        ULONG*                      lo_part);
 void
 UserGetNtpTime(time_t*  ltime);
 void
