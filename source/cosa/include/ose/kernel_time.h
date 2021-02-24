@@ -114,31 +114,6 @@ KernelGetTickInMillSeconds
 #define  KernelGetTickInMilliSeconds()              (get_ticks() * 4)
 
 
-/*
-ULONG
-KernelGetTickInMicroSeconds
-    (
-        VOID
-    );
- */
-#define  KernelGetTickInMicroSeconds()              (KernelGetTickInMilliSeconds() * 1000)
-
-
-/*
-void
-KernelGetTickInMicroSeconds64
-    (
-        ULONG*                      hi_part,
-        ULONG*                      lo_part
-    );
- */
-#define  KernelGetTickInMicroSeconds64(hi,lo)                   \
-            {                                                   \
-                *(hi) = 0;                                      \
-                *(lo) = KernelGetTickInMicroSeconds();          \
-            }
-
-
 BOOL
 KernelGetUniversalTime
     (
