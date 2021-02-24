@@ -91,8 +91,6 @@
     #define  AnscGetTickInSecondsAbs                KernelGetTickInSecondsAbs   /* linux specific */
     #define  AnscGetTickInMilliSeconds              KernelGetTickInMilliSeconds
     #define  AnscGetTickInMilliSecondsAbs           KernelGetTickInMilliSecondsAbs
-    #define  AnscGetTickInMicroSeconds              KernelGetTickInMicroSeconds
-    #define  AnscGetTickInMicroSeconds64            KernelGetTickInMicroSeconds64
     #define  AnscSleep                              KernelSleepInMilliSeconds
     #define  AnscGetUtcTime                         KernelGetUtcTime
     #define  AnscSetUtcTime                         KernelSetUtcTime
@@ -132,8 +130,6 @@
     #define  AnscGetTickInSecondsAbs                UserGetTickInSecondsAbs     /* linux specific */
     #define  AnscGetTickInMilliSeconds              UserGetTickInMilliSeconds2
     #define  AnscGetTickInMilliSecondsAbs           UserGetTickInMilliSecondsAbs
-    #define  AnscGetTickInMicroSeconds              UserGetTickInMicroSeconds
-    #define  AnscGetTickInMicroSeconds64            UserGetTickInMicroSeconds64
     #define  AnscSleep                              UserSleepInMilliSeconds
     #define  AnscGetUtcTime                         UserGetUtcTime
     #define  AnscSetUtcTime                         UserSetUtcTime

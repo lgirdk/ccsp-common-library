@@ -136,19 +136,6 @@ KernelGetTickInMilliSeconds
         VOID
     );
 
-ULONG
-KernelGetTickInMicroSeconds
-    (
-        VOID
-    );
-
-void
-KernelGetTickInMicroSeconds64
-    (
-        ULONG*                      hi_part,
-        ULONG*                      lo_part
-    );
-
 void
 KernelGetSystemTime
     (

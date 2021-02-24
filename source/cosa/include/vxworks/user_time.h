@@ -128,19 +128,6 @@ UserGetTickInMilliSeconds
         VOID
     );
 
-ULONG
-UserGetTickInMicroSeconds
-    (
-        VOID
-    );
-
-void
-UserGetTickInMicroSeconds64
-    (
-        ULONG*                      hi_part, 
-        ULONG*                      lo_part
-    );
-
 void
 UserGetSystemTime
     (

@@ -117,32 +117,6 @@ UserGetTickInMilliSeconds
     return  (Ticks / TicksInOneSecond) * 1000 + ((Ticks % TicksInOneSecond) * 1000) / TicksInOneSecond;
 }
 
-ULONG
-UserGetTickInMicroSeconds
-    (
-        VOID
-    )
-{
-    ULONG                       TicksInOneSecond    = sysClkRateGet();
-    ULONG                       Ticks               = tickGet();
-
-    return  (Ticks / TicksInOneSecond) * 1000000 + ((Ticks % TicksInOneSecond) * 1000000) / TicksInOneSecond;
-}
-
-void
-UserGetTickInMicroSeconds64
-    (
-        ULONG*                      hi_part, 
-        ULONG*                      lo_part
-    )
-{
-    ULONG                       TicksInOneSecond    = sysClkRateGet();
-    ULONG                       Ticks               = tickGet();
-
-    *hi_part = 0;
-    *lo_part = (Ticks / TicksInOneSecond) * 1000000 + ((Ticks % TicksInOneSecond) * 1000000) / TicksInOneSecond;
-}
-
 void
 UserGetSystemTime
     (
