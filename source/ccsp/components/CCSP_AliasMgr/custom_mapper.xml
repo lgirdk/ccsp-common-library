@@ -109,6 +109,9 @@
       <Name>Device.NAT.X_CISCO_COM_PortTriggers.TriggerNumberOfEntries</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_PortTriggers.Enable</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.TriggerPortStart</Name>
     </Param>
     <Param invisible="true">
@@ -794,6 +797,9 @@
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_PortTriggers.TriggerNumberOfEntries</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_PortTriggers.Enable</Name>
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.TriggerPortStart</Name>
@@ -1522,6 +1528,10 @@
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.TriggerNumberOfEntries</External>
       <Internal>Device.NAT.X_CISCO_COM_PortTriggers.TriggerNumberOfEntries</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.NAT.X_LGI-COM_PortTriggers.Enable</External>
+      <Internal>Device.NAT.X_CISCO_COM_PortTriggers.Enable</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.TriggerPortStart</External>
