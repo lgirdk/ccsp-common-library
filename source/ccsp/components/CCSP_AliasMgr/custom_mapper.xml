@@ -2322,5 +2322,9 @@
       <External>Device.DynamicDNS.X_LGI-COM_Enable</External>
       <Internal>Device.DynamicDNS.X_RDK-COM_Enable</Internal>
     </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_DeviceControl.DeviceMode</External>
+      <Internal>Device.X_CISCO_COM_DeviceControl.DeviceMode</Internal>
+    </Alias>
 </AliasList>
 </Tr069Mapper>
