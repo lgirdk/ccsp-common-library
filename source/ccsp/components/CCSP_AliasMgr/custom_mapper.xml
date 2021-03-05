@@ -157,6 +157,15 @@
       <Name>Device.X_LGI-COM_General_Internal.CustomerId</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.AvailableLanguages</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.CurrentLanguage</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.DefaultAdminPassword</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_LGI-COM_General_Internal.FirstInstallState</Name>
     </Param>
     <Param invisible="true">
@@ -842,6 +851,15 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.CustomerId</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.AvailableLanguages</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.CurrentLanguage</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.DefaultAdminPassword</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.FirstInstallState</Name>
@@ -1592,6 +1610,18 @@
     <Alias>
       <External>Device.X_LGI-COM_General.CustomerId</External>
       <Internal>Device.X_LGI-COM_General_Internal.CustomerId</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.AvailableLanguages</External>
+      <Internal>Device.X_LGI-COM_General_Internal.AvailableLanguages</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.CurrentLanguage</External>
+      <Internal>Device.X_LGI-COM_General_Internal.CurrentLanguage</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.DefaultAdminPassword</External>
+      <Internal>Device.X_LGI-COM_General_Internal.DefaultAdminPassword</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_General.FirstInstallState</External>
