@@ -563,6 +563,7 @@ _DSLH_TRACEROUTE_INFO
     char                            IfAddrName[DSLH_TRACEROUTE_MAX_STRING_LENGTH_Interface];
     char                            Host      [DSLH_TRACEROUTE_MAX_STRING_LENGTH_Host     ];
     ULONG                           NumberOfTries;
+    ULONG                           BasePort;
     ULONG                           Timeout;
     ULONG                           DataBlockSize;
     ULONG                           DSCP;
