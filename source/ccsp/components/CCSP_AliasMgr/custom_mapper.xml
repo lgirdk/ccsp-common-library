@@ -2356,5 +2356,9 @@
       <External>Device.X_LGI-COM_DeviceControl.DeviceMode</External>
       <Internal>Device.X_CISCO_COM_DeviceControl.DeviceMode</Internal>
     </Alias>
+    <Alias strict="true">
+      <External>Device.X_LGI-COM_Gateway.</External>
+      <Internal>Device.X_LGI-COM_Gateway.</Internal>
+    </Alias>
 </AliasList>
 </Tr069Mapper>
