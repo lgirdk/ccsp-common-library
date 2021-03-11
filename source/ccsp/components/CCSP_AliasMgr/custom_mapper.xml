@@ -1692,10 +1692,6 @@
       <Internal>Device.X_CISCO_COM_CableModem.DOCSISConfigFileName</Internal>
     </Alias>
     <Alias>
-      <External>Device.X_LGI-COM_CableModem.ToDStatus</External>
-      <Internal>Device.X_CISCO_COM_CableModem.ToDStatus</Internal>
-    </Alias>
-    <Alias>
       <External>Device.X_LGI-COM_CableModem.UpstreamServiceFlowParams</External>
       <Internal>Device.X_CISCO_COM_CableModem.UpstreamServiceFlowParams</Internal>
     </Alias>
