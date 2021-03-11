@@ -708,6 +708,15 @@
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_Security.Firewall.L2TPPassthrough</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_Security.Firewall.PPTPPassthrough</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_CISCO_COM_Security.Firewall.IPSecPassthrough</Name>
+    </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
@@ -1400,6 +1409,15 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.L2TPPassthrough</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.PPTPPassthrough</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.IPSecPassthrough</Name>
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</Name>
@@ -2339,6 +2357,18 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.DayOfWeek.{i}.BlockTimeBitMask</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.L2TPPassthrough</External>
+      <Internal>Device.X_CISCO_COM_Security.Firewall.L2TPPassthrough</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.PPTPPassthrough</External>
+      <Internal>Device.X_CISCO_COM_Security.Firewall.PPTPPassthrough</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.IPSecPassthrough</External>
+      <Internal>Device.X_CISCO_COM_Security.Firewall.IPSecPassthrough</Internal>
     </Alias>
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</External>
