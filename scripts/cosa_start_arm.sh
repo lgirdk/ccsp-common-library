@@ -39,12 +39,6 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
-if [ "$BOX_TYPE" = "XB3" ]; then
-SYS_DB_FILE="/nvram/syscfg.db"
-else
-SYS_DB_FILE="/opt/secure/data/syscfg.db"
-fi
-
 ulimit -c unlimited
 if [ "$BUILD_TYPE" != "prod" ]; then
       echo /tmp/%t_core.prog_%e.signal_%s > /proc/sys/kernel/core_pattern
