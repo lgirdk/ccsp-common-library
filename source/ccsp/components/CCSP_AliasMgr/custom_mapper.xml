@@ -1252,12 +1252,6 @@
       <Name>Device.DeviceInfo.X_LGI-COM_WAN_IPv6</Name>
     </Param>
     <Param>
-      <Name>Device.X_LGI-COM_DeviceControl.DeviceMode</Name>
-    </Param>
-    <Param>
-      <Name>Device.X_LGI-COM_DeviceControl.SSH.Enable</Name>
-    </Param>
-    <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</Name>
     </Param>
     <Param>
@@ -1595,10 +1589,6 @@
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Enable</External>
       <Internal>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Enable</Internal>
-    </Alias>
-    <Alias>
-      <External>Device.X_LGI-COM_DeviceControl.SSH.Enable</External>
-      <Internal>Device.UserInterface.X_CISCO_COM_RemoteAccess.SSHEnable</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.X_LGI-COM_DMZ.Enable</External>
@@ -2380,10 +2370,6 @@
     <Alias>
       <External>Device.DynamicDNS.X_LGI-COM_Enable</External>
       <Internal>Device.DynamicDNS.X_RDK-COM_Enable</Internal>
-    </Alias>
-    <Alias>
-      <External>Device.X_LGI-COM_DeviceControl.DeviceMode</External>
-      <Internal>Device.X_CISCO_COM_DeviceControl.DeviceMode</Internal>
     </Alias>
     <Alias strict="true">
       <External>Device.X_LGI-COM_Gateway.</External>
