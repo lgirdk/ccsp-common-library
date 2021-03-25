@@ -73,8 +73,8 @@ typedef struct _component_info {
     int size;
 } component_info;
 
-int   CcspBaseIf_timeout_seconds        = 120; //seconds
-int   CcspBaseIf_timeout_getval_seconds = 120; //seconds
+int   CcspBaseIf_timeout_seconds        = 180; //seconds
+int   CcspBaseIf_timeout_getval_seconds = 180; //seconds
 #define  CcspBaseIf_timeout_rbus  (CcspBaseIf_timeout_seconds * 1000) // in milliseconds
 
 int CcspBaseIf_freeResources(
