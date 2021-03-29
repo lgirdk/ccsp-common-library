@@ -1428,6 +1428,18 @@
     <Param invisible="true">
       <Name>Device.Users.User.{i}.X_CISCO_COM_Password</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_MssClampingEnable</Name>
+    </Param>
+    <Param>
+      <Name>Device.DSLite.InterfaceSetting.{i}.X_LGI-COM_MssClampingEnable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_Tcpmss</Name>
+    </Param>
+    <Param>
+      <Name>Device.DSLite.InterfaceSetting.{i}.X_LGI-COM_Tcpmss</Name>
+    </Param>
 </ParamList>
 <AliasList>
     <Alias>
@@ -2370,6 +2382,14 @@
     <Alias>
       <External>Device.DynamicDNS.X_LGI-COM_Enable</External>
       <Internal>Device.DynamicDNS.X_RDK-COM_Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DSLite.InterfaceSetting.{i}.X_LGI-COM_MssClampingEnable</External>
+      <Internal>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_MssClampingEnable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DSLite.InterfaceSetting.{i}.X_LGI-COM_Tcpmss</External>
+      <Internal>Device.DSLite.InterfaceSetting.{i}.X_RDKCENTRAL-COM_Tcpmss</Internal>
     </Alias>
     <Alias strict="true">
       <External>Device.X_LGI-COM_Gateway.</External>
