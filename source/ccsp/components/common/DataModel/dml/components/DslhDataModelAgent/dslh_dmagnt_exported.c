@@ -483,7 +483,7 @@ COSAGetParamValueString
 
     if (len >= *pulSize)
     {
-        // AnscTraceWarning(("COSAGetParamValueString: output buffer too small '%s'\n", pParamName));
+        AnscTraceWarning(("COSAGetParamValueString: output buffer too small '%s'\n", pParamName));
         result = 1;
     }
     else
@@ -1214,7 +1214,7 @@ COSAGetParamValueByPathName
 
         if (len >= *parameterValueLength)
         {
-            // AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
+            AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
             memcpy(val->parameterValue, parameterVal[0]->parameterValue, *parameterValueLength - 1);
             val->parameterValue[*parameterValueLength - 1] = 0;
         }
@@ -1222,6 +1222,14 @@ COSAGetParamValueByPathName
         {
             memcpy(val->parameterValue, parameterVal[0]->parameterValue, len + 1);
         }
+
+        /*
+           Warning: inconsisent API. The passed in value is a buffer size, the
+           returned value is a string length (ie one less then the required
+           buffer size). Since most (all?) callers to this function don't
+           actually use the returned value the best solution is probably to
+           not return anything...
+        */
 
         *parameterValueLength = len;
     }
