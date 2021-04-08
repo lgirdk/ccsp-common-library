@@ -1197,13 +1197,22 @@ COSAGetParamValueByPathName
     {
         len = _ansc_strlen(parameterVal[0]->parameterValue);
 
-        if( (int)*parameterValueLength < len )
-        {
-            *parameterValueLength = len;
+        /*
+           Fixme: There should be a check on the output buffer size here,
+           however historically (ie before 2021) there hasn't been one and
+           so callers of this function may not always pass in a valid buffer
+           length. It's not safe to check the output buffer size until all
+           callers have been checked and updated if necessary. For now just
+           print a warning...
+        */
 
+        if (len >= *parameterValueLength)
+        {
+            AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
         }
 
-        strcpy(val->parameterValue, parameterVal[0]->parameterValue);
+        memcpy (val->parameterValue, parameterVal[0]->parameterValue, len);
+        val->parameterValue[len] = 0;
 
         *parameterValueLength = len;
     }
