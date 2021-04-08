@@ -88,6 +88,7 @@
 
 **********************************************************************/
 
+#include <assert.h>
 
 #include "dslh_dmagnt_global.h"
 #include "dslh_varro_interface.h"
@@ -1206,16 +1207,24 @@ COSAGetParamValueByPathName
 
     if ( ret == CCSP_SUCCESS  && size2 >= 1)
     {
-        len = _ansc_strlen(parameterVal[0]->parameterValue);
+        len = strlen(parameterVal[0]->parameterValue);
 
-        if( (int)*parameterValueLength < len )
+        if (len >= *parameterValueLength)
         {
-            *parameterValueLength = len;
-
+            AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
         }
 
-        rc = STRCPY_S_NOCLOBBER(val->parameterValue, (*parameterValueLength + 1), parameterVal[0]->parameterValue);
-        ERR_CHK(rc);
+        assert(len < *parameterValueLength);
+
+        memcpy(val->parameterValue, parameterVal[0]->parameterValue, len + 1);
+
+        /*
+           Warning: inconsisent API. The passed in value is a buffer size, the
+           returned value is a string length (ie one less then the required
+           buffer size). Since most (all?) callers to this function don't
+           actually use the returned value the best solution is probably to
+           not return anything...
+        */
 
         *parameterValueLength = len;
     }
