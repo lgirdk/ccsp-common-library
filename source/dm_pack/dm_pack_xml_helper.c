@@ -497,6 +497,7 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreatePNode(PANSC_XML_DOM_NODE_OBJECT pNode, con
   return pNewNode;
 }
 
+#if 0
 ANSC_STATUS DMPackCreateAttribute(PANSC_XML_DOM_NODE_OBJECT pNode, const char* pNewAttributeName, ULONG dataSize, const char* pNewAttributeData)
 {
   PANSC_XML_ATTRIBUTE             pNewAttribute = NULL;
@@ -533,4 +534,5 @@ ANSC_STATUS DMPackCreateAttribute(PANSC_XML_DOM_NODE_OBJECT pNode, const char* p
 
   return ANSC_STATUS_SUCCESS;
 }
+#endif
 
