@@ -88,6 +88,7 @@
 
 **********************************************************************/
 
+#include <assert.h>
 
 #include "dslh_dmagnt_global.h"
 #include "dslh_varro_interface.h"
@@ -1195,24 +1196,24 @@ COSAGetParamValueByPathName
 
     if ( ret == CCSP_SUCCESS  && size2 >= 1)
     {
-        len = _ansc_strlen(parameterVal[0]->parameterValue);
-
-        /*
-           Fixme: There should be a check on the output buffer size here,
-           however historically (ie before 2021) there hasn't been one and
-           so callers of this function may not always pass in a valid buffer
-           length. It's not safe to check the output buffer size until all
-           callers have been checked and updated if necessary. For now just
-           print a warning...
-        */
+        len = strlen(parameterVal[0]->parameterValue);
 
         if (len >= *parameterValueLength)
         {
             AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
         }
 
-        memcpy (val->parameterValue, parameterVal[0]->parameterValue, len);
-        val->parameterValue[len] = 0;
+        assert(len < *parameterValueLength);
+
+        memcpy(val->parameterValue, parameterVal[0]->parameterValue, len + 1);
+
+        /*
+           Warning: inconsisent API. The passed in value is a buffer size, the
+           returned value is a string length (ie one less then the required
+           buffer size). Since most (all?) callers to this function don't
+           actually use the returned value the best solution is probably to
+           not return anything...
+        */
 
         *parameterValueLength = len;
     }
