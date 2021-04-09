@@ -471,7 +471,8 @@ COSAGetParamValueString
     PDSLH_WMP_DATABASE_OBJECT       pDslhWmpDatabase    = (PDSLH_WMP_DATABASE_OBJECT  )pDslhCpeController->hDslhWmpDatabase;
     PDSLH_MPR_INTERFACE             pDslhMprIf          = (PDSLH_MPR_INTERFACE        )pDslhWmpDatabase->hDslhMprIf;
     char*                           pString             = NULL;
-    ULONG                           uSize               = 0;
+    int result;
+    int len;
 
     pString = pDslhMprIf->GetParamValueString(pDslhMprIf->hOwnerContext, pParamName);
 
@@ -480,24 +481,29 @@ COSAGetParamValueString
         return -1;
     }
 
-    uSize = AnscSizeOfString(pString);
+    len = strlen(pString);
 
-    if( *pulSize < uSize)
+    if (len >= *pulSize)
     {
-        *pulSize = uSize;
-
-        AnscFreeMemory(pString);
-
-        return 1;
+        AnscTraceWarning(("COSAGetParamValueString: output buffer too small '%s'\n", pParamName));
+        result = 1;
     }
-
-    AnscCopyString(pBuffer, pString);
-
-    *pulSize = uSize;
+    else
+    {
+        memcpy(pBuffer, pString, len + 1);
+        result = 0;
+    }
 
     AnscFreeMemory(pString);
 
-    return 0;
+    /*
+       Warning: inconsisent API. The passed in value is a buffer size, the
+       returned value is a string length (ie one less then the required
+       buffer size).
+    */
+    *pulSize = len;
+
+    return result;
 }
 
 /**********************************************************************
