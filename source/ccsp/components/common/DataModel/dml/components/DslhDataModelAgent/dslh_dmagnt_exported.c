@@ -486,6 +486,7 @@ COSAGetParamValueString
 
     if (len >= *pulSize)
     {
+        AnscTraceWarning(("COSAGetParamValueString: output buffer too small '%s'\n", pParamName));
         result = 1;
     }
     else
