@@ -2411,14 +2411,14 @@ GetParamUlongValue_X_CISCO_COM_COSADataModel
     PDSLH_WMP_DATABASE_OBJECT       pWmpDatabase      = (PDSLH_WMP_DATABASE_OBJECT  )NULL;
     PDSLH_OBJ_RECORD_OBJECT         pObjRecord        = (PDSLH_OBJ_RECORD_OBJECT    )NULL;
 
-    if( AnscEqualString(ParamName, "DataModelLibraryNumberOfEntries", TRUE))
+    if (strcmp(ParamName, "DataModelLibraryNumberOfEntries") == 0)
     {
         *pUlong = GetEntryCount_COSADataModel(hInsContext);
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "TotalParameterNames", TRUE))
+    if (strcmp(ParamName, "TotalParameterNames") == 0)
     {
         *pUlong = GetEntryCount_COSADataModel(hInsContext);
 
@@ -2638,27 +2638,27 @@ GetParamUlongValue_COSADataModel
 {
     PPLUGIN_INFORMATION             pPluginInfo     = (PPLUGIN_INFORMATION)hInsContext;
 
-    if( AnscEqualString(ParamName, "Version", TRUE))
+    if (strcmp(ParamName, "Version") == 0)
     {
         *pUlong = pPluginInfo->Version;
 
         return TRUE;
     }
-    if( AnscEqualString(ParamName, "LoadStatus", TRUE))
+    if (strcmp(ParamName, "LoadStatus") == 0)
     {
         *pUlong = pPluginInfo->uLoadStatus;
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RegisteredObjectCount", TRUE))
+    if (strcmp(ParamName, "RegisteredObjectCount") == 0)
     {
         *pUlong = pPluginInfo->uRegObjCount;
 
         return TRUE;
     }
 
-    if( AnscEqualString(ParamName, "RegisteredParameterCount", TRUE))
+    if (strcmp(ParamName, "RegisteredParameterCount") == 0)
     {
         *pUlong = pPluginInfo->uRegParamCount;
 
@@ -2718,15 +2718,15 @@ GetParamStringValue_COSADataModel
     ULONG                           uLength         = 0;
     errno_t                         rc              = -1;
 
-    if( AnscEqualString(ParamName, "ModuleName", TRUE))
+    if (strcmp(ParamName, "ModuleName") == 0)
     {
         pStringValue = pPluginInfo->ModuleName;
     }
-    else if( AnscEqualString(ParamName, "Author", TRUE))
+    else if (strcmp(ParamName, "Author") == 0)
     {
         pStringValue = pPluginInfo->Author;
     }
-    else if( AnscEqualString(ParamName, "Description", TRUE))
+    else if (strcmp(ParamName, "Description") == 0)
     {
         pStringValue = pPluginInfo->Description;
     }
@@ -2908,7 +2908,7 @@ SupportedDataModel_GetParamStringValue
 
 #if 0
     /* check the parameter name and return the corresponding value */
-    if( AnscEqualString(ParamName, "URL", TRUE))
+    if (strcmp(ParamName, "URL") == 0)
     {
         /* collect value */
         if( pDslhCfgIf)
@@ -2940,7 +2940,7 @@ SupportedDataModel_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "URN", TRUE))
+    if (strcmp(ParamName, "URN") == 0)
     {
         /* collect value */
         AnscCopyString(pValue, "urn:broadband-forum-org:tr-157-1-0-0");
@@ -2948,7 +2948,7 @@ SupportedDataModel_GetParamStringValue
         return 0;
     }
 
-    if( AnscEqualString(ParamName, "Features", TRUE))
+    if (strcmp(ParamName, "Features") == 0)
     {
         /* collect value */
         AnscCopyString(pValue, "NAT,Firewall");
@@ -3002,21 +3002,21 @@ CcspComp_GetParamUlongValue
     }
 
     /* check the parameter name and return the corresponding value */
-    if ( AnscEqualString(ParamName, "Version", TRUE) )
+    if (strcmp(ParamName, "Version") == 0)
     {
         *puLong = pCcspCcdIf->GetComponentVersion(NULL);
 
         return TRUE;
     }
 
-    if ( AnscEqualString(ParamName, "State", TRUE) )
+    if (strcmp(ParamName, "State") == 0)
     {
         *puLong = pCcspCcdIf->GetComponentState(NULL);
 
         return TRUE;
     }
 
-    if ( AnscEqualString(ParamName, "Health", TRUE) )
+    if (strcmp(ParamName, "Health") == 0)
     {
         *puLong = pCcspCcdIf->GetComponentHealth(NULL);
 
@@ -3046,7 +3046,7 @@ CcspComp_GetParamStringValue
     }
 
     /* check the parameter name and return the corresponding value */
-    if ( AnscEqualString(ParamName, "Name", TRUE) )
+    if (strcmp(ParamName, "Name") == 0)
     {
         rc = strcpy_s(pValue, *pUlSize, pCcspCcdIf->GetComponentName(NULL));
         if ( rc != EOK )
@@ -3058,7 +3058,7 @@ CcspComp_GetParamStringValue
         return 0;
     }
 
-    if ( AnscEqualString(ParamName, "Author", TRUE) )
+    if (strcmp(ParamName, "Author") == 0)
     {
         rc = strcpy_s(pValue, *pUlSize, pCcspCcdIf->GetComponentAuthor(NULL));
         if ( rc != EOK )
@@ -3070,7 +3070,7 @@ CcspComp_GetParamStringValue
         return 0;
     }
 
-    if ( AnscEqualString(ParamName, "DTXml", TRUE) )
+    if (strcmp(ParamName, "DTXml") == 0)
     {
         if( !pDslhDataModelAgent->pDTXml)
         {
@@ -3267,7 +3267,7 @@ CcspLog_GetParamBoolValue
     }
 
     /* check the parameter name and return the corresponding value */
-    if ( AnscEqualString(ParamName, "Enable", TRUE) )
+    if (strcmp(ParamName, "Enable") == 0)
     {
          *pBool = pCcspCcdIf->GetLoggingEnabled(NULL);
 
@@ -3294,7 +3294,7 @@ CcspLog_GetParamUlongValue
     }
 
     /* check the parameter name and return the corresponding value */
-    if ( AnscEqualString(ParamName, "LogLevel", TRUE) )
+    if (strcmp(ParamName, "LogLevel") == 0)
     {
         *puLong = pCcspCcdIf->GetLoggingLevel(NULL);
 
@@ -3323,7 +3323,7 @@ CcspLog_SetParamBoolValue
     }
 
     /* check the parameter name and set the corresponding value */
-    if( AnscEqualString(ParamName, "Enable", TRUE))
+    if (strcmp(ParamName, "Enable") == 0)
     {
         returnStatus = 
             pCcspCcdIf->SetLoggingEnabled
@@ -3358,7 +3358,7 @@ CcspLog_SetParamUlongValue
     }
 
     /* check the parameter name and set the corresponding value */
-    if ( AnscEqualString(ParamName, "LogLevel", TRUE) )
+    if (strcmp(ParamName, "LogLevel") == 0)
     {
         returnStatus = 
             pCcspCcdIf->SetLoggingLevel
@@ -3433,21 +3433,21 @@ CcspMem_GetParamUlongValue
     }
 
     /* check the parameter name and return the corresponding value */
-    if ( AnscEqualString(ParamName, "MinUsage", TRUE) )
+    if (strcmp(ParamName, "MinUsage") == 0)
     {
         *puLong = pCcspCcdIf->GetMemMinUsage(NULL);
 
         return TRUE;
     }
 
-    if ( AnscEqualString(ParamName, "MaxUsage", TRUE) )
+    if (strcmp(ParamName, "MaxUsage") == 0)
     {
         *puLong = pCcspCcdIf->GetMemMaxUsage(NULL);
 
         return TRUE;
     }
 
-    if ( AnscEqualString(ParamName, "Consumed", TRUE) )
+    if (strcmp(ParamName, "Consumed") == 0)
     {
         *puLong = pCcspCcdIf->GetMemConsumed(NULL);
 
