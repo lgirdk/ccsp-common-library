@@ -30,10 +30,10 @@ if [ "$check_rbus" != "TERM" ]; then
 
     if [ "$BOX_TYPE" = "XB3" ];then
        echo "`date`: RBus crash handler updating reboot reason for XB3"
-       rpcclient $ARM_ARPING_IP "syscfg set X_RDKCENTRAL-COM_LastRebootReason Rbus_crash && syscfg set X_RDKCENTRAL-COM_LastRebootCounter 1 && syscfg commit && sync"
-       rpcclient $ARM_ARPING_IP "sh /rdklogger/backupLogs.sh false Rbus_crash"
+       rpcclient2 "syscfg set X_RDKCENTRAL-COM_LastRebootReason Rbus_crash && syscfg set X_RDKCENTRAL-COM_LastRebootCounter 1 && syscfg commit && sync"
+       rpcclient2 "sh /rdklogger/backupLogs.sh false Rbus_crash"
        echo "REBOOTING THE SYSTEM....."
-       rpcclient $ARM_ARPING_IP "reboot"
+       rpcclient2 "reboot"
     else
        echo "`date`: RBus crash handler updating reboot reason for NON-XB3"
 
