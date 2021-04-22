@@ -26,7 +26,7 @@ if [ "$1" = 1 ]; then
          rm /nvram/rbus_support_off_pending
     fi
     if [ "$BOX_TYPE" = "XB3" ]; then
-        rpcclient $ATOM_ARPING_IP "touch /nvram/rbus_support_on_pending && rm /nvram/rbus_support_off_pending"
+        rpcclient2 "touch /nvram/rbus_support_on_pending && rm /nvram/rbus_support_off_pending"
     fi
 else
     touch /nvram/rbus_support_off_pending
@@ -34,6 +34,6 @@ else
          rm /nvram/rbus_support_on_pending
     fi
     if [ "$BOX_TYPE" = "XB3" ]; then 
-         rpcclient $ATOM_ARPING_IP "touch /nvram/rbus_support_off_pending && rm /nvram/rbus_support_on_pending"
+         rpcclient2 "touch /nvram/rbus_support_off_pending && rm /nvram/rbus_support_on_pending"
     fi
 fi
