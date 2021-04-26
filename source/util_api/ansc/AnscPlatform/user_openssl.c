@@ -457,7 +457,7 @@ error:
     return NULL;
 }
 
-int _client_openssl_validate_certificate (int fd,  char *host, SSL *ssl, bool isSecure)
+static int _client_openssl_validate_certificate (int fd,  char *host, SSL *ssl, bool isSecure)
 {
     UNREFERENCED_PARAMETER(fd);
     X509 *cert;
@@ -554,7 +554,7 @@ no_cert:
     return success;
 }
 
-int _server_openssl_validate_certificate (int fd, char *data, SSL *ssl)
+static int _server_openssl_validate_certificate (int fd, char *data, SSL *ssl)
 {
     UNREFERENCED_PARAMETER(fd);
     UNREFERENCED_PARAMETER(data);
