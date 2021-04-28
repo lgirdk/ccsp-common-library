@@ -18,3 +18,4 @@
 ##########################################################################
 SUBDIRS = common CCSP_NamespaceMgr 
 SUBDIRS += CCSP_AliasMgr
+SUBDIRS += lgi_alias_utils
