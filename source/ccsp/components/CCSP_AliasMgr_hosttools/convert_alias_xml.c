@@ -5,9 +5,8 @@
 
 //=============================================================================
 
-#define custom_MAP_GPERF "custom_map_alias.gperf"
-#define PARAM_TYPE_EXTERNAL 0
-#define PARAM_TYPE_INTERNAL 1
+#define CUSTOM_MAP_GPERF_EXT2INT "custom_map_alias_ext2int.gperf"
+#define CUSTOM_MAP_GPERF_INT2EXT "custom_map_alias_int2ext.gperf"
 #define BUF_SIZE 256
 
 //=============================================================================
@@ -25,44 +24,86 @@ static int alias_ptr = 0;
 
 //=============================================================================
 
-static int WriteResultToFile()
+static int WriteResultToFile_ext2int()
 {
     static const char* h_declaration =
         "%{\n" \
         "#include <stdio.h>\n" \
         "#include <string.h>\n\n" \
-        "typedef struct Alias_t\n" \
+        "typedef struct Alias_ext_t\n" \
         "{\n" \
         "    char *name;\n" \
         "    char *aliasName;\n" \
         "    unsigned char aliasStrict;\n" \
-        "    unsigned char inputParamType;\n" \
-        "}Alias_t; \n" \
+        "}Alias_ext_t; \n" \
         "%}\n";
 
     char temp_buf[1024];
     int i;
 
     // Create gperf file
-    FILE* fp = fopen(custom_MAP_GPERF, "wt");
+    FILE* fp = fopen(CUSTOM_MAP_GPERF_EXT2INT, "wt");
     if (fp == NULL)
     {
-        printf("%s: Error: Unable to open file %s\n", __FUNCTION__, custom_MAP_GPERF);
+        printf("%s: Error: Unable to open file %s\n", __FUNCTION__, CUSTOM_MAP_GPERF_EXT2INT);
         return -1;
     }
     // gperf section: declarations
     fputs(h_declaration, fp);
-    fputs("struct Alias_t;\n", fp);
+    fputs("struct Alias_ext_t;\n", fp);
 
     // gperf section: keywords
     fputs("%%\n", fp);
     for (i = 0; i < alias_ptr; i++)
     {
         // External -> Internal Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d,%d\n", g_AliasList[i].aliasExtName, g_AliasList[i].aliasIntName, g_AliasList[i].aliasStrict, PARAM_TYPE_EXTERNAL);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d\n", g_AliasList[i].aliasExtName, g_AliasList[i].aliasIntName, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
+    }
+    fputs("%%\n", fp);
+
+    // gperf section: functions (currently it is in seperate file)
+
+    fclose(fp);
+    return 0;
+}
+
+//=============================================================================
+
+static int WriteResultToFile_int2ext()
+{
+    static const char* h_declaration =
+        "%{\n" \
+        "#include <stdio.h>\n" \
+        "#include <string.h>\n\n" \
+        "typedef struct Alias_int_t\n" \
+        "{\n" \
+        "    char *name;\n" \
+        "    char *aliasName;\n" \
+        "    unsigned char aliasStrict;\n" \
+        "}Alias_int_t; \n" \
+        "%}\n";
+
+    char temp_buf[1024];
+    int i;
+
+    // Create gperf file
+    FILE* fp = fopen(CUSTOM_MAP_GPERF_INT2EXT, "wt");
+    if (fp == NULL)
+    {
+        printf("%s: Error: Unable to open file %s\n", __FUNCTION__, CUSTOM_MAP_GPERF_INT2EXT);
+        return -1;
+    }
+    // gperf section: declarations
+    fputs(h_declaration, fp);
+    fputs("struct Alias_int_t;\n", fp);
+
+    // gperf section: keywords
+    fputs("%%\n", fp);
+    for (i = 0; i < alias_ptr; i++)
+    {
         // Internal -> External Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d,%d\n", g_AliasList[i].aliasIntName, g_AliasList[i].aliasExtName, g_AliasList[i].aliasStrict, PARAM_TYPE_INTERNAL);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d\n", g_AliasList[i].aliasIntName, g_AliasList[i].aliasExtName, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
     }
     fputs("%%\n", fp);
@@ -317,9 +358,13 @@ int main(int argc, char* argv[])
         }
     }
     printf("Alias map count = %d\n", alias_ptr);
-    if (0 != WriteResultToFile())
+    if (0 != WriteResultToFile_ext2int())
     {
-        printf ("Error: Creating gperf file...\n");
+        printf ("Error: Creating gperf file (%s)...\n", CUSTOM_MAP_GPERF_EXT2INT);
+    }
+    if (0 != WriteResultToFile_int2ext())
+    {
+        printf("Error: Creating gperf file (%s)...\n", CUSTOM_MAP_GPERF_INT2EXT);
     }
     return 0;
 }
