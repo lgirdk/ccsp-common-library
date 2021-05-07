@@ -6,7 +6,6 @@ typedef struct Alias_t
     char *name;
     char *aliasName;
     unsigned char aliasStrict;
-    unsigned char inputParamType;
 }Alias_t;
 
 const char* aliasGetInternalName(char* externalName, int* releaseMem);
