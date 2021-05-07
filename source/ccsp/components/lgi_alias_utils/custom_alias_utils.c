@@ -9,10 +9,8 @@
 #include "custom_alias_utils.h"
 
 // gperf utility
-extern struct Alias_t* in_word_set(const char* str, unsigned int len);
-
-#define PARAM_TYPE_EXTERNAL 0
-#define PARAM_TYPE_INTERNAL 1
+extern struct Alias_t* map_ExternalToInternal(const char* str, unsigned int len);
+extern struct Alias_t* map_InternalToExternal(const char* str, unsigned int len);
 
 #define INSTANCE_ID_ON_MAPPER "{i}"
 #define INSTANCE_ID_MAX 10
@@ -110,29 +108,26 @@ const char* aliasGetInternalName(char* externalName, int* releaseMem)
 
     convertInstaceIDForMapping(externalName, temp_buf, indexIds, &indexIdCount);
 
-    pStAlias = in_word_set(temp_buf, strlen(temp_buf));
+    pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
     if (NULL != pStAlias)
     {
-        if (pStAlias->inputParamType == PARAM_TYPE_EXTERNAL)
+        if (indexIdCount == 0)
         {
-            if (indexIdCount == 0)
-            {
-                retVal = pStAlias->aliasName;
-            }
-            else
-            {
-                int len = 0;
-                restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
-                                len = strlen (temp_buf);
-                                retVal = AnscAllocateMemory(len + 1);
-                                if (retVal)
-                                {
-                                    strcpy (retVal, temp_buf);
-                    *releaseMem = 1;
-                }
-            }
-//          printf("%s: %s->%s\n", __FUNCTION__, externalName, retVal);
+            retVal = pStAlias->aliasName;
         }
+        else
+        {
+            int len = 0;
+            restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
+            len = strlen (temp_buf);
+            retVal = AnscAllocateMemory(len + 1);
+            if (retVal)
+            {
+                strcpy (retVal, temp_buf);
+                *releaseMem = 1;
+            }
+        }
+//            printf("%s: %s->%s\n", __FUNCTION__, externalName, retVal);
     }
     return retVal;
 }
@@ -152,29 +147,26 @@ const char* aliasGetExternalName(char* intrnalName, int* releaseMem)
 
     convertInstaceIDForMapping(intrnalName, temp_buf, indexIds, &indexIdCount);
 
-    pStAlias = in_word_set(temp_buf, strlen(temp_buf));
+    pStAlias = map_InternalToExternal(temp_buf, strlen(temp_buf));
     if (NULL != pStAlias)
     {
-        if (pStAlias->inputParamType == PARAM_TYPE_INTERNAL)
+        if (indexIdCount == 0)
         {
-            if (indexIdCount == 0)
-            {
-                retVal = pStAlias->aliasName;
-            }
-            else
-            {
-                int len = 0;
-                restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
-                len = strlen (temp_buf);
-                retVal = AnscAllocateMemory(len + 1);
-                                if (retVal)
-                {
-                    strcpy (retVal, temp_buf);
-                    *releaseMem = 1;
-                }
-            }
-//          printf("%s: %s->%s\n", __FUNCTION__, intrnalName, retVal);
+            retVal = pStAlias->aliasName;
         }
+        else
+        {
+            int len = 0;
+            restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
+            len = strlen (temp_buf);
+            retVal = AnscAllocateMemory(len + 1);
+            if (retVal)
+            {
+                strcpy (retVal, temp_buf);
+                *releaseMem = 1;
+            }
+        }
+//            printf("%s: %s->%s\n", __FUNCTION__, intrnalName, retVal);
     }
     return retVal;
 }
@@ -182,10 +174,9 @@ const char* aliasGetExternalName(char* intrnalName, int* releaseMem)
 //=============================================================================
 
 #if 0
-
 int main(int argc, char* argv[])
 {
-#if 0
+#if 0 
     // For reference
     Device.X_CISCO_COM_GRE.Interface.1.Mode
     Device.X_CISCO_COM_GRE.Interface.2.
