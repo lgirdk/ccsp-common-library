@@ -445,7 +445,11 @@ CcspNsMgrBuildNamespaces
 
         AnscQueuePushEntry(&pMyObject->ComponentQueue, &pNSComp->Linkage);
         AnscCopyString(pNSComp->pCompName, (char*)pCompName);
-        AnscCopyString(pNSComp->pDbusPath, (char*)pDbusPath);
+
+        if (pDbusPath != NULL)
+        {
+            AnscCopyString(pNSComp->pDbusPath, (char*)pDbusPath);
+        }
 
         if( pPrefix != NULL)
         {
