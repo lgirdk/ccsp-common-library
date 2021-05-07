@@ -22,7 +22,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 libCcspCommonLibrary_lgi_alias_utils_la_SOURCES = \
  custom_alias_utils.c \
- $(top_builddir)/custom_map_alias.c
+ $(top_builddir)/custom_map_alias_ext2int.c \
+ $(top_builddir)/custom_map_alias_int2ext.c
 
 libCcspCommonLibrary_lgi_alias_utils_la_CPPFLAGS = \
  -I$(top_srcdir)/source/cosa/include/linux \
