@@ -30,17 +30,20 @@ static int convertInstaceIDForMapping(char* inStr, char* outStr, int indexIds[],
         if (strstr(in, ".") == in)
         {
             out[i++] = *in++;
-            if ((index < INSTANCE_ID_MAX) && (isdigit(*in)))
+            if (*in)
             {
-                sprintf(&out[i], "%s", INSTANCE_ID_ON_MAPPER);
-                long val = strtol(in, &in, 10);
-                indexIds[index] = (int)val;
-                i += 3;  // 3 - size of "{i}"
-                index++;
-            }
-            else
-            {
-                out[i++] = *in++;
+                if ((index < INSTANCE_ID_MAX) && (isdigit(*in)))
+                {
+                    sprintf(&out[i], "%s", INSTANCE_ID_ON_MAPPER);
+                    long val = strtol(in, &in, 10);
+                    indexIds[index] = (int)val;
+                    i += 3;  // 3 - size of "{i}"
+                    index++;
+                }
+                else
+                {
+                    out[i++] = *in++;
+                }
             }
         }
         else
