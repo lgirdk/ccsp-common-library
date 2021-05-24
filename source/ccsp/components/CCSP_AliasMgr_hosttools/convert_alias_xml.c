@@ -8,14 +8,15 @@
 #define CUSTOM_MAP_GPERF_EXT2INT "custom_map_alias_ext2int.gperf"
 #define CUSTOM_MAP_GPERF_INT2EXT "custom_map_alias_int2ext.gperf"
 #define BUF_SIZE 256
-
+#define MAX_ALIAS 5
 //=============================================================================
 
 typedef struct Alias_t
 {
     char aliasExtName[256];
-    char aliasIntName[256];
-    int aliasStrict;
+    char aliasIntName[MAX_ALIAS][256];
+    unsigned char aliasCount;
+    unsigned char aliasStrict;
 }Alias_t;
 
 static Alias_t g_AliasList[10000];
@@ -30,10 +31,12 @@ static int WriteResultToFile_ext2int()
         "%{\n" \
         "#include <stdio.h>\n" \
         "#include <string.h>\n\n" \
+        "#define MAX_ALIAS 5\n" \
         "typedef struct Alias_ext_t\n" \
         "{\n" \
         "    char *name;\n" \
-        "    char *aliasName;\n" \
+        "    char *aliasName[MAX_ALIAS];\n" \
+        "    unsigned char aliasCount;\n" \
         "    unsigned char aliasStrict;\n" \
         "}Alias_ext_t; \n" \
         "%}\n";
@@ -57,7 +60,7 @@ static int WriteResultToFile_ext2int()
     for (i = 0; i < alias_ptr; i++)
     {
         // External -> Internal Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d\n", g_AliasList[i].aliasExtName, g_AliasList[i].aliasIntName, g_AliasList[i].aliasStrict);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"},%d,%d\n", g_AliasList[i].aliasExtName, g_AliasList[i].aliasIntName[0], g_AliasList[i].aliasIntName[1], g_AliasList[i].aliasIntName[2], g_AliasList[i].aliasIntName[3], g_AliasList[i].aliasIntName[4], g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
     }
     fputs("%%\n", fp);
@@ -76,10 +79,12 @@ static int WriteResultToFile_int2ext()
         "%{\n" \
         "#include <stdio.h>\n" \
         "#include <string.h>\n\n" \
+        "#define MAX_ALIAS 5\n" \
         "typedef struct Alias_int_t\n" \
         "{\n" \
         "    char *name;\n" \
-        "    char *aliasName;\n" \
+        "    char *aliasName[MAX_ALIAS];\n" \
+        "    unsigned char aliasCount;\n" \
         "    unsigned char aliasStrict;\n" \
         "}Alias_int_t; \n" \
         "%}\n";
@@ -103,7 +108,7 @@ static int WriteResultToFile_int2ext()
     for (i = 0; i < alias_ptr; i++)
     {
         // Internal -> External Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",\"%s\",%d\n", g_AliasList[i].aliasIntName, g_AliasList[i].aliasExtName, g_AliasList[i].aliasStrict);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"\",\"\",\"\",\"\",},%d,%d\n", g_AliasList[i].aliasIntName[0], g_AliasList[i].aliasExtName, g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
     }
     fputs("%%\n", fp);
@@ -116,7 +121,7 @@ static int WriteResultToFile_int2ext()
 
 //=============================================================================
 
-static int updateAliasMap(int aliasStrict, char* paramStr1, char* paramStr2)
+static int updateAliasMap(unsigned char aliasStrict, char* paramStr1, char* paramStr2)
 {
     char inStr[BUF_SIZE];
     char outStr[BUF_SIZE];
@@ -200,7 +205,7 @@ static int updateAliasMap(int aliasStrict, char* paramStr1, char* paramStr2)
             memcpy(outStr, pOutP1, pOutP2 - pOutP1);
             outStr[pOutP2 - pOutP1] = '\0';
         }
-        if ((!aliasStrict) && (strcmp(inStr, outStr) == 0) )
+        if ((!aliasStrict) && (!strcmp(inStr, outStr)))
             continue;
         for (i = 0; i < alias_ptr; i++)
         {
@@ -210,6 +215,21 @@ static int updateAliasMap(int aliasStrict, char* paramStr1, char* paramStr2)
                 {
                     g_AliasList[i].aliasStrict = aliasStrict;
                 }
+                if (NULL != outStr)
+                {
+                    int j;
+
+                    for (j = 0; j < MAX_ALIAS; j++)
+                    {
+                        if (!strcmp(g_AliasList[i].aliasIntName[j], outStr))break;
+                        if (g_AliasList[i].aliasIntName[j][0] == 0)
+                        {
+                            strcpy(g_AliasList[i].aliasIntName[j], outStr);
+                            g_AliasList[i].aliasCount++;
+                            break;
+                        }
+                    }
+                }
                 skip_update = 1;
                 break;
             }
@@ -218,8 +238,11 @@ static int updateAliasMap(int aliasStrict, char* paramStr1, char* paramStr2)
             continue;
         if ((NULL != inStr) && (NULL != outStr))
         {
+            for (i = 0 ; i < MAX_ALIAS ; i++)
+                g_AliasList[alias_ptr].aliasIntName[i][0] = 0; 
             strcpy (g_AliasList[alias_ptr].aliasExtName, inStr);
-            strcpy(g_AliasList[alias_ptr].aliasIntName, outStr);
+            strcpy(g_AliasList[alias_ptr].aliasIntName[0], outStr);
+            g_AliasList[alias_ptr].aliasCount = 1;
             g_AliasList[alias_ptr].aliasStrict = aliasStrict;
             alias_ptr++;
         }
@@ -246,7 +269,7 @@ static void remove_spaces(char* str)
 int main(int argc, char* argv[])
 {
     int state = 0;
-    int aliasStrictFlag = 0;
+    unsigned char aliasStrictFlag = 0;
     char aliasExtStr[BUF_SIZE];
     char aliasIntStr[BUF_SIZE];
     char temp_buf[BUF_SIZE];
