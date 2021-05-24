@@ -8,6 +8,14 @@
 
 #include "custom_alias_utils.h"
 
+typedef struct Alias_t
+{
+    char* name;
+    char* aliasName[MAX_ALIAS];
+    unsigned char aliasCount;
+    unsigned char aliasStrict;
+}Alias_t;
+
 // gperf utility
 extern struct Alias_t* map_ExternalToInternal(const char* str, unsigned int len);
 extern struct Alias_t* map_InternalToExternal(const char* str, unsigned int len);
@@ -101,80 +109,164 @@ static int restoreInstaceIDAfterMapping(char* inStr, char* outStr, int indexIds[
 
 //=============================================================================
 
-const char* aliasGetInternalName(char* externalName, int* releaseMem)
+static const char* getAliasName(char* inName, unsigned char aliasType, unsigned char useDynamicMem, int* pReleaseMem)
 {
     const char* retVal = NULL;
     struct Alias_t* pStAlias;
     int indexIds[10];
     int indexIdCount;
     char temp_buf[BUF_SIZE];
+    int releaseMem = 0;
 
-    *releaseMem = 0;
-    if (NULL == externalName) return NULL;
+    if (NULL == inName) return NULL;
 
-    convertInstaceIDForMapping(externalName, temp_buf, indexIds, &indexIdCount);
+    convertInstaceIDForMapping(inName, temp_buf, indexIds, &indexIdCount);
 
-    pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
-    if (NULL != pStAlias)
+    if (0 == aliasType)
+        // Get Internal name (External -> Internal)
+        pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
+    else
+        // Get External name (Internal -> External)
+        pStAlias = map_InternalToExternal(temp_buf, strlen(temp_buf));
+
+    if ((NULL != pStAlias) && (pStAlias->aliasCount != 0))
     {
-        if (indexIdCount == 0)
+        if (indexIdCount != 0)
         {
-            retVal = pStAlias->aliasName;
+             restoreInstaceIDAfterMapping(pStAlias->aliasName[0], temp_buf, indexIds, indexIdCount);
+             retVal = AnscCloneString(temp_buf);
+             releaseMem = 1;
         }
-        else
+        else 
         {
-            int len = 0;
-            restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
-            len = strlen (temp_buf);
-            retVal = AnscAllocateMemory(len + 1);
-            if (retVal)
+            if (useDynamicMem)
             {
-                strcpy (retVal, temp_buf);
-                *releaseMem = 1;
+                retVal = AnscCloneString(pStAlias->aliasName[0]);
+                releaseMem = 1;
+            }
+            else
+            {
+                retVal = pStAlias->aliasName[0];
             }
         }
-//            printf("%s: %s->%s\n", __FUNCTION__, externalName, retVal);
+        if (pReleaseMem) 
+            *pReleaseMem = releaseMem;
+        //fprintf(stderr, "%s: %s->%s\n", __FUNCTION__, inName, retVal);
     }
     return retVal;
 }
 
 //=============================================================================
 
-const char* aliasGetExternalName(char* intrnalName, int* releaseMem)
+// aliasGetInternalName: Depending on the flag "pReleaseMem", caller function release memory used for returned string 
+const char* aliasGetInternalName(char* externalName, int* pReleaseMem)
 {
-    const char* retVal = NULL;
-    struct Alias_t* pStAlias;
+    return getAliasName(externalName, 0, 0, pReleaseMem);
+}
+
+//=============================================================================
+
+// aliasGetExternalName: Depending on the flag "pReleaseMem", caller function release memory used for returned string 
+const char* aliasGetExternalName(char* internalName, int* pReleaseMem)
+{
+    return getAliasName(internalName, 1, 0, pReleaseMem);
+}
+
+//=============================================================================
+
+// lgiAliasGetInternalName: Caller function always releases memory used for returned string 
+const char* lgiAliasGetInternalName(char* externalName)
+{
+    return getAliasName(externalName, 0, 1, NULL);
+}
+
+//=============================================================================
+
+// lgiAliasGetExternalName: Caller function always releases memory used for returned string 
+const char* lgiAliasGetExternalName(char* internalName)
+{
+    return getAliasName(internalName, 1, 1, NULL);
+}
+
+//=============================================================================
+
+aliasNames_t* lgiAliasGetInternalNames(char* externalName)
+{
+    struct aliasNames_t* pAliasNames = NULL;
+    struct Alias_t* pStAlias = NULL;
+    int i;
     int indexIds[10];
     int indexIdCount;
     char temp_buf[BUF_SIZE];
 
-    *releaseMem = 0;
-    if (NULL == intrnalName) return NULL;
+    if (NULL == externalName) return NULL;
+    convertInstaceIDForMapping(externalName, temp_buf, indexIds, &indexIdCount);
 
-    convertInstaceIDForMapping(intrnalName, temp_buf, indexIds, &indexIdCount);
-
-    pStAlias = map_InternalToExternal(temp_buf, strlen(temp_buf));
-    if (NULL != pStAlias)
+    pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
+    if ((NULL != pStAlias) && (pStAlias->aliasCount != 0))
     {
+        pAliasNames = (aliasNames_t*) AnscAllocateMemory(sizeof(struct aliasNames_t));
+        pAliasNames->aliasCount = 0;
+        for (i = 0; i < MAX_ALIAS; i++)
+            pAliasNames->aliasName[i] = 0;
         if (indexIdCount == 0)
         {
-            retVal = pStAlias->aliasName;
+            for (i = 0; i < pStAlias->aliasCount; i++)
+            {
+                pAliasNames->aliasName[i] = AnscCloneString (pStAlias->aliasName[i]);
+                pAliasNames->aliasCount++;
+//                fprintf(stderr, "%s: %s, aliasName[%d]=%s\n", __FUNCTION__, externalName, i, pAliasNames->aliasName[i]);
+            }
         }
         else
         {
-            int len = 0;
-            restoreInstaceIDAfterMapping(pStAlias->aliasName, temp_buf, indexIds, indexIdCount);
-            len = strlen (temp_buf);
-            retVal = AnscAllocateMemory(len + 1);
-            if (retVal)
-            {
-                strcpy (retVal, temp_buf);
-                *releaseMem = 1;
-            }
+            // Can have only one name in the list
+            restoreInstaceIDAfterMapping(pStAlias->aliasName[0], temp_buf, indexIds, indexIdCount);
+            pAliasNames->aliasName[0] = AnscCloneString (temp_buf);
+            pAliasNames->aliasCount++;
+//            fprintf(stderr, "%s: %s, aliasName[0]=%s\n", __FUNCTION__, externalName, pAliasNames->aliasName[0]);
         }
-//            printf("%s: %s->%s\n", __FUNCTION__, intrnalName, retVal);
+    }
+    return pAliasNames;
+}
+
+//=============================================================================
+
+const char* lgiAliasGetNextName(struct aliasNames_t* pAliasNames)
+{
+    const char* retVal = NULL;
+    int i;
+    if (NULL == pAliasNames) return NULL;
+    if (0 == pAliasNames->aliasCount) return NULL;
+
+    for (i = 0; i < MAX_ALIAS; i++)
+    {
+        if (NULL != pAliasNames->aliasName[i])
+        {
+            retVal = pAliasNames->aliasName[i];
+            pAliasNames->aliasName[i] = 0;
+            pAliasNames->aliasCount--;
+            break;
+        }
     }
     return retVal;
+}
+
+//=============================================================================
+
+void lgiAliasFreeNamesList(struct aliasNames_t* pAliasNames)
+{
+    int i;
+    if (NULL == pAliasNames) return;
+
+    for (i = 0; i < MAX_ALIAS; i++)
+    {
+        if (NULL != pAliasNames->aliasName[i])
+        {
+            AnscFreeMemory(pAliasNames->aliasName[i]);
+        }
+    }
+    AnscFreeMemory(pAliasNames);
 }
 
 //=============================================================================
