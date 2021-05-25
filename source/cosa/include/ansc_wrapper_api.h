@@ -1196,18 +1196,6 @@ AnscTcGetLength
         char*                       separator
     );
 
-#if 0    
-BOOL
-AnscTcEqualString
-    (
-        ANSC_HANDLE                 hTokenChain,
-        char*                       string,
-        char*                       separator,
-        BOOL                        bCaseSensitive,
-        BOOL                        bStrict
-    );
-#endif
-
 ANSC_HANDLE
 AnscTcPopToken
     (
