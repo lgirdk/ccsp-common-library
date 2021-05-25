@@ -58,7 +58,6 @@
         *   AnscSizeOfToken
         *   AnscSizeOfToken2
         *   AnscSizeOfToken3
-        *   AnscNumberOfCharsInString
         *   AnscNumberOfTokens
         *   AnscMoveToNextToken
         *   AnscMoveToNextToken2
@@ -469,29 +468,6 @@ AnscSizeOfToken3
             }
 
             string++;
-        }
-    }
-
-    return  count;
-}
-
-
-ULONG
-AnscNumberOfCharsInString
-    (
-        char*                       string,
-        char                        charToFind
-    )
-{
-    ULONG                           ulNumberOfChars = AnscSizeOfString(string);
-    ULONG                           i               = 0;
-    ULONG                           count           = 0;
-
-    for ( i = 0; i < ulNumberOfChars; i++ )
-    {
-        if ( string[i] == charToFind )
-        {
-            return  count;
         }
     }
 
