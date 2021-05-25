@@ -62,7 +62,6 @@
         *   AnscMoveToNextToken2
         *   AnscExtractToken
         *   AnscExtractToken2
-        *   AnscConsumeToken
         *   AnscGetUlongString
         *   AnscGetStringUlong
         *   AnscGetStringUlongHex
@@ -601,56 +600,6 @@ AnscExtractToken2
     }
 
     return  ANSC_STATUS_SUCCESS;
-}
-
-
-void
-AnscConsumeToken
-    (
-        char*                       string,
-        char*                       separator
-    )
-{
-    ULONG                           ulSizeOfStr = 0;
-    ULONG                           ulTokenSize = 0;
-    char*                           pTemp       = string;
-    char                            tempChar[128];
-
-    /*RDKB-5652, CID-24301, 11-May-2016, Null validation before assignement*/
-    if ( !string || !separator )
-    {
-        return;
-    }
-
-    ulSizeOfStr = AnscSizeOfString(string);
-
-    AnscZeroMemory(tempChar, 128);
-
-    string      = AnscMoveToNextToken(string, separator);
-    ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
-
-    if ( !string || !ulTokenSize || ((ULONG)(string - pTemp) >= ulSizeOfStr) )
-    {
-        return;
-    }
-
-    string     += ulTokenSize;
-    string      = AnscMoveToNextToken(string, separator);
-    ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
-
-    if ( !string || !ulTokenSize || ((ULONG)(string - pTemp) >= ulSizeOfStr) )
-    {
-        pTemp[0] = 0;
-    }
-    else
-    {
-        AnscCopyString(tempChar, string);
-        AnscCopyString(pTemp, tempChar);
-
-        pTemp[AnscSizeOfString(tempChar)] = 0;
-    }
-
-    return;
 }
 
 
