@@ -95,6 +95,8 @@
 #include "ansc_global.h"
 #include "safec_lib_common.h"
 
+#if ! defined (AnscEqualString1)
+
 BOOL AnscEqualString1 (char *pString1, char *pString2, BOOL bCaseSensitive)
 {
     if (!pString1 && !pString2)
@@ -114,6 +116,10 @@ BOOL AnscEqualString1 (char *pString1, char *pString2, BOOL bCaseSensitive)
 
     return (strcasecmp (pString1, pString2) == 0) ? TRUE : FALSE;
 }
+
+#endif
+
+#if ! defined (AnscEqualString2)
 
 BOOL AnscEqualString2 (char *pString1, char *pString2, ULONG length, BOOL bCaseSensitive)
 {
@@ -135,6 +141,7 @@ BOOL AnscEqualString2 (char *pString1, char *pString2, ULONG length, BOOL bCaseS
     return (strncasecmp (pString1, pString2, length) == 0) ? TRUE : FALSE;
 }
 
+#endif
 
 void
 AnscFromHexToString
