@@ -1125,13 +1125,6 @@ AnscExtractToken2
         ULONG                       index,
         char*                       output
     );
-
-void
-AnscConsumeToken
-    (
-        char*                       string,
-        char*                       separator
-    );
 #endif
 
 void
