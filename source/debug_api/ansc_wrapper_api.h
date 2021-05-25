@@ -289,24 +289,6 @@ AnscMoveToNextToken2
         char*                       alphabet
     );
 
-ANSC_STATUS
-AnscExtractToken
-    (
-        char*                       string,
-        char*                       separator,
-        ULONG                       index,
-        char*                       output
-    );
-
-ANSC_STATUS
-AnscExtractToken2
-    (
-        char*                       string,
-        char*                       alphabet,
-        ULONG                       index,
-        char*                       output
-    );
-
 void
 AnscGetUlongString
     (
