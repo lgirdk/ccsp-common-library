@@ -1108,14 +1108,6 @@ AnscMoveToNextToken2
     );
 
 #if 0
-char*
-AnscMoveToPreviousToken
-    (
-        char*                       string,
-        char*                       separator,
-        PULONG                      pulTokenLength
-    );
-
 ANSC_STATUS
 AnscExtractToken
     (
