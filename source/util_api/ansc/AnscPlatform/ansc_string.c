@@ -66,9 +66,6 @@
         *   AnscGetStringUlong
         *   AnscGetStringUlongHex
         *   AnscCloneString
-        *   AnscCreateScanner
-        *   AnscRemoveScanner
-        *   AnscScanString
         *   AnscIsValidIpString
         *   AnscIsValidIp6String
         *   AnscParseIp6Address
@@ -806,44 +803,6 @@ AnscCloneString
     return  dst_string;
 }
 
-#endif
-
-#if 0
-ANSC_HANDLE
-AnscCreateScanner
-    (
-        char**                      string_array,
-        ULONG                       string_count
-    )
-{
-    UNREFERENCED_PARAMETER(string_array);
-    UNREFERENCED_PARAMETER(string_count);
-    return  (ANSC_HANDLE)NULL;
-}
-
-
-ANSC_STATUS
-AnscRemoveScanner
-    (
-        ANSC_HANDLE                 hStringScanner
-    )
-{
-    UNREFERENCED_PARAMETER(hStringScanner);
-    return  ANSC_STATUS_SUCCESS;
-}
-
-
-char*
-AnscScanString
-    (
-        ANSC_HANDLE                 hStringScanner,
-        char*                       tbs_string
-    )
-{
-    UNREFERENCED_PARAMETER(hStringScanner);
-    UNREFERENCED_PARAMETER(tbs_string);
-    return  NULL;
-}
 #endif
 
 BOOL
