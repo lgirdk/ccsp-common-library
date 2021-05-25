@@ -229,13 +229,6 @@ AnscFromStringToHex
     );
 
 void
-AnscStringFromAToU
-    (
-        char*                       string,
-        ULONG                       ulSize
-    );
-
-void
 AnscStringFromLToU
     (
         char*                       lstring,
