@@ -1164,27 +1164,6 @@ AnscCloneString
 
 #endif
 
-
-ANSC_HANDLE
-AnscCreateScanner
-    (
-        char**                      string_array,
-        ULONG                       string_count
-    );
-
-ANSC_STATUS
-AnscRemoveScanner
-    (
-        ANSC_HANDLE                 hStringScanner
-    );
-
-char*
-AnscScanString
-    (
-        ANSC_HANDLE                 hStringScanner,
-        char*                       tbs_string
-    );
-
 BOOL
 AnscIsValidIpString
     (
