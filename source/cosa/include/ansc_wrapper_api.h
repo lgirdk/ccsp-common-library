@@ -1091,13 +1091,6 @@ AnscSizeOfToken3
         ULONG                       range
     );
 
-ULONG
-AnscNumberOfTokens
-    (
-        char*                       string,
-        char*                       separator
-    );
-
 char*
 AnscMoveToNextToken
     (

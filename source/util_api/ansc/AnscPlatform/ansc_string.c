@@ -58,7 +58,6 @@
         *   AnscSizeOfToken
         *   AnscSizeOfToken2
         *   AnscSizeOfToken3
-        *   AnscNumberOfTokens
         *   AnscMoveToNextToken
         *   AnscMoveToNextToken2
         *   AnscMoveToPreviousToken
@@ -469,48 +468,6 @@ AnscSizeOfToken3
 
             string++;
         }
-    }
-
-    return  count;
-}
-
-
-ULONG
-AnscNumberOfTokens
-    (
-        char*                       string,
-        char*                       separator
-    )
-{
-    ULONG                           ulSizeOfStr = 0;
-    ULONG                           count       = 0;
-    ULONG                           ulTokenSize = 0;
-    char*                           pTempChar   = NULL;
-
-    /*RDKB-5652, CID-24063, 11-May-2016, Null validation before assignement*/
-    if( !string || !separator )
-    {
-        return  0;
-    }
-
-    ulSizeOfStr = AnscSizeOfString(string);
-    pTempChar   = string;
-
-    string      = AnscMoveToNextToken(string, separator);
-    ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
-
-    if ( !string || !ulTokenSize )
-    {
-        return  0;
-    }
-
-    while ( string && ulTokenSize && ((ULONG)(string - pTempChar) < ulSizeOfStr) )
-    {
-        count++;
-
-        string     += ulTokenSize;
-        string      = AnscMoveToNextToken(string, separator);
-        ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
     }
 
     return  count;
