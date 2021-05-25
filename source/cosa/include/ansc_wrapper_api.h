@@ -1105,14 +1105,6 @@ AnscMoveToNextToken2
         char*                       alphabet
     );
 
-char*
-AnscMoveToPreviousToken
-    (
-        char*                       string,
-        char*                       separator,
-        PULONG                      pulTokenLength
-    );
-
 ANSC_STATUS
 AnscExtractToken
     (
