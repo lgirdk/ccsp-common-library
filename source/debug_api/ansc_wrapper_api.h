@@ -228,13 +228,6 @@ AnscFromStringToHex
         char*                       string,
         PUCHAR                      hex
     );
-
-void
-AnscStringFromAToU
-    (
-        char*                       string,
-        ULONG                       ulSize
-    );
 #endif
 
 void
