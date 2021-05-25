@@ -51,7 +51,6 @@
         *   AnscEqualString1
         *   AnscEqualString2
         *   AnscFromHexToString
-        *   AnscFromStringToHex
         *   AnscStringFromLToU
         *   AnscStringFromUToL
         *   AnscSizeOfToken
@@ -255,48 +254,6 @@ AnscFromHexToString
             string[i] += (char)c_delta;
         }
     }
-}
-
-
-ULONG
-AnscFromStringToHex
-    (
-        char*                       string,
-        PUCHAR                      hex
-    )
-{
-    PUCHAR                          hex_string   = hex;
-    ULONG                           ulUcharCount = AnscSizeOfString(string) / 2;
-    ULONG                           ulTmpValue   = 0;
-    ULONG                           i            = 0;
-    BOOL                            bZeroOmitted = ((AnscSizeOfString(string) % 2) != 0);
-    char                            temp_char[3];
-
-    if ( bZeroOmitted )
-    {
-        temp_char[0] = '0';
-        temp_char[1] = *string; string++;
-        temp_char[2] = 0;
-
-        ulTmpValue = AnscGetStringUlongHex(temp_char);
-
-        *hex_string = (UCHAR)ulTmpValue;
-         hex_string++;
-    }
-
-    for ( i = 0; i < ulUcharCount; i++ )
-    {
-        temp_char[0] = *string; string++;
-        temp_char[1] = *string; string++;
-        temp_char[2] = 0;
-
-        ulTmpValue = AnscGetStringUlongHex(temp_char);
-
-        *hex_string = (UCHAR)ulTmpValue;
-         hex_string++;
-    }
-
-    return  hex_string - hex;
 }
 
 

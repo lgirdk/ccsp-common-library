@@ -221,13 +221,6 @@ AnscFromHexToString
         BOOL                        bLowerCase
     );
 
-ULONG
-AnscFromStringToHex
-    (
-        char*                       string,
-        PUCHAR                      hex
-    );
-
 void
 AnscStringFromLToU
     (
