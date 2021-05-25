@@ -60,8 +60,6 @@
         *   AnscSizeOfToken3
         *   AnscMoveToNextToken
         *   AnscMoveToNextToken2
-        *   AnscExtractToken
-        *   AnscExtractToken2
         *   AnscGetUlongString
         *   AnscGetStringUlong
         *   AnscGetStringUlongHex
@@ -499,127 +497,6 @@ AnscMoveToNextToken2
 
     return  string;
 }
-
-#if 0
-ANSC_STATUS
-AnscExtractToken
-    (
-        char*                       string,
-        char*                       separator,
-        ULONG                       index,
-        char*                       output
-    )
-{
-    ULONG                           ulTokenSize = 0;
-
-    /*RDKB-5652, CID-24096, 11-May-2016, Null validation before assignement*/
-    if ( !string || !separator )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    string      = AnscMoveToNextToken(string, separator);
-    /*CID: 66026 Dereference before null check*/
-    if ( !string )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-    ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
-
-    if ( !ulTokenSize )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    while ( index && string && ulTokenSize )
-    {
-        index--;
-
-        string     += ulTokenSize;
-        string      = AnscMoveToNextToken(string, separator);
-	/*CID: 66026 Dereference before null check*/
-        if ( !string )
-        {
-            return  ANSC_STATUS_UNAPPLICABLE;
-        }
-        ulTokenSize = AnscSizeOfToken(string, separator, AnscSizeOfString(string));
-    }
-
-    if ( string && ulTokenSize )
-    {
-        AnscCopyMemory(output, string, ulTokenSize);
-
-        output[ulTokenSize] = 0;
-    }
-    else
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    return  ANSC_STATUS_SUCCESS;
-}
-
-
-ANSC_STATUS
-AnscExtractToken2
-    (
-        char*                       string,
-        char*                       alphabet,
-        ULONG                       index,
-        char*                       output
-    )
-{
-    ULONG                           ulTokenSize = 0;
-
-
-    /*RDKB-5652, CID-24165, 11-May-2016, Null validation before assignement*/
-    if ( !string || !alphabet )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    string      = AnscMoveToNextToken2(string, alphabet);
-    /*CID: 55939 Dereference before null check*/ 
-    if ( !string )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-    ulTokenSize = AnscSizeOfToken2(string, alphabet, AnscSizeOfString(string));
-
-    if ( !ulTokenSize )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    while ( index && string && ulTokenSize )
-    {
-        index--;
-
-        string     += ulTokenSize;
-        string      = AnscMoveToNextToken2(string, alphabet);
-        /*CID: 55939 Dereference before null check*/ 
-        if ( !string )
-        {
-            return  ANSC_STATUS_UNAPPLICABLE;
-        }
-        ulTokenSize = AnscSizeOfToken2(string, alphabet, AnscSizeOfString(string));
-    }
-
-    if ( string && ulTokenSize )
-    {
-        AnscCopyMemory(output, string, ulTokenSize);
-
-        output[ulTokenSize] = 0;
-    }
-    else
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    return  ANSC_STATUS_SUCCESS;
-}
-
-#endif
 
 void
 AnscGetUlongString
