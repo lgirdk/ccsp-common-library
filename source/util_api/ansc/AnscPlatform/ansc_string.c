@@ -60,7 +60,6 @@
         *   AnscSizeOfToken3
         *   AnscMoveToNextToken
         *   AnscMoveToNextToken2
-        *   AnscMoveToPreviousToken
         *   AnscExtractToken
         *   AnscExtractToken2
         *   AnscConsumeToken
@@ -501,35 +500,6 @@ AnscMoveToNextToken2
     {
         string++;
     }
-
-    return  string;
-}
-
-
-char*
-AnscMoveToPreviousToken
-    (
-        char*                       string,
-        char*                       separator,
-        PULONG                      pulTokenLength
-    )
-{
-    ULONG                           count = 0;
-
-    while ( AnscCharInString(separator, *string) )
-    {
-        string--;
-    }
-
-    while ( !AnscCharInString(separator, *string) )
-    {
-        string--;
-        count++;
-    }
-
-    string++;
-
-    *pulTokenLength = count;
 
     return  string;
 }
