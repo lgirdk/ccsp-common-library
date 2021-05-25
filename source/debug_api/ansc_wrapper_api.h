@@ -276,13 +276,6 @@ AnscSizeOfToken3
     );
 
 ULONG
-AnscNumberOfCharsInString
-    (
-        char*                       string,
-        char                        charToFind
-    );
-
-ULONG
 AnscNumberOfTokens
     (
         char*                       string,
