@@ -52,7 +52,6 @@
         *   AnscEqualString2
         *   AnscFromHexToString
         *   AnscFromStringToHex
-        *   AnscStringFromAToU
         *   AnscStringFromLToU
         *   AnscStringFromUToL
         *   AnscSizeOfToken
@@ -298,29 +297,6 @@ AnscFromStringToHex
     }
 
     return  hex_string - hex;
-}
-
-
-void
-AnscStringFromAToU
-    (
-        char*                       string,
-        ULONG                       ulSize
-    )
-{
-    int                             i = 0;
-
-    /*
-     * Caller is responsible for making sure that string buffer is big enough for holding double-
-     * sized unicode string.
-     */
-    for ( i = (int)ulSize - 1; i >= 0; i-- )
-    {
-        string[i * 2 + 0] = string[i];
-        string[i * 2 + 1] = 0;
-    }
-
-    return;
 }
 
 
