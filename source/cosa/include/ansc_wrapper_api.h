@@ -1124,13 +1124,6 @@ AnscExtractToken2
     );
 
 void
-AnscConsumeToken
-    (
-        char*                       string,
-        char*                       separator
-    );
-
-void
 AnscGetUlongString
     (
         ULONG                       ulValue,
