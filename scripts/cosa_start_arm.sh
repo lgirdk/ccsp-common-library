@@ -215,8 +215,3 @@ then
     echo "Invoking TDK-B launcher script!!!"
     sh /usr/sbin/tdkb_launcher.sh &
 fi
-
-#start update webui certs 
-if [ -f /lib/rdk/check-webui-update.sh ] && [ "$BOX_TYPE" != "XB3" ]; then
-    sh /lib/rdk/check-webui-update.sh &
-fi
