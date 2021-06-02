@@ -370,3 +370,24 @@ if [ -e ./logagent ]; then
 	fi
 	cd ..
 fi
+
+# Wait with timeout for last CCSP component (ie CcspLMLite) before starting webui
+index=0
+MAX_TIMEOUT=30
+while [ $index -lt $MAX_TIMEOUT ]
+do
+	if [ -f /tmp/lmlite_initialized ]
+	then
+		echo "$0: CcspLMLite ready after $index seconds"
+		break
+	fi
+	index=$((index+1))
+	sleep 1
+done
+
+if [ $index -ge $MAX_TIMEOUT ]; then
+	echo "$0: CcspLMLite NOT ready after $index seconds"
+fi
+
+echo_t "Launching UI after all CCSP processes are up"
+/etc/start_lighttpd.sh start &
