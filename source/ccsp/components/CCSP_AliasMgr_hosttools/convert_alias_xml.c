@@ -9,6 +9,7 @@
 #define CUSTOM_MAP_GPERF_INT2EXT "custom_map_alias_int2ext.gperf"
 #define BUF_SIZE 256
 #define MAX_ALIAS 5
+#define DM_START_STR "Device."
 //=============================================================================
 
 typedef struct Alias_t
@@ -60,7 +61,7 @@ static int WriteResultToFile_ext2int()
     for (i = 0; i < alias_ptr; i++)
     {
         // External -> Internal Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"},%d,%d\n", g_AliasList[i].aliasExtName, g_AliasList[i].aliasIntName[0], g_AliasList[i].aliasIntName[1], g_AliasList[i].aliasIntName[2], g_AliasList[i].aliasIntName[3], g_AliasList[i].aliasIntName[4], g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"},%d,%d\n", g_AliasList[i].aliasExtName + strlen(DM_START_STR), g_AliasList[i].aliasIntName[0], g_AliasList[i].aliasIntName[1], g_AliasList[i].aliasIntName[2], g_AliasList[i].aliasIntName[3], g_AliasList[i].aliasIntName[4], g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
     }
     fputs("%%\n", fp);
@@ -108,7 +109,7 @@ static int WriteResultToFile_int2ext()
     for (i = 0; i < alias_ptr; i++)
     {
         // Internal -> External Mapping
-        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"\",\"\",\"\",\"\",},%d,%d\n", g_AliasList[i].aliasIntName[0], g_AliasList[i].aliasExtName, g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
+        snprintf(temp_buf, sizeof(temp_buf), "\"%s\",{\"%s\",\"\",\"\",\"\",\"\",},%d,%d\n", g_AliasList[i].aliasIntName[0]+ strlen(DM_START_STR), g_AliasList[i].aliasExtName, g_AliasList[i].aliasCount, g_AliasList[i].aliasStrict);
         fputs(temp_buf, fp);
     }
     fputs("%%\n", fp);
