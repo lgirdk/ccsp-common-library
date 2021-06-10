@@ -236,7 +236,7 @@ static int updateAliasMap(unsigned char aliasStrict, char* paramStr1, char* para
         }
         if (skip_update)
             continue;
-        if ((NULL != inStr) && (NULL != outStr))
+        if ((inStr[0] != '\0') && (outStr[0] != '\0'))
         {
             for (i = 0 ; i < MAX_ALIAS ; i++)
                 g_AliasList[alias_ptr].aliasIntName[i][0] = 0; 
