@@ -116,18 +116,21 @@ static const char* getAliasName(char* inName, unsigned char aliasType, unsigned 
     int indexIds[10];
     int indexIdCount;
     char temp_buf[BUF_SIZE];
+    char* pMapStr;
     int releaseMem = 0;
 
-    if (NULL == inName) return NULL;
+    if ((NULL == inName) || !strcmp(inName, "Device.")) return NULL;
 
     convertInstaceIDForMapping(inName, temp_buf, indexIds, &indexIdCount);
 
+    // Assumption: Input DM parameter name always starts with "Device.", so it is ignored during mapping
+    pMapStr = temp_buf + 7;
     if (0 == aliasType)
         // Get Internal name (External -> Internal)
-        pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
+        pStAlias = map_ExternalToInternal(pMapStr, strlen(pMapStr));
     else
         // Get External name (Internal -> External)
-        pStAlias = map_InternalToExternal(temp_buf, strlen(temp_buf));
+        pStAlias = map_InternalToExternal(pMapStr, strlen(pMapStr));
 
     if ((NULL != pStAlias) && (pStAlias->aliasCount != 0))
     {
@@ -198,11 +201,14 @@ aliasNames_t* lgiAliasGetInternalNames(char* externalName)
     int indexIds[10];
     int indexIdCount;
     char temp_buf[BUF_SIZE];
+    char* pMapStr;
 
-    if (NULL == externalName) return NULL;
+    if ((NULL == externalName) || !strcmp(externalName, "Device.")) return NULL;
     convertInstaceIDForMapping(externalName, temp_buf, indexIds, &indexIdCount);
 
-    pStAlias = map_ExternalToInternal(temp_buf, strlen(temp_buf));
+    // Assumption: Input DM parameter name always starts with "Device.", so it is ignored during mapping
+    pMapStr = temp_buf + 7;
+    pStAlias = map_ExternalToInternal(pMapStr, strlen(pMapStr));
     if ((NULL != pStAlias) && (pStAlias->aliasCount != 0))
     {
         pAliasNames = (aliasNames_t*) AnscAllocateMemory(sizeof(struct aliasNames_t));
