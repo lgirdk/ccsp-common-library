@@ -562,6 +562,27 @@
       <Name>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_COMCAST-COM_MAC_FilteringMode</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.FilteringMode</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTableNumberOfEntries</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.FilterAsBlackList</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.MACAddress</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.DeviceName</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Name>
     </Param>
     <Param invisible="true">
@@ -1256,6 +1277,27 @@
     </Param>
     <Param>
       <Name>Device.DeviceInfo.X_LGI-COM_WAN_IPv6</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.FilteringMode</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTableNumberOfEntries</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.FilterAsBlackList</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.MACAddress</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.DeviceName</Name>
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</Name>
@@ -2171,6 +2213,30 @@
     <Alias>
       <External>Device.WiFi.SSID.{i}.X_LGI-COM_DefaultSSID</External>
       <Internal>Device.WiFi.SSID.{i}.X_COMCAST-COM_DefaultSSID</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.FilteringMode</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.FilteringMode</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTableNumberOfEntries</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTableNumberOfEntries</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.Enable</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MACFilter.FilterAsBlackList</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MACFilter.FilterAsBlackList</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.MACAddress</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.MACAddress</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.DeviceName</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.DeviceName</Internal>
     </Alias>
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</External>
