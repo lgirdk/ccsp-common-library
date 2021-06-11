@@ -74,9 +74,9 @@ typedef struct _component_info {
 } component_info;
 
 #if defined(PUMA6_PLATFORM)
-/*Because of more CPU load in PUMA6 devices timeout is set to 5 minutes*/
-int   CcspBaseIf_timeout_seconds        = 300; //seconds
-int   CcspBaseIf_timeout_getval_seconds = 300; //seconds
+/*Because of more CPU load in PUMA6 devices timeout is set to 6 minutes*/
+int   CcspBaseIf_timeout_seconds        = 360; //seconds
+int   CcspBaseIf_timeout_getval_seconds = 360; //seconds
 #else
 int   CcspBaseIf_timeout_seconds        = 120; //seconds
 int   CcspBaseIf_timeout_getval_seconds = 120; //seconds
