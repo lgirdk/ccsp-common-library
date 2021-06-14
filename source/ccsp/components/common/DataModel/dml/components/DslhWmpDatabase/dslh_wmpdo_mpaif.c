@@ -715,6 +715,17 @@ DslhWmpdoMpaSetParameterValues
             pVarEntity = (PDSLH_VAR_ENTITY_OBJECT)pVarRecord->hDslhVarEntity;
         }
 
+        if ( !pVarRecord->IsRecordWritable(pVarRecord))
+        {
+            bFaultEncountered = TRUE;
+
+            *ppInvalidParameterName = AnscCloneString(pParameterValueArray[i].Name);
+
+            returnStatus = CCSP_ERR_NOT_WRITABLE;
+
+            break;
+        }
+
 		if( pVarEntity)
 		{
 			if(pVarEntity->ParamDescr->bInvisible && bFromAcs)
@@ -786,17 +797,7 @@ DslhWmpdoMpaSetParameterValues
 			}
 		}
 		
-        if ( !pVarRecord->IsRecordWritable(pVarRecord))
-        {
-            bFaultEncountered = TRUE;
-
-            *ppInvalidParameterName = AnscCloneString(pParameterValueArray[i].Name);
-
-			returnStatus = CCSP_ERR_NOT_WRITABLE;
-
-            break;
-        }
-        else if ( !pVarRecord->TstValue((ANSC_HANDLE)pVarRecord, pParameterValueArray[i].Value) )
+        if ( !pVarRecord->TstValue((ANSC_HANDLE)pVarRecord, pParameterValueArray[i].Value) )
         {
             bFaultEncountered = TRUE;
 
