@@ -2462,8 +2462,7 @@ DslhWmpdoMpaSetParameterAttributes
                       pSLinkEntry     = AnscQueueGetNextEntry(pSLinkEntry);
 
                       if ((pChildVarEntity->ParamDescr->NotifyStatus == DSLH_CWMP_NOTIFY_STATUS_alwaysOff) &&
-                          ((pSetParameterAttribArray[i].Notification == DSLH_CWMP_NOTIFICATION_active) ||
-                           (pSetParameterAttribArray[i].Notification == DSLH_CWMP_NOTIFICATION_passive)))
+                          (pSetParameterAttribArray[i].Notification == DSLH_CWMP_NOTIFICATION_active))
                       {
                            returnStatus = CCSP_ERR_SETATTRIBUTE_REJECTED;
                            goto  EXIT3;
