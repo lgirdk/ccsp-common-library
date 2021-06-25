@@ -1894,10 +1894,6 @@
       <Internal>Device.X_CISCO_COM_CableModem.DOCSISVersion</Internal>
     </Alias>
     <Alias>
-      <External>Device.X_LGI-COM_CableModem.CMStatus</External>
-      <Internal>Device.X_CISCO_COM_CableModem.CMStatus</Internal>
-    </Alias>
-    <Alias>
       <External>Device.X_LGI-COM_CableModem.DOCSISDownstreamScanning</External>
       <Internal>Device.X_CISCO_COM_CableModem.DOCSISDownstreamScanning</Internal>
     </Alias>
