@@ -601,6 +601,22 @@ AnscSctoEngage
             }
 
     }
+
+#ifdef ANSC_SOCKET_SO_TCP_SYNCNT
+    if (pMyObject->TcpSynRetries > 0)
+    {
+        int retries = pMyObject->TcpSynRetries;
+        _xskt_setsocketopt(pMyObject->Socket, ANSC_SOCKET_SOL_TCP, ANSC_SOCKET_SO_TCP_SYNCNT, &retries, sizeof(retries));
+    }
+#endif
+#ifdef ANSC_SOCKET_SO_TCP_USER_TIMEOUT
+    if (pMyObject->TcpUserTimeout > 0)
+    {
+        unsigned int timeout = pMyObject->TcpUserTimeout;
+        _xskt_setsocketopt(pMyObject->Socket, ANSC_SOCKET_SOL_TCP, ANSC_SOCKET_SO_TCP_USER_TIMEOUT, &timeout, sizeof(timeout));
+    }
+#endif
+
     /*
      * As a Tcp client application, we now try to connect the network server, whose address is
      * specified by the "peer address" and "peer port" fields.
