@@ -216,6 +216,7 @@
     #define  ANSC_SOCKET_FD_GET(set, s, i)          _ansc_socket_fd_get((set), &(s), i)
 
     #define  ANSC_SOCKET_SOL_SOCKET                 SOL_SOCKET
+    #define  ANSC_SOCKET_SOL_TCP                    SOL_TCP
     #define  ANSC_SOCKET_SOL_IPPROTO_TCP            IPPROTO_TCP
     #define  ANSC_SOCKET_SOL_IPPROTO_IP             IPPROTO_IP
     #define  ANSC_SOCKET_SO_BROADCAST               SO_BROADCAST
@@ -223,6 +224,14 @@
     #define  ANSC_SOCKET_SO_SNDTIMEO                SO_SNDTIMEO
     #define  ANSC_SOCKET_SO_RCVTIMEO                SO_RCVTIMEO
     #define  ANSC_SOCKET_SO_BINDTODEVICE            SO_BINDTODEVICE
+    #ifdef TCP_SYNCNT
+    #define  ANSC_SOCKET_SO_TCP_SYNCNT              TCP_SYNCNT
+    #define  ANSC_SOCKET_SO_TCP_SYNCNT_VAL          4
+    #endif
+    #ifdef TCP_USER_TIMEOUT
+    #define  ANSC_SOCKET_SO_TCP_USER_TIMEOUT        TCP_USER_TIMEOUT
+    #define  ANSC_SOCKET_SO_TCP_USER_TIMEOUT_VAL    60000
+    #endif
 
     #define  ANSC_SOCKET_SO_TCP_USETLS              0
     #define  ANSC_SOCKET_SO_TCP_TLSEXPORTONLY       0
