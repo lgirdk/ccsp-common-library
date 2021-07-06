@@ -265,6 +265,8 @@ HttpWcsoEnrollObjects
         }
         else
         {
+            pTcpSimpleClient->TcpSynRetries = ANSC_SOCKET_SO_TCP_SYNCNT_VAL;
+            pTcpSimpleClient->TcpUserTimeout = ANSC_SOCKET_SO_TCP_USER_TIMEOUT_VAL;
             pMyObject->hTcpSimpleClient = (ANSC_HANDLE)pTcpSimpleClient;
         }
     }
