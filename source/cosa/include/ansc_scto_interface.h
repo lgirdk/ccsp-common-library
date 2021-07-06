@@ -370,6 +370,8 @@ typedef  ANSC_STATUS
     ANSCCO_VER3_CLASS_CONTENT                                                               \
     /* start of object class content */                                                     \
     ANSC_SOCKET                     Socket;                                                 \
+    ULONG                           TcpSynRetries;                                          \
+    ULONG                           TcpUserTimeout;                                         \
     BOOL                            bSocketBindToDevice;                                    \
     char                            SocketDeviceName[ANSC_OBJ_IF_NAME_SIZE];                \
                                                                                             \
@@ -461,6 +463,8 @@ typedef  ANSC_STATUS
     ANSCCO_VER3_CLASS_CONTENT                                                               \
     /* start of object class content */                                                     \
     ANSC_SOCKET                     Socket;                                                 \
+    ULONG                           TcpSynRetries;                                          \
+    ULONG                           TcpUserTimeout;                                         \
     BOOL                            bSocketBindToDevice;                                    \
     char                            SocketDeviceName[ANSC_OBJ_IF_NAME_SIZE];                \
                                                                                             \
