@@ -322,6 +322,8 @@ AnscSctoInitialize
     pMyObject->Shutdown          = AnscSctoShutdown;
 
     pMyObject->Socket            = ANSC_SOCKET_INVALID_SOCKET;
+    pMyObject->TcpSynRetries     = 0;
+    pMyObject->TcpUserTimeout    = 0;
     pMyObject->hWorker           = (ANSC_HANDLE)NULL;
     pMyObject->MaxMessageSize    = ANSC_SCTO_MAX_MESSAGE_SIZE;
     pMyObject->Mode              = 0;
