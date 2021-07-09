@@ -88,17 +88,6 @@ else
     echo "bbhm patch is not required for other platforms"
 fi
 
-# Start coredump
-if [ -f "$PWD/core_compr" ]; then
-	if ! [ -e "/var/core" ]; then
-		mkdir -p /var/core/
-	fi
-	echo "|$PWD/core_compr /var/core %p %e" >/proc/sys/kernel/core_pattern
-	ulimit -c unlimited
-
-	./core_report.sh &
-fi
-
 cp ccsp_msg.cfg /tmp
 
 # have IP address for dbus config generated
