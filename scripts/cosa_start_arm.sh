@@ -146,11 +146,6 @@ then
 	cd ..
 fi
 
-#start update CADL 
-if [ -f /usr/bin/check-ca-update.sh ] && [ "$BOX_TYPE" != "XB3" ]; then
-    sh /usr/bin/check-ca-update.sh &
-fi
-
 #Mesh-596: We need to start dropbear a bit earlier so that lease sync happens
 #for plume
 if [ "x$MULTI_CORE" == "xyes" ]; then
