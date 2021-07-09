@@ -151,9 +151,6 @@ then
 	fi
 fi
 
-echo_t "Getting value of CMC and CID before PSM Initialization"
-grep -irn "X_COMCAST-COM_CID\|X_COMCAST-COM_CMC" $BBHM_CUR_CFG
-
 if [ "x"$Subsys = "x" ];then
 	$BINPATH/PsmSsp
 else
