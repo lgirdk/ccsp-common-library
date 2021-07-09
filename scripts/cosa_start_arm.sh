@@ -95,17 +95,7 @@ else
     echo "bbhm patch is not required for other platforms"
 fi
 
-# Start coredump
-if [ -f "$PWD/core_compr" ]; then
-	if ! [ -e "/var/core" ]; then
-		mkdir -p /var/core
-	fi
-	echo "|$PWD/core_compr /var/core %p %e" >/proc/sys/kernel/core_pattern
-	ulimit -c unlimited
-
-	./core_report.sh &
-
-elif [ "$BUILD_TYPE" = "prod" ]; then
+if [ "$BUILD_TYPE" = "prod" ]; then
 	echo '|/bin/false' >/proc/sys/kernel/core_pattern
 	ulimit -c 0
 else
