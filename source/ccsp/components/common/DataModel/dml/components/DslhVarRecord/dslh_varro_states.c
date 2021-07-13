@@ -913,7 +913,8 @@ DslhVarroNotifyValueChanged
 	{
 		pNewValue->ReqSenderID = pMyObject->ReqSenderID;
 	}
-    pAccessList = AnscCloneString(pMyObject->AccessList);
+
+    pAccessList = pMyObject->AccessList ? AnscCloneString(pMyObject->AccessList) : NULL;
 
     returnStatus =
         pDslhMbiIf->SendParameterValueChangeSignal
