@@ -117,7 +117,6 @@
     #define  _ansc_stricmp                          stricmp
     #define  _ansc_strcoll                          strcoll
     #define  _ansc_strcspn                          strcspn
-    #define  _ansc_strdup                           _strdup
     #define  _ansc_strspn                           strspn
     #define  _ansc_strstr                           strstr
     #define  _ansc_strtok                           strtok
@@ -211,25 +210,6 @@
         }
 
         return  pBuf;
-    }
-
-
-    static __inline__ char*
-    _strdup
-        (
-            char*                       pSrc
-        )
-    {
-        char*                           pTemp;
-        unsigned long                   ulLen;
-
-        ulLen = strlen(pSrc) + 1;
-
-        pTemp = kmalloc(ulLen, GFP_ATOMIC);
-
-        strcpy(pTemp, pSrc);
-
-        return pTemp;
     }
 
 #ifndef _ANSC_LINUX_2_6_

@@ -132,9 +132,6 @@
 
     #define  _ansc_strcoll                          strcoll
     #define  _ansc_strcspn                          strcspn
-
-    char*    _ansc_strdup(char* pSrc);
-
     #define  _ansc_strspn                           strspn
     #define  _ansc_strstr                           strstr
     #define  _ansc_strtok                           strtok

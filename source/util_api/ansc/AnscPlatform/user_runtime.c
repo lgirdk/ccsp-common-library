@@ -50,7 +50,6 @@
 
         *   _ansc_itoa
         *   _ansc_ultoa
-        *   _ansc_strdup
 
     ---------------------------------------------------------------
 
@@ -166,24 +165,5 @@ _ansc_ultoa
     }
 
     return  pBuf;
-}
-
-
-char*
-_ansc_strdup
-    (
-        char*                       pSrc
-    )
-{
-    char*                           pTemp;
-    ULONG                           ulLen;
-
-    ulLen = _ansc_strlen(pSrc) + 1;
-
-    pTemp = AnscAllocateMemory(ulLen);
-
-    _ansc_strcpy(pTemp, pSrc);
-
-    return pTemp;
 }
 
