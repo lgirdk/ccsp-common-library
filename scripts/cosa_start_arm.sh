@@ -81,13 +81,6 @@ export LD_LIBRARY_PATH=$PWD:.:$PWD/../../lib:$PWD/../../.:/lib:/usr/lib:$LD_LIBR
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
 export BOX_TYPE ATOM_ARPING_IP
 
-#zqiu: update the bbhm for 2.1s11
-if [ "$BOX_TYPE" = "XB3" ]; then
-    /usr/ccsp/psm/bbhm_patch.sh -f /tmp/bbhm_cur_cfg.xml
-else
-    echo "bbhm patch is not required for other platforms"
-fi
-
 if [ "$BUILD_TYPE" = "prod" ]; then
 	echo /dev/null >/proc/sys/kernel/core_pattern
 	ulimit -c 0
