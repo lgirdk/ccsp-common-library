@@ -75,13 +75,6 @@ export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
 export LOG4C_RCPATH=/etc
 export BOX_TYPE ATOM_ARPING_IP
 
-#zqiu: update the bbhm for 2.1s11
-if [ "$BOX_TYPE" = "XB3" ]; then
-    /usr/ccsp/psm/bbhm_patch.sh -f /nvram/bbhm_cur_cfg.xml
-else
-    echo "bbhm patch is not required for other platforms"
-fi
-
 cp ccsp_msg.cfg /tmp
 
 # have IP address for dbus config generated
