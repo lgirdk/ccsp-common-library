@@ -93,31 +93,6 @@ fi
 echo "Creating MESH vlans"
 $UTOPIA_PATH/service_multinet_exec create_mesh_vlan &
 
-if [ "$IS_BCI" != "yes" ] && [ "x$BOX_TYPE" != "xXB3" ]; then
-echo "Starting brlan1 initialization, check whether brlan1 is there or not"
-ifconfig | grep brlan1
-if [ $? == 1 ]; then
-    echo "brlan1 not present go ahead and create it"
-    sysevent set multinet-up 2
-fi
-
-# Waiting for brlan1 interface creation for 30 sec
-iter=0
-max_iter=2
-while [ ! -f /tmp/brlan1_up ] && [ "$iter" -le $max_iter ]
-do
-    iter=$((iter+1))
-    echo "Sleep Iteration# $iter"
-    sleep 10
-done
-
-if [ ! -f /tmp/brlan1_up ]; then
-    echo "brlan1 is not up after maximum iterations i.e 30 sec go ahead with the execution"
-else
-    echo "brlan1 is created after interation $iter go ahead with the execution"
-fi
-fi
-
 HOME_LAN_ISOLATION=`psmcli get dmsb.l2net.HomeNetworkIsolation`
 if [ "$HOME_LAN_ISOLATION" = "1" ]; then
 echo "Starting brlan10 initialization, check whether brlan10 is there or not"
