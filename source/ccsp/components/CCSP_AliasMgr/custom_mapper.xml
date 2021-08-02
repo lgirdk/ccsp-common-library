@@ -187,6 +187,15 @@
       <Name>Device.X_LGI-COM_General_Internal.CPE.DataModelSpecification</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.LED.DSErrorConditionTimer</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.LED.USErrorConditionTimer</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.LED.RegistrationErrorConditionTimer</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Name>
     </Param>
     <Param invisible="true">
@@ -914,6 +923,15 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.CPE.DataModelSpecification</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.LED.DSErrorConditionTimer</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.LED.USErrorConditionTimer</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.LED.RegistrationErrorConditionTimer</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.UserBridgeModeAllowed</Name>
@@ -1724,6 +1742,18 @@
     <Alias>
       <External>Device.X_LGI-COM_General.CPE.DataModelSpecification</External>
       <Internal>Device.X_LGI-COM_General_Internal.CPE.DataModelSpecification</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.LED.DSErrorConditionTimer</External>
+      <Internal>Device.X_LGI-COM_General_Internal.LED.DSErrorConditionTimer</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.LED.USErrorConditionTimer</External>
+      <Internal>Device.X_LGI-COM_General_Internal.LED.USErrorConditionTimer</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.LED.RegistrationErrorConditionTimer</External>
+      <Internal>Device.X_LGI-COM_General_Internal.LED.RegistrationErrorConditionTimer</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_General.UserBridgeModeAllowed</External>
