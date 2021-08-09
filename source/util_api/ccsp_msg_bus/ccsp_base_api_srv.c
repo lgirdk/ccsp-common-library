@@ -1986,8 +1986,10 @@ CcspBaseIf_Deadlock_Detection_Thread
         //signal(SIGFPE, sig_empty_handler);
         //signal(SIGILL, sig_empty_handler);
 
+         //Temporary change for debugging purpose
+         abort(); 
         
-        exit(-1);
+        //exit(-1);
     }
 
     
