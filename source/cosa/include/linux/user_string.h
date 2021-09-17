@@ -87,6 +87,8 @@
 ***********************************************************/
 #ifdef _ANSC_LINUX
 
+#include <string.h>
+
 #define  UserSizeOfString(s)                        (ULONG)(strlen(s))
 #define  UserCatString                              strcat
 
