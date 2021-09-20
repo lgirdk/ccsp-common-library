@@ -273,11 +273,6 @@ then
 	fi
 fi
 
-if [ -f /rdklogger/fileUploadRandom.sh ]
-then
-	/rdklogger/fileUploadRandom.sh &
-fi
-
 #TCCBR-3882: Initializing log_journal.service from here until all dependent services are implemented
 if [ "$BOX_TYPE" = "TCCBR" ]
 then
