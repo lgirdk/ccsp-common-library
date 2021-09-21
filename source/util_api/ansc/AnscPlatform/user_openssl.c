@@ -218,8 +218,8 @@ int openssl_init (int who_calls)
   SSL_CTX *ssl_ctx = NULL;
   X509 *dev_cert = NULL;
   X509 *man_cert = NULL;
-  FILE *f_cert = fopen(DEVICE_CERT, "rb");
-  FILE *f_man = fopen(MANUFACTURER_CERT, "rb");
+  FILE *f_cert = NULL;
+  FILE *f_man = NULL;
   int ret = -1;
   int return_status = 1;
   
@@ -252,15 +252,13 @@ int openssl_init (int who_calls)
 
   if (who_calls == SSL_CLIENT_CALLS)
   {
+      f_cert = fopen(DEVICE_CERT, "rb");
+      f_man = fopen(MANUFACTURER_CERT, "rb");
       //Load Certificate chain
       if (f_cert == NULL || f_man == NULL)
       {
-        if (f_cert)
-           fclose(f_cert);
-        if (f_man)
-           fclose(f_man);
         AnscTraceWarning((" openssl_connect - Unable to open device, manufacturer certificates!!!\n"));
-        return_status = 0;
+        goto EXIT0;
       }
       /* Load device certificate to ssl-ctx structure*/
       if (f_cert)
@@ -277,6 +275,7 @@ int openssl_init (int who_calls)
           return_status = 0;
         }
         fclose(f_cert);
+        f_cert = NULL;
       }
 
       if (return_status == 1)
@@ -299,6 +298,7 @@ int openssl_init (int who_calls)
             return_status = 0;
           }
           fclose(f_man);
+          f_man = NULL;
         }
       }
 
@@ -312,7 +312,7 @@ int openssl_init (int who_calls)
       if (return_status == 0)
       {
         AnscTraceWarning((" openssl_connect - Certificate loading failed!!!\n"));
-        return 0;
+        goto EXIT0;
       }
 
       /* Load private key to ssl-ctx structure*/
@@ -322,7 +322,7 @@ int openssl_init (int who_calls)
         AnscTraceWarning((" openssl_connect - Private key loading failed!!!\n"));
         SSL_CTX_free (ssl_ctx);
         openssl_print_errors (NULL);
-        return 0;
+        goto EXIT0;
       }
       SSL_CTX_set_verify (ssl_ctx, SSL_VERIFY_NONE, NULL);
 
@@ -350,6 +350,19 @@ int openssl_init (int who_calls)
   openssl_load_ca_certificates(who_calls);
 
   return 1;
+
+EXIT0:          
+  if (f_cert)
+  {
+      fclose(f_cert);
+      f_cert = NULL;
+  }
+  if (f_man)
+  {
+      fclose(f_man);
+      f_man = NULL;
+  }
+  return 0;
 }
 
 int openssl_read (int fd, char *buf, int bufsize, void *ctx)
