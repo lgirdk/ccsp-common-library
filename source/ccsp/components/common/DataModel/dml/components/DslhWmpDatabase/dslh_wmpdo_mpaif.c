@@ -525,6 +525,15 @@ void* Send_Notification_Thread_Func(void* arg)
 		printf("<< str[i] %s >>\n",str1[i]);
 		CcspTraceWarning(("<< str[i] %s >>\n",str1[i]));
 	     }
+             else
+             {
+                 int inst;
+                 if (sscanf(str1[i], "Device.WiFi.AccessPoint.%d", &inst) == 1)
+                 {
+                     sprintf(str1[i],"Device.WiFi.AccessPoint.%d.Security.X_LGI-COM_ShadowPassphrase", inst);
+                 }
+             }
+
              notif_val[0].parameterValue = str1[i];
 	         ret =    CcspBaseIf_setParameterValues(
 		               bus_handle,
