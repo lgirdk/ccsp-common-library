@@ -110,14 +110,6 @@
 #include "cert_attr_structure.h"
 #include "alcert_internal.h"
 
-/*
- * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
- * the expected way...
- */
-#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
-#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
-#endif
-
 /**************************************************************
  *
  *  Exported APIs

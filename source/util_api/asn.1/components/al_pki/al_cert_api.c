@@ -108,14 +108,6 @@
 #include "cert_exported_api.h"
 #include "alcert_internal.h"
 
-/*
- * Sanity check to confirm that the _ANSC_LITTLE_ENDIAN_ has been defined in
- * the expected way...
- */
-#if ! defined (_ANSC_LITTLE_ENDIAN_AUTO_)
-#error "_ANSC_LITTLE_ENDIAN_ should be automatically defined?"
-#endif
-
 /**********************************************************************
 
     AL_CERT API FUNCTION

@@ -84,8 +84,6 @@
 #define _ANSC_LITTLE_ENDIAN_
 #endif
 
-#define _ANSC_LITTLE_ENDIAN_AUTO_
-
 /*
  *  Indicates whether word access has to occur on word boundary
  */
