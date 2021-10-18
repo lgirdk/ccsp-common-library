@@ -201,7 +201,8 @@ fi
 
 #CBR not a best place to start here, we will end up creating bridges before
 #wifi dml initialized, currently moving this to xfinity_hotspot_bridge_setup.sh
-if [ "$BOX_TYPE" != "TCCBR" ]
+#MV2 plus we would call hotspot start in GW prov app
+if [ "$BOX_TYPE" != "TCCBR" ] && [ "$BOX_TYPE" != "MV2PLUS" ]
 then
 	echo "bringing up XfinityWifi interfaces after all CCSP processes are up"
 	xfinityenable=`psmcli get dmsb.hotspot.enable`
