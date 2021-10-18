@@ -750,6 +750,15 @@
     <Param invisible="true">
       <Name>Device.X_CISCO_COM_Security.Firewall.IPSecPassthrough</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_AuthenticationType</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyID</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyValue</Name>
+    </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
@@ -1508,6 +1517,15 @@
     </Param>
     <Param>
       <Name>Device.WiFi.Radio.{i}.Stats.X_LGI-COM_ChannelUtilization</Name>
+    </Param>
+    <Param>
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</Name>
+    </Param>
+    <Param>
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyID</Name>
+    </Param>
+    <Param>
+      <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyValue</Name>
     </Param>
 </ParamList>
 <AliasList>
@@ -2499,6 +2517,18 @@
     <Alias>
       <External>Device.WiFi.Radio.{i}.Stats.X_LGI-COM_ChannelUtilization</External>
       <Internal>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_ChannelUtilization</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</External>
+      <Internal>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_AuthenticationType</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyID</External>
+      <Internal>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyID</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyValue</External>
+      <Internal>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyValue</Internal>
     </Alias>
     <Alias strict="true">
       <External>Device.X_LGI-COM_Gateway.</External>
