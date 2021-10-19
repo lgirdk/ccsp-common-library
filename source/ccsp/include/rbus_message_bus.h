@@ -46,7 +46,7 @@
 #include <rbus-core/rbus_core.h>
 #include <rbus-core/rbus_session_mgr.h>
 #include <rtmessage/rtLog.h>
-#include <rbus_filter.h>
+#include <rbus/rbus_filter.h>
 
 void rbusValue_initFromMessage(rbusValue_t* value, rbusMessage msg);
 void rbusValue_appendToMessage(char const* name, rbusValue_t value, rbusMessage msg);
