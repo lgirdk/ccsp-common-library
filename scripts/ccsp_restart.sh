@@ -27,6 +27,7 @@ exec 3>&1 4>&2 >>$SELFHEALFILE 2>&1
 	killall PsmSsp
     killall self_heal_connectivity_test.sh
     killall resource_monitor.sh
+    killall task_monitor_starter.sh
 
 	if [ -f "/tmp/pam_initialized" ]
 	then
