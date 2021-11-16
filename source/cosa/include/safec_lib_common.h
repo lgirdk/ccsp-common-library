@@ -79,8 +79,23 @@ typedef int errno_t;
 
 #define strtok_s(dest, dmax, delim, ptr) strtok_r(dest, delim, ptr)
 
+#if 1
+
 #define sprintf_s(dst, max, fmt, ...) EOK; \
   sprintf( dst, fmt, ##__VA_ARGS__ );
+
+#else
+
+static inline int sprintf_s (char *str, size_t size, const char *format, ...)
+{
+    va_list args;
+    va_start (args, format);
+    vsprintf (str, format, args);
+    va_end (args);
+    return EOK;
+}
+
+#endif
 
 static inline int strcmp_s(const char *dst, int dmax, const char *src, int *r) {
         *r = strcmp(dst, src);
