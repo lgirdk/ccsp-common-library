@@ -502,6 +502,9 @@
       <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.X_LGI-COM_EnableVendorClassID</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.GreTcpMss</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_COMCAST-COM_GRE.Tunnel.{i}.InterfaceNumberOfEntries</Name>
     </Param>
     <Param invisible="true">
@@ -1250,6 +1253,9 @@
     </Param>
     <Param>
       <Name>Device.GRE.Tunnel.{i}.X_LGI-COM_EnableVendorClassID</Name>
+    </Param>
+    <Param>
+      <Name>Device.GRE.Tunnel.{i}.X_LGI-COM_GreTcpMss</Name>
     </Param>
     <Param>
       <Name>Device.GRE.Tunnel.{i}.InterfaceNumberOfEntries</Name>
@@ -2179,6 +2185,10 @@
     <Alias>
       <External>Device.GRE.Tunnel.{i}.X_LGI-COM_EnableVendorClassID</External>
       <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.X_LGI-COM_EnableVendorClassID</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.GRE.Tunnel.{i}.X_LGI-COM_GreTcpMss</External>
+      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.GreTcpMss</Internal>
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.InterfaceNumberOfEntries</External>
