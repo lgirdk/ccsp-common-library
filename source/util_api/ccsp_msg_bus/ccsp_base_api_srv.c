@@ -52,6 +52,7 @@
 extern void* COSAGetMessageBusHandle();
 extern int   CcspBaseIf_timeout_seconds;
 extern int   CcspBaseIf_timeout_getval_seconds;
+extern ANSC_HANDLE bus_handle;
 
 int   CcspBaseIf_timeout_protect_plus_seconds    = 5;
 int   CcspBaseIf_deadlock_detection_time_normal_seconds = -1; //will be reassigned by dbus initiate function
@@ -665,10 +666,35 @@ void sig_empty_handler(int sig)
     return;
 }
 
+static pthread_t thread_deadlock_recovery;
+static bool recovery_thread_running = false;
+
 /*
-    Create a thread to monitor dbus call. 
+    Create a thread to identify false dead locks.
+*/
+
+void* CcspBaseIf_Deadlock_Recovery_thread
+(
+    void * data
+)
+{
+    recovery_thread_running = true;
+    system("kill -9 `busybox pidof task_health_monitor.sh`");
+    system("touch /tmp/deadlock_warning");
+    system("/bin/sh /usr/ccsp/tad/task_health_monitor.sh &");
+    while ( access("/tmp/deadlock_warning", F_OK) == 0)
+    {
+       sleep(5);
+    } 
+    recovery_thread_running = false;
+    return NULL;
+}
+
+/*
+    Create a thread to monitor dbus call.
     When deadlock happened, trigger to print trace stack
 */
+
 void *
 CcspBaseIf_Deadlock_Detection_Thread
 (
@@ -682,7 +708,8 @@ CcspBaseIf_Deadlock_Detection_Thread
     struct timespec               time1          = {0};
     unsigned long                 currentTime    = 0;
     unsigned long                 deadLockHappen = 0;
-    
+    unsigned long                 timeDiff       = 0;
+
     time1.tv_sec = 3;
     time1.tv_nsec = 0;
 
@@ -693,29 +720,48 @@ CcspBaseIf_Deadlock_Detection_Thread
             pthread_mutex_lock(&(info->info_mutex));
 
             currentTime = GetCurrentTime();
-            if ( (currentTime - info->enterTime) >= info->detectionDuration )
+            timeDiff    = currentTime - info->enterTime;
+
+            if ( timeDiff >= ( (info->detectionDuration / 4) * 3 ))
             {
-               // (2*(info->detectionDuration)) This check is just for checking invalid time difference  
-                if (( currentTime - info->enterTime ) > (2*(info->detectionDuration))) 
+                if ( timeDiff >= (info->detectionDuration))
                 {
-                    //This is invalid time difference. Just neglect
-                    info->enterTime = currentTime - info->timepassed ;
-                    CcspTraceWarning((" **** info->timepassed %lu ******\n",info->timepassed));
-                    CcspTraceWarning((" **** info->enterTime %lu ******\n",info->enterTime));
-                    CcspTraceWarning((" **** currentTime %lu ******\n",currentTime));
+                    // (3*(info->detectionDuration)) This check is just for checking invalid time difference
+                    if (( timeDiff ) > (3 * (info->detectionDuration)))
+                    {
+                        //This is invalid time difference. Just neglect
+                        info->enterTime = currentTime - info->timepassed ;
+                        CcspTraceWarning((" **** info->timepassed %lu ******\n",info->timepassed));
+                        CcspTraceWarning((" **** info->enterTime %lu ******\n",info->enterTime));
+                        CcspTraceWarning((" **** currentTime %lu ******\n",currentTime));
+                    }
+                    else
+                    {
+                        deadLockHappen = 1;
+                    }
                 }
-                else
+                else if(!recovery_thread_running)
                 {
-                    deadLockHappen = 1;
-                }  
+                    pthread_create( &thread_deadlock_recovery, NULL, CcspBaseIf_Deadlock_Recovery_thread,NULL);
+                }
+
             }
-            
             pthread_mutex_unlock(&(info->info_mutex));
         }
 
         if (deadLockHappen)
         {
-            break;
+             int health;
+             int ret;
+             //Checking PAM health , max wait time here is CcspBaseIf_timeout_seconds
+             ret = CcspBaseIf_getHealth(bus_handle, "eRT.com.cisco.spvtg.ccsp.pam", "/com/cisco/spvtg/ccsp/pam" , &health);
+             if(CCSP_SUCCESS == ret)
+             {
+                  deadLockHappen = 0;
+                  CcspTraceWarning(("CCSP Deadlock Warning, Dead lock duration exceeded but CcspPandM process is responding \n"));
+                  continue;
+             }
+             break;
         }
     
         nanosleep(&time1, NULL);
@@ -758,6 +804,8 @@ CcspBaseIf_Deadlock_Detection_Thread
         //signal(SIGFPE, sig_empty_handler);
         //signal(SIGILL, sig_empty_handler);
 
+        if(recovery_thread_running) 
+            pthread_cancel(thread_deadlock_recovery);
         
         exit(-1);
     }
