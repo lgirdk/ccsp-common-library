@@ -601,6 +601,9 @@
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKCacheInterval</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKLifetime</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Name>
     </Param>
     <Param invisible="true">
@@ -1334,6 +1337,9 @@
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.PMKCacheInterval</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.PMKLifetime</Name>
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_ShadowPassphrase</Name>
@@ -2293,6 +2299,10 @@
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.PMKCacheInterval</External>
       <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKCacheInterval</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.PMKLifetime</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.PMKLifetime</Internal>
     </Alias>
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_ShadowPassphrase</External>
