@@ -505,6 +505,11 @@ SSL * openssl_connect (int fd, hostNames *hosts)
   }
 
     SSL_set_verify(ssl, sslVerifyMode, 0);
+
+    if(SSL_set_tlsext_host_name(ssl, servername) == 0)
+    {
+	      AnscTraceError(("openssl_connect - Unable to set SNI : %s \n", servername));
+    }
   
   if (!ssl)
     goto error;
