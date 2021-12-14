@@ -117,14 +117,6 @@ KernelGetMemorySize(PVOID  pMemoryBlock)
     return  HeapSize(GetProcessHeap(), 0, pMemoryBlock);
 }
 
-__inline  PVOID
-KernelResizeMemory(PVOID  pMemory, ULONG  ulMemorySize)
-{
-    KernelFreeMemory(pMemory);
-
-    return  KernelAllocateMemory(ulMemorySize);
-}
-
 __inline  VOID
 KernelCopyMemory(PVOID  pDestination, PVOID  pSource, ULONG  ulMemorySize)
 {
