@@ -54,12 +54,10 @@
         *   AnscReAllocateMemoryCountSize
         *   AnscFreeMemoryCountSize
         *   AnscGetMemorySizeCountSize
-        *   AnscResizeMemoryCountSize
         *   AnscAllocateMemoryRecordDetail
         *   AnscReAllocateMemoryRecordDetail
         *   AnscFreeMemoryRecordDetail
         *   AnscGetMemorySizeRecordDetail
-        *   AnscResizeMemoryRecordDetail
 
     ---------------------------------------------------------------
 
@@ -443,17 +441,6 @@ AnscFreeMemoryCountSize
 
     //AnscFlushMemory(pMemoryBlock);
     AnscFreeMemoryOrig(pMemoryPointer);
-}
-
-void*
-AncResizeMemoryCountSize
-    (
-        char*                       pComponentName,
-        PVOID                       pMemoryBlock,
-        ULONG                       ulMemorySize
-    )
-{
-    return  AnscReAllocateMemoryCountSize(pComponentName, pMemoryBlock, ulMemorySize);
 }
 
 // Return -1 if no size counting.
@@ -1365,20 +1352,6 @@ AnscFreeMemoryRecordDetail
     //AnscFlushMemory(pMemoryPointer);
     AnscFreeMemoryOrig(pMemoryPointer);
 }
-
-void*
-AncResizeMemoryRecordDetail
-    (
-        char*                       pComponentName,
-        PVOID                       pMemoryBlock,
-        ULONG                       ulMemorySize,
-        char*                       pFileName,
-        ULONG                       LineNumber
-    )
-{
-    return  AnscReAllocateMemoryRecordDetail(pComponentName, pMemoryBlock, ulMemorySize, pFileName, LineNumber);
-}
-
 
 void AnscPrintComponentMemoryDetail                                                                 
 (               
