@@ -120,14 +120,6 @@ UserGetMemorySize(PVOID  pMemoryBlock)
     return  HeapSize(GetProcessHeap(), 0, pMemoryBlock);
 }
 
-__inline  PVOID
-UserResizeMemory(PVOID  pMemory, ULONG  ulMemorySize)
-{
-    UserFreeMemory(pMemory);
-
-    return  UserAllocateMemory(ulMemorySize);
-}
-
 __inline  VOID
 UserCopyMemory(PVOID  pDestination, PVOID  pSource, ULONG  ulMemorySize)
 {
