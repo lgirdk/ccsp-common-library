@@ -89,11 +89,6 @@ else
 	ulimit -c unlimited
 fi
 
-if [ -f /usr/ccsp/psm/lg_bbhm_patch.sh ]
-then
-	/usr/ccsp/psm/lg_bbhm_patch.sh /nvram/bbhm_cur_cfg.xml
-fi
-
 cp ccsp_msg.cfg /tmp
 
 # have IP address for dbus config generated
