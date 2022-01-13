@@ -107,20 +107,6 @@ then
 	exit 0
 fi
 
-if [ -e ./tr069pa ]
-then
-	enable_TR69_Binary=`syscfg get EnableTR69Binary`
-	if [ -z "$enable_TR69_Binary" ] || [ "$enable_TR69_Binary" = "true" ]
-	then
-		cd tr069pa
-		echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys"
-		$BINPATH/CcspTr069PaSsp -subsys $Subsys
-		cd ..
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
-	fi
-fi
-
 if [ -e ./tad ]
 then
 	cd tad
@@ -181,6 +167,21 @@ fi
 
 echo_t "Launching UI after all CCSP processes are up"
 /etc/start_lighttpd.sh start &
+
+
+if [ -e ./tr069pa ]
+then
+	enable_TR69_Binary=`syscfg get EnableTR69Binary`
+	if [ -z "$enable_TR69_Binary" ] || [ "$enable_TR69_Binary" = "true" ]
+	then
+		cd tr069pa
+		echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys"
+		$BINPATH/CcspTr069PaSsp -subsys $Subsys
+		cd ..
+#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
+#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
+	fi
+fi
 
 if [ "$BOX_TYPE" = "TCCBR" ]
 then
