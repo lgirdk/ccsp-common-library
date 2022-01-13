@@ -89,16 +89,16 @@ echo_t "PWD is `pwd`"
 if [ -e ./mta ]
 then
 	cd mta
-	echo_t "$BINPATH/CcspMtaAgentSsp -subsys $Subsys"
-	$BINPATH/CcspMtaAgentSsp -subsys $Subsys
+	echo_t "$BINPATH/CcspMtaAgentSsp -subsys $Subsys &"
+	$BINPATH/CcspMtaAgentSsp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./moca ]
 then
 	cd moca
-	echo "$BINPATH/CcspMoCA -subsys $Subsys"
-	$BINPATH/CcspMoCA -subsys $Subsys
+	echo "$BINPATH/CcspMoCA -subsys $Subsys &"
+	$BINPATH/CcspMoCA -subsys $Subsys &
 	cd ..
 fi
 
@@ -111,8 +111,8 @@ if [ -e ./tad ]
 then
 	cd tad
 	# delay TaD in order to reduce CPU overload and make PAM ready early
-	echo_t "$BINPATH/CcspTandDSsp -subsys $Subsys"
-	$BINPATH/CcspTandDSsp -subsys $Subsys
+	echo_t "$BINPATH/CcspTandDSsp -subsys $Subsys &"
+	$BINPATH/CcspTandDSsp -subsys $Subsys &
 	cd ..
 fi
 
@@ -133,9 +133,30 @@ fi
 if [ -e ./ethagent ]
 then
 	cd ethagent
-	echo_t "$BINPATH/CcspEthAgent -subsys $Subsys"
-	$BINPATH/CcspEthAgent -subsys $Subsys
+	echo_t "$BINPATH/CcspEthAgent -subsys $Subsys &"
+	$BINPATH/CcspEthAgent -subsys $Subsys &
 	cd ..
+fi
+
+if [ "$BOX_TYPE" = "TCCBR" ]
+then
+	# Added this from cosa_start_atom.sh since in tchxb6 all Ccsp Componets are running on Arm side
+
+	if [ -e ./harvester ]
+	then
+		echo_t "****STARTING HARVESTER***"
+		cd harvester
+		$BINPATH/harvester &
+		cd ..
+	fi
+
+	if [ -e ./wifi ]
+	then
+		cd wifi
+		echo_t "$BINPATH/CcspWifiSsp -subsys $Subsys &"
+		$BINPATH/CcspWifiSsp -subsys $Subsys &
+		cd ..
+	fi
 fi
 
 if [ -e ./lm ]
@@ -175,32 +196,11 @@ then
 	if [ -z "$enable_TR69_Binary" ] || [ "$enable_TR69_Binary" = "true" ]
 	then
 		cd tr069pa
-		echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys"
-		$BINPATH/CcspTr069PaSsp -subsys $Subsys
+		echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys &"
+		$BINPATH/CcspTr069PaSsp -subsys $Subsys &
 		cd ..
 #		sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
 #		sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
-	fi
-fi
-
-if [ "$BOX_TYPE" = "TCCBR" ]
-then
-	# Added this from cosa_start_atom.sh since in tchxb6 all Ccsp Componets are running on Arm side
-
-	if [ -e ./harvester ]
-	then
-		echo_t "****STARTING HARVESTER***"
-		cd harvester
-		$BINPATH/harvester &
-		cd ..
-	fi
-
-	if [ -e ./wifi ]
-	then
-		cd wifi
-		echo_t "$BINPATH/CcspWifiSsp -subsys $Subsys &"
-		$BINPATH/CcspWifiSsp -subsys $Subsys &
-		cd ..
 	fi
 fi
 
