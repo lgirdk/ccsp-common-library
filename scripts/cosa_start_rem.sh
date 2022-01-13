@@ -100,16 +100,16 @@ echo_t "PWD is `pwd`"
 if [ -e ./mta ]
 then
 	cd mta
-	echo_t "/usr/bin/CcspMtaAgentSsp -subsys $Subsys"
-	/usr/bin/CcspMtaAgentSsp -subsys $Subsys
+	echo_t "/usr/bin/CcspMtaAgentSsp -subsys $Subsys &"
+	/usr/bin/CcspMtaAgentSsp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./moca ]
 then
 	cd moca
-	echo "/usr/bin/CcspMoCA -subsys $Subsys"
-	/usr/bin/CcspMoCA -subsys $Subsys
+	echo "/usr/bin/CcspMoCA -subsys $Subsys &"
+	/usr/bin/CcspMoCA -subsys $Subsys &
 	cd ..
 fi
 
@@ -122,8 +122,8 @@ if [ -e ./tad ]
 then
 	cd tad
 	# delay TaD in order to reduce CPU overload and make PAM ready early
-	echo_t "/usr/bin/CcspTandDSsp -subsys $Subsys"
-	/usr/bin/CcspTandDSsp -subsys $Subsys
+	echo_t "/usr/bin/CcspTandDSsp -subsys $Subsys &"
+	/usr/bin/CcspTandDSsp -subsys $Subsys &
 	cd ..
 fi
 
@@ -144,8 +144,8 @@ fi
 if [ -e ./ethagent ]
 then
 	cd ethagent
-	echo_t "/usr/bin/CcspEthAgent -subsys $Subsys"
-	/usr/bin/CcspEthAgent -subsys $Subsys
+	echo_t "/usr/bin/CcspEthAgent -subsys $Subsys &"
+	/usr/bin/CcspEthAgent -subsys $Subsys &
 	cd ..
 fi
 
@@ -206,8 +206,8 @@ echo_t "Launching UI after all CCSP processes are up"
 if [ -e ./tr069pa ]
 then
 	cd tr069pa
-	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys"
-	/usr/bin/CcspTr069PaSsp -subsys $Subsys
+	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys &"
+	/usr/bin/CcspTr069PaSsp -subsys $Subsys &
 	cd ..
 #	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
 #	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
