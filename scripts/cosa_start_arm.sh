@@ -120,7 +120,6 @@ fi
 echo "$BINPATH/PsmSsp -subsys $Subsys"
 $BINPATH/PsmSsp -subsys $Subsys
 
-sleep 5
 
 if [ -e ./notify-comp ]
 then
