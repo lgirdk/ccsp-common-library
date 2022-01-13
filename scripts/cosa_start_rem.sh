@@ -118,16 +118,6 @@ then
 	exit 0
 fi
 
-if [ -e ./tr069pa ]
-then
-	cd tr069pa
-	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys"
-	/usr/bin/CcspTr069PaSsp -subsys $Subsys
-	cd ..
-#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
-#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
-fi
-
 if [ -e ./tad ]
 then
 	cd tad
@@ -209,6 +199,16 @@ fi
 
 echo_t "Launching UI after all CCSP processes are up"
 /etc/start_lighttpd.sh start &
+
+if [ -e ./tr069pa ]
+then
+	cd tr069pa
+	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys"
+	/usr/bin/CcspTr069PaSsp -subsys $Subsys
+	cd ..
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
+fi
 
 #CBR not a best place to start here, we will end up creating bridges before
 #wifi dml initialized, currently moving this to xfinity_hotspot_bridge_setup.sh
