@@ -124,24 +124,24 @@ $BINPATH/PsmSsp -subsys $Subsys
 if [ -e ./notify-comp ]
 then
 	cd notify-comp
-	echo "$BINPATH/notify_comp -subsys $Subsys"
-	$BINPATH/notify_comp -subsys $Subsys
+	echo "$BINPATH/notify_comp -subsys $Subsys &"
+	$BINPATH/notify_comp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./cm ]
 then
 	cd cm
-	echo_t "$BINPATH/CcspCMAgentSsp -subsys $Subsys"
-	$BINPATH/CcspCMAgentSsp -subsys $Subsys
+	echo_t "$BINPATH/CcspCMAgentSsp -subsys $Subsys &"
+	$BINPATH/CcspCMAgentSsp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./pam ]
 then
 	cd pam
-	echo "$BINPATH/CcspPandMSsp -subsys $Subsys"
-	$BINPATH/CcspPandMSsp -subsys $Subsys
+	echo "$BINPATH/CcspPandMSsp -subsys $Subsys &"
+	$BINPATH/CcspPandMSsp -subsys $Subsys &
 	cd ..
 fi
 
