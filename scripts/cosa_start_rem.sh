@@ -184,7 +184,7 @@ fi
 
 # Wait with timeout for last CCSP component (ie CcspLMLite) before starting webui
 index=0
-MAX_TIMEOUT=30
+MAX_TIMEOUT=10
 while [ $index -lt $MAX_TIMEOUT ]
 do
 	if [ -f /tmp/lmlite_initialized ]
