@@ -237,6 +237,7 @@ enum dataType_e
     ccsp_double,
     ccsp_byte,
     ccsp_none,
+    ccsp_hexBinary,
 } ;
 
 enum access_e
