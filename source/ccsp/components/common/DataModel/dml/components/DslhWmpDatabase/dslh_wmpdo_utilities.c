@@ -423,6 +423,17 @@ DslhWmpdoParseParamDataType
         *pulFormatValue1 = AnscSizeOfString("0000-00-00T00:00:00"      );   /* ISO 8601 date-time format */
         *pulFormatValue2 = AnscSizeOfString("0000-00-00T00:00:00-00:00");   /* ISO 8601 date-time format */
     }
+    else if ( AnscEqualString
+                (
+                    pDataTypeToken->Name,
+                    DSLH_CWMP_DATA_NAME_hexbinary,
+                    TRUE
+                ) )
+    {
+        *pulDataType     = DSLH_CWMP_DATA_TYPE_hexBinary;
+        *pulFormatValue1 = (ULONG)0;
+        *pulFormatValue2 = (ULONG)0xFFFFFFFF;
+    }
 
     AnscFreeMemory(pDataTypeToken);
 
