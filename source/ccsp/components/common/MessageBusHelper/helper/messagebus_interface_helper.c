@@ -334,6 +334,10 @@ CcspCcMbi_GetParameterValues
                 {
                     ppReturnVal[i]->type = ccsp_dateTime;
                 }
+                else if ( pParamValueArray[i].Value->ContentType == SLAP_CONTENT_TYPE_HEX_STRING )
+                {
+                    ppReturnVal[i]->type = ccsp_hexBinary;
+                }
                 else
                 {
                     ppReturnVal[i]->type = ccsp_string;
@@ -536,6 +540,12 @@ CcspCcMbi_SetParameterValues
         {
             pSlapVariable->Syntax            = SLAP_VAR_SYNTAX_string;
             pSlapVariable->ContentType       = SLAP_CONTENT_TYPE_CALENDAR_TIME;
+            pSlapVariable->Variant.varString = AnscCloneString(val[i].parameterValue);
+        }
+        else if ( val[i].type == ccsp_hexBinary )
+        {
+            pSlapVariable->Syntax            = SLAP_VAR_SYNTAX_string;
+            pSlapVariable->ContentType       = SLAP_CONTENT_TYPE_HEX_STRING;
             pSlapVariable->Variant.varString = AnscCloneString(val[i].parameterValue);
         }
         else if ( val[i].type == ccsp_base64 )
