@@ -308,6 +308,7 @@ DslhWmpdoMprRegParameter
 
     // Assign appropriate ContentType for 'dateTime', or the object type will default to 'string'.  RTian 2013/11/11
     if(pVarEntity->DataType == DSLH_CWMP_DATA_TYPE_dateTime) pVarEntity->ContentType = SLAP_CONTENT_TYPE_CALENDAR_TIME;
+    if(pVarEntity->DataType == DSLH_CWMP_DATA_TYPE_hexBinary) pVarEntity->ContentType = SLAP_CONTENT_TYPE_HEX_STRING;
 
     if ( pParamEnumTokens )
     {
