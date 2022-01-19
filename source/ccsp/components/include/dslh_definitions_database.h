@@ -139,6 +139,7 @@
 #define  DSLH_CWMP_DATA_TYPE_boolean                5
 #define  DSLH_CWMP_DATA_TYPE_dateTime               6
 #define  DSLH_CWMP_DATA_TYPE_base64                 7
+#define  DSLH_CWMP_DATA_TYPE_hexBinary              8
 
 #define  DSLH_CWMP_DATA_NAME_object                 "object"
 #define  DSLH_CWMP_DATA_NAME_string                 "string"
@@ -147,6 +148,7 @@
 #define  DSLH_CWMP_DATA_NAME_boolean                "boolean"
 #define  DSLH_CWMP_DATA_NAME_dateTime               "dateTime"
 #define  DSLH_CWMP_DATA_NAME_base64                 "base64"
+#define  DSLH_CWMP_DATA_NAME_hexbinary              "hexBinary"
 
 #define  DSLH_CWMP_DATA_INVALID_VALUE_TYPE          1
 
