@@ -189,6 +189,20 @@ fi
 echo_t "Launching UI after all CCSP processes are up"
 /etc/start_lighttpd.sh start &
 
+# wait for wan-status to be set before starting TR069
+loop_count=0
+while [ $loop_count -lt 6 ]
+do
+	wan_event=$(sysevent get wan-status)
+	if [ "$wan_event" = "started" ]
+	then
+#		echo "wan-status in set to started!!!"
+		break
+	fi
+	echo "wan-status is not started yet. sleeping for 10 sec in cosa_start_rem.sh ..."
+	sleep 10
+	loop_count=$((loop_count+1))
+done
 
 if [ -e ./tr069pa ]
 then
