@@ -27,7 +27,6 @@ fi
 
 source /etc/utopia/service.d/log_capture_path.sh
 BBHM_CUR_CFG="/tmp/bbhm_cur_cfg.xml"
-BINPATH="/usr/bin"
 UTOPIA_PATH=/etc/utopia/service.d
 cd /usr/ccsp/
 
@@ -89,16 +88,16 @@ echo_t "PWD is `pwd`"
 if [ -e ./mta ]
 then
 	cd mta
-	echo_t "$BINPATH/CcspMtaAgentSsp -subsys $Subsys &"
-	$BINPATH/CcspMtaAgentSsp -subsys $Subsys &
+	echo_t "/usr/bin/CcspMtaAgentSsp -subsys $Subsys &"
+	/usr/bin/CcspMtaAgentSsp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./moca ]
 then
 	cd moca
-	echo "$BINPATH/CcspMoCA -subsys $Subsys &"
-	$BINPATH/CcspMoCA -subsys $Subsys &
+	echo "/usr/bin/CcspMoCA -subsys $Subsys &"
+	/usr/bin/CcspMoCA -subsys $Subsys &
 	cd ..
 fi
 
@@ -111,8 +110,8 @@ if [ -e ./tad ]
 then
 	cd tad
 	# delay TaD in order to reduce CPU overload and make PAM ready early
-	echo_t "$BINPATH/CcspTandDSsp -subsys $Subsys &"
-	$BINPATH/CcspTandDSsp -subsys $Subsys &
+	echo_t "/usr/bin/CcspTandDSsp -subsys $Subsys &"
+	/usr/bin/CcspTandDSsp -subsys $Subsys &
 	cd ..
 fi
 
@@ -125,16 +124,16 @@ fi
 if [ -e ./xdns ]
 then
 	cd xdns
-	echo_t "$BINPATH/CcspXdnsSsp -subsys $Subsys &"
-	$BINPATH/CcspXdnsSsp -subsys $Subsys &
+	echo_t "/usr/bin/CcspXdnsSsp -subsys $Subsys &"
+	/usr/bin/CcspXdnsSsp -subsys $Subsys &
 	cd ..
 fi
 
 if [ -e ./ethagent ]
 then
 	cd ethagent
-	echo_t "$BINPATH/CcspEthAgent -subsys $Subsys &"
-	$BINPATH/CcspEthAgent -subsys $Subsys &
+	echo_t "/usr/bin/CcspEthAgent -subsys $Subsys &"
+	/usr/bin/CcspEthAgent -subsys $Subsys &
 	cd ..
 fi
 
@@ -146,15 +145,15 @@ then
 	then
 		echo_t "****STARTING HARVESTER***"
 		cd harvester
-		$BINPATH/harvester &
+		/usr/bin/harvester &
 		cd ..
 	fi
 
 	if [ -e ./wifi ]
 	then
 		cd wifi
-		echo_t "$BINPATH/CcspWifiSsp -subsys $Subsys &"
-		$BINPATH/CcspWifiSsp -subsys $Subsys &
+		echo_t "/usr/bin/CcspWifiSsp -subsys $Subsys &"
+		/usr/bin/CcspWifiSsp -subsys $Subsys &
 		cd ..
 	fi
 fi
@@ -163,8 +162,8 @@ if [ -e ./lm ]
 then
 	echo_t "***Starting CcspLMLite****"
 	cd lm
-	echo_t "$BINPATH/CcspLMLite -subsys $Subsys &"
-	$BINPATH/CcspLMLite -subsys $Subsys &
+	echo_t "/usr/bin/CcspLMLite -subsys $Subsys &"
+	/usr/bin/CcspLMLite -subsys $Subsys &
 	cd ..
 fi
 
@@ -207,8 +206,8 @@ done
 if [ -e ./tr069pa ]
 then
 	cd tr069pa
-	echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys &"
-	$BINPATH/CcspTr069PaSsp -subsys $Subsys &
+	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys &"
+	/usr/bin/CcspTr069PaSsp -subsys $Subsys &
 	cd ..
 #	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
 #	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
