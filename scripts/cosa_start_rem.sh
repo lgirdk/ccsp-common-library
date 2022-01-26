@@ -132,8 +132,6 @@ fi
 
 if [ -e ./tr069pa ]; then
      cd tr069pa
-     enable_TR69_Binary=`syscfg get EnableTR69Binary`
-     if [ "" = "$enable_TR69_Binary" ] || [ "true" = "$enable_TR69_Binary" ]; then
 	if [ "x"$Subsys = "x" ]; then
 		$BINPATH/CcspTr069PaSsp
 	else
@@ -142,7 +140,6 @@ if [ -e ./tr069pa ]; then
         	$BINPATH/CcspTr069PaSsp -subsys $Subsys
         fi
 	fi
-     fi
 #        sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
 #        sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
 	cd ..
