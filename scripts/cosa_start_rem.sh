@@ -206,16 +206,12 @@ done
 
 if [ -e ./tr069pa ]
 then
-	enable_TR69_Binary=`syscfg get EnableTR69Binary`
-	if [ -z "$enable_TR69_Binary" ] || [ "$enable_TR69_Binary" = "true" ]
-	then
-		cd tr069pa
-		echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys &"
-		$BINPATH/CcspTr069PaSsp -subsys $Subsys &
-		cd ..
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
-	fi
+	cd tr069pa
+	echo_t "$BINPATH/CcspTr069PaSsp -subsys $Subsys &"
+	$BINPATH/CcspTr069PaSsp -subsys $Subsys &
+	cd ..
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
 fi
 
 #CBR not a best place to start here, we will end up creating bridges before
