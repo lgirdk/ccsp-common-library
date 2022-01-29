@@ -122,78 +122,12 @@
  * For every operating system, we must include a header file which defines all the basic data types and
  * necessary system wrappers. Following is the list of header files must be included for Windows 9x.
  */
-#ifdef   _ANSC_WINDOWS9X
-
-    #ifdef   _ANSC_KERNEL
-
-        #include "windows9x/kernel_base.h"
-        #include "windows9x/kernel_runtime.h"
-        #include "windows9x/kernel_protection.h"
-        #include "windows9x/kernel_memory.h"
-        #include "windows9x/kernel_string.h"
-        #include "windows9x/kernel_debug.h"
-        #include "windows9x/kernel_time.h"
-        #include "windows9x/kernel_socket.h"
-        #include "windows9x/kernel_task.h"
-        #include "windows9x/kernel_file_io.h"
-        #include "windows9x/kernel_packet.h"
-
-    #else
-
-        #include "windows9x/user_base.h"
-        #include "windows9x/user_runtime.h"
-        #include "windows9x/user_protection.h"
-        #include "windows9x/user_memory.h"
-        #include "windows9x/user_string.h"
-        #include "windows9x/user_debug.h"
-        #include "windows9x/user_time.h"
-        #include "windows9x/user_socket.h"
-        #include "windows9x/user_task.h"
-        #include "windows9x/user_file_io.h"
-        #include "windows9x/user_packet.h"
-
-    #endif
-
-#endif
 
 
 /*
  * For every operating system, we must include a header file which defines all the basic data types and
  * necessary system wrappers. Following is the list of header files must be included for Windows NT.
  */
-#ifdef   _ANSC_WINDOWSNT
-
-    #ifdef   _ANSC_KERNEL
-
-        #include "windowsnt/kernel_base.h"
-        #include "windowsnt/kernel_runtime.h"
-        #include "windowsnt/kernel_protection.h"
-        #include "windowsnt/kernel_memory.h"
-        #include "windowsnt/kernel_string.h"
-        #include "windowsnt/kernel_debug.h"
-        #include "windowsnt/kernel_time.h"
-        #include "windowsnt/kernel_socket.h"
-        #include "windowsnt/kernel_task.h"
-        #include "windowsnt/kernel_file_io.h"
-        #include "windowsnt/kernel_packet.h"
-
-    #else
-
-        #include "windowsnt/user_base.h"
-        #include "windowsnt/user_runtime.h"
-        #include "windowsnt/user_protection.h"
-        #include "windowsnt/user_memory.h"
-        #include "windowsnt/user_string.h"
-        #include "windowsnt/user_debug.h"
-        #include "windowsnt/user_time.h"
-        #include "windowsnt/user_socket.h"
-        #include "windowsnt/user_task.h"
-        #include "windowsnt/user_file_io.h"
-        #include "windowsnt/user_packet.h"
-
-    #endif
-
-#endif
 
 
 /*
@@ -239,7 +173,6 @@
  * For every operating system, we must include a header file which defines all the basic data types and
  * necessary system wrappers. Following is the list of header files must be included for Linux.
  */
-#ifdef   _ANSC_LINUX
 
     #ifdef   _ANSC_KERNEL
 
@@ -271,7 +204,6 @@
 
     #endif
 
-#endif
 
 
 /*

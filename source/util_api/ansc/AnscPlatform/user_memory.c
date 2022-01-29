@@ -37,7 +37,6 @@
 #include "user_base.h"
 #include "user_memory.h"
 
-#ifdef  _ANSC_LINUX
 
 PVOID
 UserAllocateMemory(ULONG  ulMemorySize)
@@ -81,4 +80,3 @@ UserEqualMemory(PVOID  pMemory1, PVOID  pMemory2, ULONG  ulMemorySize)
     return  (memcmp(pMemory1, pMemory2, ulMemorySize) == 0);
 }
 
-#endif
