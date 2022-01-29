@@ -88,13 +88,6 @@
 
   #define ANSC_FORCEINLINE                  static inline __attribute__((always_inline))
 
-#elif defined(_MSC_VER)
-
-  #define ANSC_FORCEINLINE                  __inline
-
-  #pragma warning(disable: 4200)   /* zero-sized array in struct/union */
-  #pragma warning(disable: 4201)   /* nameless struct/union */
-
 #else 
 
   #define ANSC_FORCEINLINE           
@@ -113,61 +106,6 @@
 /***********************************************************
                   OS SPECIFIC DEFINITIONS
 ***********************************************************/
-
-/*
- * Define the current operating system type. We can either do it here or in the makefile or the IDE.
- */
-
-/*
- * For every operating system, we must include a header file which defines all the basic data types and
- * necessary system wrappers. Following is the list of header files must be included for Windows 9x.
- */
-
-
-/*
- * For every operating system, we must include a header file which defines all the basic data types and
- * necessary system wrappers. Following is the list of header files must be included for Windows NT.
- */
-
-
-/*
- * For every operating system, we must include a header file which defines all the basic data types and
- * necessary system wrappers. Following is the list of header files must be included for Windows CE.
- */
-#ifdef   _ANSC_WINDOWSCE
-
-    #ifdef   _ANSC_KERNEL
-
-        #include "windowsce/kernel_base.h"
-        #include "windowsce/kernel_runtime.h"
-        #include "windowsce/kernel_protection.h"
-        #include "windowsce/kernel_memory.h"
-        #include "windowsce/kernel_string.h"
-        #include "windowsce/kernel_debug.h"
-        #include "windowsce/kernel_time.h"
-        #include "windowsce/kernel_socket.h"
-        #include "windowsce/kernel_task.h"
-        #include "windowsce/kernel_file_io.h"
-        #include "windowsce/kernel_packet.h"
-
-    #else
-
-        #include "windowsce/user_base.h"
-        #include "windowsce/user_runtime.h"
-        #include "windowsce/user_protection.h"
-        #include "windowsce/user_memory.h"
-        #include "windowsce/user_string.h"
-        #include "windowsce/user_debug.h"
-        #include "windowsce/user_time.h"
-        #include "windowsce/user_socket.h"
-        #include "windowsce/user_task.h"
-        #include "windowsce/user_file_io.h"
-        #include "windowsce/user_packet.h"
-
-    #endif
-
-#endif
-
 
 /*
  * For every operating system, we must include a header file which defines all the basic data types and
