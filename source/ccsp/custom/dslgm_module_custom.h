@@ -124,7 +124,7 @@
 
 #define  _DSLG_IGMP_
 
-#if  ( defined(_ANSC_LINUX) && defined(BUILD_WEB) ) || defined(_ANSC_WINDOWSNT)
+#if  ( defined(_ANSC_LINUX) && defined(BUILD_WEB) )
 #define  _BBHM_WEB_GUI_REQUIRED
 #endif
 
@@ -195,10 +195,6 @@
  */
 #define  DSLM_WEBS_PORT_UM							8081
 #define  DSLM_WEBS_PORT_DM							80
-
-#define  DSLM_WEBS_ROOT_PATH_CPE_WINDOWS            "c:/temp/dslg-test/bmw2-files/"
-#define  DSLM_WEBS_ROOT_PATH_UM_WINDOWS             "c:/temp/dslg-test/bmw2-files/"
-#define  DSLM_WEBS_ROOT_PATH_DM_WINDOWS             "c:/temp/dslg-test/bmw2-files/"
 
 #define  DSLM_WEBS_ROOT_PATH_CPE_LINUX              "/config/bmw2/"
 #define  DSLM_WEBS_ROOT_PATH_UM_LINUX               "/config/bmw2/"
