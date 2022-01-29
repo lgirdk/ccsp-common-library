@@ -85,7 +85,6 @@
 /***********************************************************
        BASIC OPERATIONS BY MACROS AND INLINE FUNCTIONS
 ***********************************************************/
-#ifdef _ANSC_LINUX
 
 #include <string.h>
 
@@ -135,7 +134,6 @@ UserCopyString(char*  destination, char*  source)
 
 #define  UserCharInString(s, c)                     (BOOLEAN)(!(!(strchr(s, c))))
 
-#endif
 
 #endif
 
