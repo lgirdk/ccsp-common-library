@@ -1110,12 +1110,22 @@ DslhObjcoGetParamValueByName
                     char pTempBuf[1024];
                     ULONG uLength;
 
-                    memset (pTempBuf, 0, sizeof(pTempBuf));
                     uLength = sizeof(pTempBuf) - 1;
+                    pTempBuf[0] = 0;
 
                     returnStatus = pInterface->GetEntryParamString(pMyObject->hInsContext,pName, pTempBuf, &uLength);
 
-                    if( returnStatus != ANSC_STATUS_SUCCESS && returnStatus != ANSC_STATUS_FAILURE)
+                    if (returnStatus == ANSC_STATUS_SUCCESS)
+                    {
+                        pSlapVariable->Variant.varString = AnscCloneString(pTempBuf);
+                        return ANSC_STATUS_SUCCESS;
+                    }
+                    else if (returnStatus == ANSC_STATUS_FAILURE)
+                    {
+                        pSlapVariable->Variant.varString = AnscCloneString("");
+                        return ANSC_STATUS_SUCCESS;
+                    }
+                    else
                     {
                         /* size is not big enough */
                         pSlapVariable->Variant.varString = (char*)AnscAllocateMemory(uLength + 1);
@@ -1126,12 +1136,6 @@ DslhObjcoGetParamValueByName
                         }
 
                         return pInterface->GetEntryParamString(pMyObject->hInsContext, pName, pSlapVariable->Variant.varString, &uLength);
-                    }
-                    else
-                    {
-                        pSlapVariable->Variant.varString = AnscCloneString(pTempBuf);
-
-                        return ANSC_STATUS_SUCCESS;
                     }
                 }
 
