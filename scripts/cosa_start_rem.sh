@@ -309,3 +309,11 @@ then
 	syscfg set T2Enable true
 	telemetry2_0 &
 fi
+
+if [ -e ./ssam ]
+then
+	cd ssam
+	echo "/usr/bin/ssam_agent -subsys $Subsys &"
+	/usr/bin/ssam_agent -subsys $Subsys &
+	cd ..
+fi
