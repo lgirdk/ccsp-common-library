@@ -1143,7 +1143,7 @@ COSAGetParamValueByPathName
     char * dst_componentid =  NULL;
     char * dst_pathname    =  NULL;
     char * pSubsystem = COSAGetSubsystemPrefix2();
-    int not_complete=0,same_component=0;
+
     int i, size1, size2, len;
     int ret = 0;
 
@@ -1173,6 +1173,7 @@ COSAGetParamValueByPathName
 
         if(ret == CCSP_SUCCESS )
         {
+            //            AnscTraceInfo(("DiscoverComponent to support '%s'\n", val->parameterName));
             break;
         }
     }
@@ -1184,15 +1185,10 @@ COSAGetParamValueByPathName
     }
     else
     {
-        not_complete=1;
+
         goto EXIT1;
     }
-    CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    if(!strcmp(bus_info->component_id,dst_componentid))
-    {
-        same_component=1;
-        goto EXIT1;
-    }
+    
     ret = CcspBaseIf_getParameterValues(
         bus_handle,
         dst_componentid,
@@ -1225,18 +1221,7 @@ EXIT1:
     free_parameterValStruct_t(bus_handle, size2, parameterVal);
 
     /*CCSP_Message_Bus_Exit(bus_handle);*/
-    if(same_component)
-    {
-       CcspTraceDebug(("%s:both source and destination are same component\n",__FUNCTION__));
-       return ANSC_STATUS_DISCARD;
-    }
-    
-    if(not_complete)
-    {
-       CcspTraceError(("%s:CcspBaseIf_discComponentSupportingNamespace not able to discover the destination component path\n",__FUNCTION__));
-       return ANSC_STATUS_NOT_COMPLETE;
-    }  
-     
+
     return ANSC_STATUS_SUCCESS;
 }
 
