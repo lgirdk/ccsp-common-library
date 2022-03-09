@@ -135,6 +135,18 @@
     <Param invisible="true">
       <Name>Device.NAT.X_CISCO_COM_DMZ.Enable</Name>
     </Param>
+        <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_DMZ.RemoteIPStart</Name>
+    </Param>
+        <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_DMZ.RemoteIPEnd</Name>
+    </Param>
+        <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_DMZ.InternalMAC</Name>
+    </Param>
+        <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_DMZ.Data</Name>
+    </Param>
     <Param invisible="true">
       <Name>Device.NAT.X_CISCO_COM_DMZ.InternalIP</Name>
     </Param>
@@ -893,6 +905,18 @@
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_DMZ.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_DMZ.RemoteIPStart</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_DMZ.RemoteIPEnd</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_DMZ.InternalMAC</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_DMZ.Data</Name>
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_DMZ.InternalIP</Name>
@@ -1718,12 +1742,28 @@
       <Internal>Device.NAT.X_CISCO_COM_DMZ.Enable</Internal>
     </Alias>
     <Alias>
+      <External>Device.NAT.X_LGI-COM_DMZ.RemoteIPStart</External>
+      <Internal>Device.NAT.X_CISCO_COM_DMZ.RemoteIPStart</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.NAT.X_LGI-COM_DMZ.RemoteIPEnd</External>
+      <Internal>Device.NAT.X_CISCO_COM_DMZ.RemoteIPEnd</Internal>
+    </Alias>
+    <Alias>
       <External>Device.NAT.X_LGI-COM_DMZ.InternalIP</External>
       <Internal>Device.NAT.X_CISCO_COM_DMZ.InternalIP</Internal>
     </Alias>
     <Alias>
+      <External>Device.NAT.X_LGI-COM_DMZ.InternalMAC</External>
+      <Internal>Device.NAT.X_CISCO_COM_DMZ.InternalMAC</Internal>
+    </Alias>
+    <Alias>
       <External>Device.NAT.X_LGI-COM_DMZ.IPv6Host</External>
       <Internal>Device.NAT.X_CISCO_COM_DMZ.IPv6Host</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.NAT.X_LGI-COM_DMZ.Data</External>
+      <Internal>Device.NAT.X_CISCO_COM_DMZ.Data</Internal>
     </Alias>
     <Alias>
       <External>Device.DHCPv6.Server.Pool.{i}.X_LGI-COM_PrefixRangeBegin</External>
