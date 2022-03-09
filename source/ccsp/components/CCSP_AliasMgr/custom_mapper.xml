@@ -130,6 +130,9 @@
       <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Enable</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Description</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.NAT.X_CISCO_COM_DMZ.</Name>
     </Param>
     <Param invisible="true">
@@ -670,6 +673,9 @@
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.Enable</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.Description</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.SrcStartAddr</Name>
     </Param>
     <Param invisible="true">
@@ -740,6 +746,9 @@
     </Param>
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.Service.{i}.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.Service.{i}.Description</Name>
     </Param>
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.Service.{i}.Direction</Name>
@@ -902,6 +911,9 @@
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Description</Name>
     </Param>
     <Param>
       <Name>Device.NAT.X_LGI-COM_DMZ.Enable</Name>
@@ -1432,6 +1444,9 @@
       <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.Service.{i}.Enable</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.Service.{i}.Description</Name>
+    </Param>
+    <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.Service.{i}.SrcStartAddr</Name>
     </Param>
     <Param>
@@ -1502,6 +1517,9 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Description</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Direction</Name>
@@ -1736,6 +1754,10 @@
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Enable</External>
       <Internal>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.NAT.X_LGI-COM_PortTriggers.Trigger.{i}.Description</External>
+      <Internal>Device.NAT.X_CISCO_COM_PortTriggers.Trigger.{i}.Description</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.X_LGI-COM_DMZ.Enable</External>
@@ -2439,6 +2461,10 @@
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.Enable</Internal>
     </Alias>
     <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.Service.{i}.Description</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.Description</Internal>
+    </Alias>
+    <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V4.IPFiltering.Service.{i}.SrcStartAddr</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V4.IPFiltering.Service.{i}.SrcStartAddr</Internal>
     </Alias>
@@ -2533,6 +2559,10 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Enable</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.Service.{i}.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Description</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.V6.IPFiltering.Service.{i}.Description</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.V6.IPFiltering.Service.{i}.Direction</External>
