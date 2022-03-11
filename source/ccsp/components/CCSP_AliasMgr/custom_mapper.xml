@@ -610,6 +610,9 @@
       <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.DeviceName</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.Description</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Name>
     </Param>
     <Param invisible="true">
@@ -644,6 +647,9 @@
     </Param>
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.MACAddress</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.Description</Name>
     </Param>
     <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.DayOfWeekNumberOfEntries</Name>
@@ -1378,6 +1384,9 @@
       <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.DeviceName</Name>
     </Param>
     <Param>
+      <Name>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.Description</Name>
+    </Param>
+    <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</Name>
     </Param>
     <Param>
@@ -1415,6 +1424,9 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.Device.{i}.MACAddress</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.Device.{i}.Description</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.DayOfWeekNumberOfEntries</Name>
@@ -2373,6 +2385,10 @@
       <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.DeviceName</Internal>
     </Alias>
     <Alias>
+      <External>Device.WiFi.AccessPoint.{i}.X_LGI-COM_MacFilterTable.{i}.Description</External>
+      <Internal>Device.WiFi.AccessPoint.{i}.X_CISCO_COM_MacFilterTable.{i}.Description</Internal>
+    </Alias>
+    <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_Radius.ReAuthInterval</External>
       <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_RadiusSettings.ReAuthInterval</Internal>
     </Alias>
@@ -2423,6 +2439,10 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.Device.{i}.MACAddress</External>
       <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.MACAddress</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.Device.{i}.Description</External>
+      <Internal>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.Device.{i}.Description</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.DayOfWeekNumberOfEntries</External>
