@@ -25,9 +25,6 @@ endif
 lib_LTLIBRARIES = libccsp_common.la
 
 libccsp_common_la_CPPFLAGS = \
-	-D_ANSC_LINUX \
-	-D_ANSC_USER \
-	-D_ANSC_LITTLE_ENDIAN_ \
 	-D_ANSC_AES_USED_ \
 	-D_ANSC_IPV6_COMPATIBLE_ \
 	-D_ANSC_USE_OPENSSL_ \
