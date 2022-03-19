@@ -418,19 +418,9 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreateNode(PANSC_XML_DOM_NODE_OBJECT pNode, cons
     {
       textSize = strlen(pText);
     }
-    else
-    {
-#if 1
-      /* Sanity check - enable for debug builds only */
-      if (textSize != strlen(pText))
-      {
-        printf("DMPackCreateNode bad length pName=%s pText=%s textSize=%lu\n", pName, pText, textSize);
-      }
-#endif
-    }
 
     pNewNode->DataSize     = textSize;
-    pNewNode->StringData   = AnscAllocateMemory(pNewNode->DataSize + 1);
+    pNewNode->StringData   = AnscAllocateMemoryNoInit(textSize + 1);
 
     if ( !pNewNode->StringData )
     {
