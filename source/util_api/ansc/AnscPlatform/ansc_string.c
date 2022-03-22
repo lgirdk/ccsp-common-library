@@ -93,6 +93,23 @@
 #include "ansc_global.h"
 #include "safec_lib_common.h"
 
+#define AnscIsDigitString(tbe_string, b_result)                 \
+{                                                               \
+    int ii;                                                     \
+    int ll = strlen(tbe_string);                                \
+                                                                \
+    b_result = TRUE;                                            \
+                                                                \
+    for ( ii = 0; ii < ll; ii++ )                               \
+    {                                                           \
+        if ( !AnscIsDigit(tbe_string[ii]) )                     \
+        {                                                       \
+            b_result = FALSE;                                   \
+            break;                                              \
+        }                                                       \
+    }                                                           \
+}
+
 void
 AnscFromHexToString
     (
