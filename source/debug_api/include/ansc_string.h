@@ -158,35 +158,4 @@ static inline int AnscCharInString (const char *s, int c)
 #define  AnscIsAlphaOrDigit(single_char)            ( AnscIsAlpha(single_char) || AnscIsDigit(single_char) )
 #define  AnscIsHexAlphaOrDigit(single_char)         ( AnscIsHexAlpha(single_char) || AnscIsDigit(single_char) )
 
-#define  AnscIsCr(single_char)                      ( (UCHAR)single_char == ANSC_CARRIAGE_RETURN )
-#define  AnscIsLf(single_char)                      ( (UCHAR)single_char == ANSC_LINE_FEED       )
-#define  AnscIsHt(single_char)                      ( (UCHAR)single_char == ANSC_HORIZONTAL_TAB  )
-#define  AnscIsSp(single_char)                      ( (UCHAR)single_char == ANSC_SPACE           )
-#define  AnscIsDq(single_char)                      ( (UCHAR)single_char == ANSC_DOUBLE_QUOTE    )
-#define  AnscIsCl(single_char)                      ( (UCHAR)single_char == ANSC_COLON           )
-
-#define  AnscIsLws(single_char)                     ( AnscIsHt(single_char) || AnscIsSp(single_char) )
-
-#define  AnscIsEol(char_pointer)                                                            \
-         ( AnscIsLf(*char_pointer) || (AnscIsCr(*char_pointer) && AnscIsLf(*(char_pointer + 1))) )
-
-#define  AnscIsDigitString(tbe_string, b_result)                                            \
-         {                                                                                  \
-            int ii;                                                                         \
-            int ll = strlen(tbe_string);                                                    \
-                                                                                            \
-            b_result = TRUE;                                                                \
-                                                                                            \
-            for ( ii = 0; ii < ll; ii++ )                                                   \
-            {                                                                               \
-                if ( !AnscIsDigit(tbe_string[ii]) )                                         \
-                {                                                                           \
-                    b_result = FALSE;                                                       \
-                                                                                            \
-                    break;                                                                  \
-                }                                                                           \
-            }                                                                               \
-         }
-
-
 #endif
