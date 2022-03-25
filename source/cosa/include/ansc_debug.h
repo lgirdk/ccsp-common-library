@@ -80,6 +80,7 @@
 #include "ansc_wrapper_base.h"
 #include "ansc_common_structures.h"
 #include "ccsp_trace.h"
+#include <regex.h>
 
 /*
  *  Whether a debug trace is output depends on the following factors:
@@ -519,6 +520,22 @@ AnscTraceIpPacket
     (
         ANSC_HANDLE                 hIpPacket
     );
+
+BOOL Check_hostname
+  (
+       char* input
+  );
+
+BOOL Check_MAC
+  (
+       char* input
+  );
+
+
+BOOL Check_IP
+  (
+       char* input
+  );
 
 /*
 __inline  static  void
