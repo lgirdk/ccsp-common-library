@@ -75,6 +75,7 @@
 
 **********************************************************************/
 
+#include <stdio.h>
 
 #include "ansc_platform.h"
 #include "http_definitions.h"
@@ -1588,13 +1589,9 @@ HttpSmpoUtilGetUlongStringLength
         ULONG                       ulValue
     )
 {
-    UCHAR                       buf[16];
-    ULONG                       ulSize;
+    char buf[4];
 
-    AnscInt2String(ulValue, (char *)buf, 10);
-    ulSize   = AnscSizeOfString((const char *)buf);
-
-    return ulSize;
+    return snprintf (buf, sizeof(buf), "%lu", ulValue);
 }
 
 
@@ -2449,11 +2446,7 @@ HttpSmpoUtilGetSizeRequestUri
 
         if (TRUE)
         {
-            ULONG                   ulHostPort;
-            UCHAR                   pHostPort[8];
             BOOL                    bCountPort;
-
-            AnscInt2String(pUri->HostPort, (PCHAR)pHostPort, 10);
 
             if (bHttps)
             {
@@ -2466,10 +2459,10 @@ HttpSmpoUtilGetSizeRequestUri
 
             if (bCountPort)
             {
-                ulHostPort = AnscSizeOfString((const char *)pHostPort);
+                char buf[4];
 
                 ulSize  += 1;                   /* ":" */
-                ulSize  += ulHostPort;
+                ulSize  += snprintf (buf, sizeof(buf), "%u", (unsigned int) pUri->HostPort);
             }
         }
 
@@ -2617,12 +2610,9 @@ HttpSmpoUtilGetSizeRequestUri
              */
 
             ULONG                   ulHostName;
-            ULONG                   ulHostPort;
-            UCHAR                   pHostPort[8];
             BOOL                    bCountPort;
 
             ulHostName = AnscSizeOfString(pUri->HostName);
-            AnscInt2String(pUri->HostPort, (PCHAR)pHostPort, 10);
             ulSize  = ulHostName;
 
             if (bHttps)
@@ -2636,10 +2626,10 @@ HttpSmpoUtilGetSizeRequestUri
 
             if (bCountPort)
             {
-                ulHostPort = AnscSizeOfString((const char *)pHostPort);
+                char buf[4];
 
                 ulSize  += 1;                   /* ":" */
-                ulSize  += ulHostPort;
+                ulSize  += snprintf (buf, sizeof(buf), "%u", (unsigned int) pUri->HostPort);
             }
         }
         break;
@@ -2659,19 +2649,17 @@ HttpSmpoUtilGetHttpVersionLength
     /*
      *  HTTP-Version = "HTTP" "/" 1*DIGIT "." 1*DIGIT
      */
-    UCHAR                           buf[80];
+    char                            buf[4];
     ULONG                           ulSize;
 
     ulSize  = HTTP_SMPO_NAME_LENGTH;            /* "HTTP" --- protocol name */
     ulSize  += 1;                               /* "/" */
 
-    _ansc_ultoa(MajorVersion, (char *)buf, 10);
-    ulSize  += AnscSizeOfString((const char *)buf);           /* major version number length */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", MajorVersion); /* major version number length */
 
     ulSize  += 1;                               /* "." */
 
-    _ansc_ultoa(MinorVersion, (char *)buf, 10);
-    ulSize  += AnscSizeOfString((const char *)buf);           /* minor version number length */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", MinorVersion); /* minor version number length */
 
     return ulSize;
 }
@@ -2775,7 +2763,7 @@ AnscHttpGetStatusLineSize
      */
     ULONG                           ulSize = 0;
     PHTTP_RESPONSE_INFO             pResponseInfo;
-    UCHAR                           buf[8];
+    char                            buf[4];
 
     pResponseInfo   = (PHTTP_RESPONSE_INFO)hHttpHfo;
     if (!pResponseInfo)
@@ -2785,8 +2773,7 @@ AnscHttpGetStatusLineSize
     ulSize  += HttpSmpoUtilGetHttpVersionLength(pResponseInfo->MajorVersion, pResponseInfo->MinorVersion);
     ulSize  += 1;                                   /* space */
 
-    _ansc_ultoa(pResponseInfo->StatusCode, (char *)buf, 10);
-    ulSize  += AnscSizeOfString((const char *)buf);               /* status code */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", (unsigned long) pResponseInfo->StatusCode); /* status code */
 
     ulSize  += 1;                                   /* space */
     ulSize  += AnscSizeOfString(pResponseInfo->ReasonPhrase);
@@ -3295,19 +3282,18 @@ HttpSmpoUtilBuildUlong
         ULONG                       ulValue
     )
 {
-    UCHAR                       buf[16];
+    char                        buf[24];
     ULONG                       ulSize;
     BOOL                        bCopySucc = TRUE;
 
-    AnscInt2String(ulValue, (char *)buf, 10);
-    ulSize      = AnscSizeOfString((const char *)buf);
+    ulSize = snprintf (buf, sizeof(buf), "%lu", ulValue);
 
     bCopySucc   = HttpSmpoUtilCopyString
                      (
                          pBuf,
                          ulDestSize,
                          pulStart,
-                         buf,
+                         (PUCHAR)buf,
                          ulSize
                      );
 
@@ -4048,7 +4034,7 @@ HttpSmpoUtilBuildCookie
     ULONG                           ulCount, i;
     ULONG                           ulVersion;
     PHTTP_COOKIE_CONTENT            pCookieContent;
-    UCHAR                           buf[8];
+    char                            buf[24];
     ULONG                           bufLen;
     PUCHAR                          pValue;
     ULONG                           ulValueLen;
@@ -4080,8 +4066,7 @@ HttpSmpoUtilBuildCookie
      */
     if (ulVersion != 0)
     {
-        AnscInt2String(ulVersion, (char *)buf, 10);
-        bufLen      = AnscSizeOfString((const char *)buf);
+        bufLen = snprintf (buf, sizeof(buf), "%lu", ulVersion);
 
         if (bufLen != 0)
         {
@@ -4138,7 +4123,7 @@ HttpSmpoUtilBuildCookie
                                  buffer,
                                  ulBufSize,
                                  &ulStart,
-                                 buf,
+                                 (PUCHAR)buf,
                                  bufLen
                              );
             if (!bCopySucc)
@@ -4542,7 +4527,7 @@ HttpSmpoUtilBuildSetCookie
     ULONG                           ulCount, i;
     PUCHAR                          pValue;
     ULONG                           ulValueLen;
-    UCHAR                           buf[16];
+    char                            buf[24];
     ULONG                           bufLen;
     ULONG                           ulValue;
 
@@ -4850,15 +4835,14 @@ HttpSmpoUtilBuildSetCookie
             if (!bCopySucc)
                 return ANSC_STATUS_FAILURE;
 
-            AnscInt2String(pCookieContent->Version, (char *)buf, 10);
-            bufLen      = AnscSizeOfString((char *)buf);
+            bufLen = snprintf (buf, sizeof(buf), "%lu", (unsigned long) pCookieContent->Version);
 
             bCopySucc   = HttpSmpoUtilCopyString
                              (
                                  buffer,
                                  ulBufSize,
                                  &ulStart,
-                                 buf,
+                                 (PUCHAR)buf,
                                  bufLen
                              );
 
@@ -4960,15 +4944,14 @@ HttpSmpoUtilBuildSetCookie
             if (!bCopySucc)
                 return ANSC_STATUS_FAILURE;
 
-            AnscInt2String(pCookieContent->MaxAgeInSeconds, (char *)buf, 10);
-            bufLen      = AnscSizeOfString((char *)buf);
+            bufLen = snprintf (buf, sizeof(buf), "%lu", (unsigned long) pCookieContent->MaxAgeInSeconds);
 
             bCopySucc   = HttpSmpoUtilCopyString
                              (
                                  buffer,
                                  ulBufSize,
                                  &ulStart,
-                                 buf,
+                                 (PUCHAR)buf,
                                  bufLen
                              );
 
@@ -5080,7 +5063,7 @@ HttpSmpoUtilBuildSetCookie2
     ULONG                           ulCount, i;
     PUCHAR                          pValue;
     ULONG                           ulValueLen;
-    UCHAR                           buf[16];
+    char                            buf[24];
     ULONG                           bufLen;
     ULONG                           ulValue;
 
@@ -5501,15 +5484,14 @@ HttpSmpoUtilBuildSetCookie2
             if (!bCopySucc)
                 return ANSC_STATUS_FAILURE;
 
-            AnscInt2String(pCookieContent->Version,(char *) buf, 10);
-            bufLen      = AnscSizeOfString((char *)buf);
+            bufLen = snprintf (buf, sizeof(buf), "%lu", (unsigned long) pCookieContent->Version);
 
             bCopySucc   = HttpSmpoUtilCopyString
                              (
                                  buffer,
                                  ulBufSize,
                                  &ulStart,
-                                 buf,
+                                 (PUCHAR)buf,
                                  bufLen
                              );
 
@@ -5611,15 +5593,14 @@ HttpSmpoUtilBuildSetCookie2
             if (!bCopySucc)
                 return ANSC_STATUS_FAILURE;
 
-            AnscInt2String(pCookieContent->MaxAgeInSeconds, (char *)buf, 10);
-            bufLen      = AnscSizeOfString((char *)buf);
+            bufLen = snprintf (buf, sizeof(buf), "%lu", (unsigned long) pCookieContent->MaxAgeInSeconds);
 
             bCopySucc   = HttpSmpoUtilCopyString
                              (
                                  buffer,
                                  ulBufSize,
                                  &ulStart,
-                                 buf,
+                                 (PUCHAR)buf,
                                  bufLen
                              );
 
@@ -6142,11 +6123,9 @@ HttpSmpoUtilBuildRequestUri
 
             if (bAppendPort)
             {
-                UCHAR               buf[8];
+                char buf[12];
 
-                AnscInt2String(pUri->HostPort, (PCHAR)buf, 10);
-
-                ulSize  = AnscSizeOfString((PCHAR)buf);
+                ulSize = snprintf (buf, sizeof(buf), "%u", (unsigned int) pUri->HostPort);
 
                 bCopySucc   = HttpSmpoUtilCopyString
                                  (
@@ -6164,7 +6143,7 @@ HttpSmpoUtilBuildRequestUri
                                      pBuf,
                                      ulDestSize,
                                      &ulStart,
-                                     buf,
+                                     (PUCHAR)buf,
                                      ulSize
                                  );
 
@@ -6576,7 +6555,7 @@ HttpSmpoUtilBuildHttpVersion
     /*
      *  HTTP-Version = "HTTP" "/" 1*DIGIT "." 1*DIGIT
      */
-    UCHAR                           buf[80];
+    char                            buf[24];
     ULONG                           ulSize;
     BOOL                            bCopySucc;
     ULONG                           ulStart = *pulStart;
@@ -6603,15 +6582,14 @@ HttpSmpoUtilBuildHttpVersion
     if (!bCopySucc)
         return FALSE;
 
-    AnscInt2String(MajorVersion, (char *)buf, 10);
-    ulSize  = AnscSizeOfString((char *)buf);           /* major version number length */
+    ulSize = snprintf (buf, sizeof(buf), "%lu", (unsigned long) MajorVersion);
 
     bCopySucc   = HttpSmpoUtilCopyString
                      (
                          pBuf,
                          ulDestSize,
                          &ulStart,
-                         buf,
+                         (PUCHAR)buf,
                          ulSize
                      );
     if (!bCopySucc)
@@ -6629,15 +6607,14 @@ HttpSmpoUtilBuildHttpVersion
     if (!bCopySucc)
         return FALSE;
 
-    AnscInt2String(MinorVersion, (char *)buf, 10);
-    ulSize  = AnscSizeOfString((char *)buf);           /* minor version number length */
+    ulSize = snprintf (buf, sizeof(buf), "%lu", (unsigned long) MinorVersion);
 
     bCopySucc   = HttpSmpoUtilCopyString
                      (
                          pBuf,
                          ulDestSize,
                          &ulStart,
-                         buf,
+                         (PUCHAR)buf,
                          ulSize
                      );
 
