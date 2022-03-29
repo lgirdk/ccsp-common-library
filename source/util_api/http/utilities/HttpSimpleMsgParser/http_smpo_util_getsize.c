@@ -70,6 +70,7 @@
 
 **********************************************************************/
 
+#include <stdio.h>
 
 #include "http_smpo_global.h"
 
@@ -133,11 +134,7 @@ HttpSmpoUtilGetSizeRequestUri
 
         if (TRUE)
         {
-            ULONG                   ulHostPort;
-            UCHAR                   pHostPort[8];
             BOOL                    bCountPort;
-
-            AnscInt2String(pUri->HostPort, (char *)pHostPort, 10);
 
             if (bHttps)
             {
@@ -150,10 +147,10 @@ HttpSmpoUtilGetSizeRequestUri
 
             if (bCountPort)
             {
-                ulHostPort = AnscSizeOfString((const char *)pHostPort);
+                char buf[4];
 
                 ulSize  += 1;                   /* ":" */
-                ulSize  += ulHostPort;
+                ulSize  += snprintf (buf, sizeof(buf), "%u", (unsigned int) pUri->HostPort);
             }
         }
 
@@ -301,12 +298,9 @@ HttpSmpoUtilGetSizeRequestUri
              */
             
             ULONG                   ulHostName;
-            ULONG                   ulHostPort;
-            UCHAR                   pHostPort[8];
             BOOL                    bCountPort;
 
             ulHostName = AnscSizeOfString(pUri->HostName);
-            AnscInt2String(pUri->HostPort, (char *)pHostPort, 10);
             ulSize  = ulHostName;
 
             if (bHttps)
@@ -320,10 +314,10 @@ HttpSmpoUtilGetSizeRequestUri
 
             if (bCountPort)
             {
-                ulHostPort = AnscSizeOfString((const char *)pHostPort);
+                char buf[4];
 
                 ulSize  += 1;                   /* ":" */
-                ulSize  += ulHostPort;
+                ulSize  += snprintf (buf, sizeof(buf), "%u", (unsigned int) pUri->HostPort);
             }
         }
         break;
@@ -480,19 +474,17 @@ HttpSmpoUtilGetHttpVersionLength
     /*
      *  HTTP-Version = "HTTP" "/" 1*DIGIT "." 1*DIGIT 
      */
-    UCHAR                           buf[80];
+    char                            buf[4];
     ULONG                           ulSize;
 
     ulSize  = HTTP_SMPO_NAME_LENGTH;            /* "HTTP" --- protocol name */
     ulSize  += 1;                               /* "/" */
 
-    AnscInt2String(MajorVersion, (char *)buf, 10);      
-    ulSize  += AnscSizeOfString((const char *)buf);           /* major version number length */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", MajorVersion); /* major version number length */
 
     ulSize  += 1;                               /* "." */
 
-    AnscInt2String(MinorVersion, (char *)buf, 10);
-    ulSize  += AnscSizeOfString((const char *)buf);           /* minor version number length */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", MinorVersion); /* minor version number length */
 
     return ulSize;
 }
@@ -857,14 +849,13 @@ HttpSmpoUtilGetQualityLength
         ulSize = 1;                          /* "0" */
     else
     {
-        UCHAR                       buf[16];
+        char                        buf[26];
         ULONG                       i;
 
         buf[0]      = '0';
         buf[1]      = '.';
 
-        AnscInt2String(ulQuality, (char *)&buf[2], 10);
-        ulSize   = AnscSizeOfString((const char *)buf);
+        ulSize = 2 + snprintf (buf + 2, sizeof(buf) - 2, "%lu", ulQuality);
 
         for (i = ulSize - 1; (int)i >= 0; i --)
         {
@@ -913,13 +904,9 @@ HttpSmpoUtilGetUlongStringLength
         ULONG                       ulValue
     )
 {
-    UCHAR                       buf[16];
-    ULONG                       ulSize;
+    char buf[4];
 
-    AnscInt2String(ulValue, (char *)buf, 10);
-    ulSize   = AnscSizeOfString((const char *)buf);
-
-    return ulSize;
+    return snprintf (buf, sizeof(buf), "%lu", ulValue);
 }
 
 
@@ -1462,7 +1449,7 @@ HttpSmpoUtilGetSizeStatusLine
      */
     ULONG                           ulSize = 0;
     PHTTP_RESPONSE_INFO             pResponseInfo;
-    UCHAR                           buf[8];
+    char                            buf[4];
 
     pResponseInfo   = (PHTTP_RESPONSE_INFO)hHttpHfo;
     if (!pResponseInfo)
@@ -1472,8 +1459,7 @@ HttpSmpoUtilGetSizeStatusLine
     ulSize  += HttpSmpoUtilGetHttpVersionLength(pResponseInfo->MajorVersion, pResponseInfo->MinorVersion);
     ulSize  += 1;                                   /* space */
 
-    AnscInt2String(pResponseInfo->StatusCode, (char *)buf, 10);
-    ulSize  += AnscSizeOfString((const char *)buf);               /* status code */
+    ulSize  += snprintf (buf, sizeof(buf), "%lu", (unsigned long) pResponseInfo->StatusCode); /* status code */
 
     ulSize  += 1;                                   /* space */
     ulSize  += AnscSizeOfString(pResponseInfo->ReasonPhrase);
