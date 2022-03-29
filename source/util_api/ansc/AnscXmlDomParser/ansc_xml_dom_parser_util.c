@@ -75,6 +75,8 @@
 
 **********************************************************************/
 
+#include <stdio.h>
+
 #include "ansc_xml_dom_parser_global.h"
 
 
@@ -159,7 +161,7 @@ AnscXmlLongToString
       return;
    }
 
-   _ansc_ultoa( value, pBuffer, 10);
+   sprintf(pBuffer, "%lu", (unsigned long) value);
 }
 
 BOOLEAN
