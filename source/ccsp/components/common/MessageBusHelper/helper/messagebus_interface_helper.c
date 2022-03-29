@@ -75,6 +75,8 @@
 
 **********************************************************************/
 
+#include <stdio.h>
+
 #include "messagebus_interface_global.h"
 #include "slap_vco_internal_api.h"
 
@@ -116,7 +118,7 @@ static int CcspCcMbi_ValidateINT
     int len = strlen(intStr);
 	char* pNext;
 	char c;
-	char buf[32] = {0};
+	char buf[12];
 	int num;
 
     if(len <= 0) return -1;
@@ -144,9 +146,9 @@ static int CcspCcMbi_ValidateINT
 	num = _ansc_atoi(intStr);
 
 	if ( signedInt )
-		_ansc_itoa(num, buf, 10);
+		snprintf(buf, sizeof(buf), "%d", num);
 	else
-		_ansc_ultoa((ULONG)num, buf, 10);
+		snprintf(buf, sizeof(buf), "%u", (unsigned int) num);
 
 	if ( !strcmp(buf, (char*)intStr) == 0 ) return -1;
 
