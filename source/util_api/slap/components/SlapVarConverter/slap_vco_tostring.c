@@ -89,6 +89,7 @@
 
 **********************************************************************/
 
+#include <stdio.h>
 
 #include "slap_vco_global.h"
 #include "safec_lib_common.h"
@@ -425,16 +426,14 @@ SlapVcoUint32ToString
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char*                           var_string   = (char*                     )AnscAllocateMemory(32);
+    char *var_string = AnscAllocateMemory(12);
 
     if ( !var_string )
     {
         return  NULL;
     }
-    else
-    {
-        _ansc_ultoa(var_uint32, var_string, 10);
-    }
+
+    sprintf(var_string, "%u", (unsigned int) var_uint32);
 
     return  var_string;
 }
@@ -1189,7 +1188,7 @@ SlapVcoUint32ToHexString
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char*                           var_string   = (char*                     )AnscAllocateMemory(32);
+    char *var_string = AnscAllocateMemory(9);
     errno_t                         rc           = -1;
 
     if ( !var_string )
@@ -1198,11 +1197,10 @@ SlapVcoUint32ToHexString
     }
     else
     {
-        /*_ansc_ultoa(var_uint32, var_string, 16);*/
         rc = sprintf_s
             (
                 var_string,
-                32,
+                9,
                 "%X",
                 (unsigned int)var_uint32
             );
