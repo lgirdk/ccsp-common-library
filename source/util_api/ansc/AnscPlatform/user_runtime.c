@@ -49,7 +49,6 @@
         library functions.
 
         *   _ansc_itoa
-        *   _ansc_ultoa
 
     ---------------------------------------------------------------
 
@@ -115,52 +114,4 @@ _ansc_itoa
     }
 
     return string;
-}
-
-
-char*
-_ansc_ultoa
-    (
-        unsigned int                value,
-        char*                       pBuf,
-        int                         radix
-    )
-{
-
-    ULONG                           counter = 0;
-    ULONG                           result  = value;
-    ULONG                           length  = 0;
-
-    if( pBuf == NULL)
-    {
-        return NULL;
-    }
-
-    while ( result )
-    {
-        result = result / radix;
-        counter++;
-    }
-
-    length = counter;
-    result = value;
-
-    if ( length != 0 )
-    {
-        for ( counter = 0; counter < length; counter++ )
-        {
-            pBuf[length - 1 - counter] = (char)(result % radix) + '0';
-            result                     = result / radix;
-        }
-
-        pBuf[length] = 0;
-    }
-    else
-    {
-        pBuf[0]  = '0';
-        pBuf[1]  = 0;
-        length   = 1;
-    }
-
-    return  pBuf;
 }
