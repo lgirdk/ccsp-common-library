@@ -112,8 +112,6 @@ HTTP_SMPO_HEADER_XINFO1, *PHTTP_SMPO_HEADER_XINFO1;
 #define  ACCESS_HTTP_SMPO_HEADER_XINFO1_OBJECT(p)                \
          ACCESS_CONTAINER(p, HTTP_SMPO_HEADER_XINFO1, Linkage)   \
 
-#define  AnscInt2String                             _ansc_ultoa
-
 ANSC_STATUS
 AnscHttpBuildRequestLine
     (

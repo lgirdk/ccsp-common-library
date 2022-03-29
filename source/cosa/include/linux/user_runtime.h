@@ -102,15 +102,6 @@
 
 char*    _ansc_itoa(int value, char* string, int radix);
 
-char*
-_ansc_ultoa
-    (
-        unsigned int                value,
-        char*                       pBuf,
-        int                         radix
-    );
-
-/*  #define  _ansc_ultoa                            ultoa */
     #define  _ansc_rand                             rand
     #define  _ansc_srand                            srand
 
