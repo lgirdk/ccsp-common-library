@@ -86,7 +86,6 @@
 
 #define  AnscString2Int                             _ansc_atoi
 #define  AnscString2Double                          _ansc_atof
-#define  AnscInt2String                             _ansc_ultoa
 
 
 /*
