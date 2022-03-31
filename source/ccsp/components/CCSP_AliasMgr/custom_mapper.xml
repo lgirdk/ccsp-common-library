@@ -1816,10 +1816,6 @@
       <Internal>Device.UPnP.Device.X_CISCO_COM_IGD_TTL</Internal>
     </Alias>
     <Alias>
-      <External>Device.X_LGI-COM_DeviceControl.SSH.Enable</External>
-      <Internal>Device.UserInterface.X_CISCO_COM_RemoteAccess.SSHEnable</Internal>
-    </Alias>
-    <Alias>
       <External>Device.X_LGI-COM_General.CustomerId</External>
       <Internal>Device.X_LGI-COM_General_Internal.CustomerId</Internal>
     </Alias>
