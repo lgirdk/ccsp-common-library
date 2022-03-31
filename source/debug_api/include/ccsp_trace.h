@@ -123,12 +123,14 @@ extern volatile unsigned int PLATFORMMGR_RDKLogLevel;
 extern volatile unsigned int GPONMANAGER_RDKLogLevel;
 #endif
 extern volatile unsigned int PPPMANAGER_RDKLogLevel;
-extern volatile unsigned int TELCOVOICEMANAGER_RDKLogLevel;
 extern volatile unsigned int XTMMANAGER_RDKLogLevel;
 extern volatile unsigned int LEDMANAGER_RDKLogLevel;
 #endif //FEATURE_RDKB_WAN_MANAGER
 #if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
 extern volatile unsigned int FWUPGRADEMGR_RDKLogLevel;
+#endif
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_RDKB_TELCOVOICE_MANAGER)
+extern volatile unsigned int TELCOVOICEMANAGER_RDKLogLevel;
 #endif
 #ifdef FEATURE_RDKB_NFC_MANAGER
 extern volatile unsigned int NFCMANAGER_RDKLogLevel;
@@ -171,13 +173,15 @@ extern volatile BOOL PLATFORMMGR_RDKLogEnable;
 #ifdef FEATURE_RDKB_GPON_MANAGER
 extern volatile BOOL GPONMANAGER_RDKLogEnable;
 #endif
-extern volatile BOOL TELCOVOICEMANAGER_RDKLogEnable;
 extern volatile BOOL XTMMANAGER_RDKLogEnable;
 extern volatile BOOL PPPMANAGER_RDKLogEnable;
 extern volatile BOOL LEDMANAGER_RDKLogEnable;
 #endif //FEATURE_RDKB_WAN_MANAGER
 #if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
 extern volatile BOOL FWUPGRADEMGR_RDKLogEnable;
+#endif
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_RDKB_TELCOVOICE_MANAGER)
+extern volatile BOOL TELCOVOICEMANAGER_RDKLogEnable;
 #endif
 #if defined(FEATURE_RDKB_NFC_MANAGER)
 extern volatile BOOL NFCMANAGER_RDKLogEnable;

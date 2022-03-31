@@ -151,8 +151,6 @@ volatile unsigned int PLATFORMMGR_RDKLogLevel = 4;
 volatile BOOL GPONMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int GPONMANAGER_RDKLogLevel = 4;
 #endif
-volatile BOOL TELCOVOICEMANAGER_RDKLogEnable = TRUE;
-volatile unsigned int TELCOVOICEMANAGER_RDKLogLevel = 4;
 volatile BOOL PPPMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int PPPMANAGER_RDKLogLevel = 4;
 volatile BOOL LEDMANAGER_RDKLogEnable = TRUE;
@@ -161,6 +159,10 @@ volatile unsigned int LEDMANAGER_RDKLogLevel = 4;
 #if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
 volatile BOOL FWUPGRADEMGR_RDKLogEnable = TRUE;
 volatile unsigned int FWUPGRADEMGR_RDKLogLevel = 4;
+#endif
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_RDKB_TELCOVOICE_MANAGER)
+volatile BOOL TELCOVOICEMANAGER_RDKLogEnable = TRUE;
+volatile unsigned int TELCOVOICEMANAGER_RDKLogLevel = 4;
 #endif
 #if defined (FEATURE_RDKB_NFC_MANAGER)
 volatile BOOL NFCMANAGER_RDKLogEnable = TRUE;
@@ -479,12 +481,6 @@ void CcspTraceLogAPI(char *fileName, char *pComponentName, int level, const char
             LogLevel = PLATFORMMGR_RDKLogLevel;
             LogEnable = PLATFORMMGR_RDKLogEnable;
         }
-        else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.telcovoicemanager"))
-        {
-            ComponentName= "LOG.RDK.TELCOVOICEMANAGER";
-            LogLevel = TELCOVOICEMANAGER_RDKLogLevel;
-            LogEnable = TELCOVOICEMANAGER_RDKLogEnable;
-        }
         else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.xtmmanager"))
         {
             ComponentName= "LOG.RDK.XTMMANAGER";
@@ -510,6 +506,14 @@ void CcspTraceLogAPI(char *fileName, char *pComponentName, int level, const char
             ComponentName= "LOG.RDK.FWUPGRADEMANAGER";
             LogLevel = FWUPGRADEMGR_RDKLogLevel;
             LogEnable = FWUPGRADEMGR_RDKLogEnable;
+        }
+#endif
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_RDKB_TELCOVOICE_MANAGER)
+        else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.telcovoicemanager"))
+        {
+            ComponentName= "LOG.RDK.TELCOVOICEMANAGER";
+            LogLevel = TELCOVOICEMANAGER_RDKLogLevel;
+            LogEnable = TELCOVOICEMANAGER_RDKLogEnable;
         }
 #endif
 #if defined(FEATURE_RDKB_NFC_MANAGER)
