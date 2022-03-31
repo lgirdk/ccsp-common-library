@@ -147,8 +147,6 @@ volatile BOOL VLANMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int VLANMANAGER_RDKLogLevel = 4;
 volatile BOOL PLATFORMMGR_RDKLogEnable = TRUE;
 volatile unsigned int PLATFORMMGR_RDKLogLevel = 4;
-volatile BOOL FWUPGRADEMGR_RDKLogEnable = TRUE;
-volatile unsigned int FWUPGRADEMGR_RDKLogLevel = 4;
 #ifdef FEATURE_RDKB_GPON_MANAGER
 volatile BOOL GPONMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int GPONMANAGER_RDKLogLevel = 4;
@@ -160,6 +158,10 @@ volatile unsigned int PPPMANAGER_RDKLogLevel = 4;
 volatile BOOL LEDMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int LEDMANAGER_RDKLogLevel = 4;
 #endif //FEATURE_RDKB_WAN_MANAGER
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
+volatile BOOL FWUPGRADEMGR_RDKLogEnable = TRUE;
+volatile unsigned int FWUPGRADEMGR_RDKLogLevel = 4;
+#endif
 #if defined (FEATURE_RDKB_NFC_MANAGER)
 volatile BOOL NFCMANAGER_RDKLogEnable = TRUE;
 volatile unsigned int NFCMANAGER_RDKLogLevel = 4;
@@ -489,12 +491,6 @@ void CcspTraceLogAPI(char *fileName, char *pComponentName, int level, const char
             LogLevel = XTMMANAGER_RDKLogLevel;
             LogEnable = XTMMANAGER_RDKLogEnable;
         }
-        else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.fwupgrademanager"))
-        {
-            ComponentName= "LOG.RDK.FWUPGRADEMANAGER";
-            LogLevel = FWUPGRADEMGR_RDKLogLevel;
-            LogEnable = FWUPGRADEMGR_RDKLogEnable;
-        }
         else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.pppmanager"))
         {
             ComponentName= "LOG.RDK.PPPMANAGER";
@@ -508,6 +504,14 @@ void CcspTraceLogAPI(char *fileName, char *pComponentName, int level, const char
             LogEnable = LEDMANAGER_RDKLogEnable;
         }
 #endif // FEATURE_RDKB_WAN_MANAGER
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
+        else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.fwupgrademanager"))
+        {
+            ComponentName= "LOG.RDK.FWUPGRADEMANAGER";
+            LogLevel = FWUPGRADEMGR_RDKLogLevel;
+            LogEnable = FWUPGRADEMGR_RDKLogEnable;
+        }
+#endif
 #if defined(FEATURE_RDKB_NFC_MANAGER)
         else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.nfcmanager"))
         {
