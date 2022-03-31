@@ -288,13 +288,15 @@ const char* CcspTraceGetRdkLogModule(const char* pComponentName)
         return  "LOG.RDK.TELCOVOICEMANAGER";
     else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.xtmmanager"))
         return  "LOG.RDK.XTMMANAGER";
-    else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.fwupgrademanager"))
-        return  "LOG.RDK.FWUPGRADEMANAGER";
     else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.pppmanager"))
         return  "LOG.RDK.PPPMANAGER";
     else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.ledmanager"))
         return  "LOG.RDK.RDKLEDMANAGER";
 #endif // FEATURE_RDKB_WAN_MANAGER
+#if defined (FEATURE_RDKB_WAN_MANAGER) || defined (FEATURE_FWUPGRADE_MANAGER)
+    else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.fwupgrademanager"))
+        return  "LOG.RDK.FWUPGRADEMANAGER";
+#endif
 #if defined(FEATURE_RDKB_NFC_MANAGER)
     else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.nfcmanager"))
         return "LOG.RDK.RDKNFCMANAGER";
