@@ -82,7 +82,7 @@ typedef int errno_t;
 #if 1
 
 #define sprintf_s(dst, max, fmt, ...) EOK; \
-  sprintf( dst, fmt, ##__VA_ARGS__ );
+  snprintf( dst, max, fmt, ##__VA_ARGS__ );
 
 #else
 
@@ -90,7 +90,7 @@ static inline int sprintf_s (char *str, size_t size, const char *format, ...)
 {
     va_list args;
     va_start (args, format);
-    vsprintf (str, format, args);
+    vsnprintf (str, size, format, args);
     va_end (args);
     return EOK;
 }
