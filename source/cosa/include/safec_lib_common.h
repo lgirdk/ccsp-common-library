@@ -44,6 +44,7 @@
     }
 
 #ifdef SAFEC_DUMMY_API
+#include <stdarg.h>
 typedef int errno_t;
 #define EOK 0
 #define ESNULLP          400        /* null ptr                    */
@@ -79,23 +80,16 @@ typedef int errno_t;
 
 #define strtok_s(dest, dmax, delim, ptr) strtok_r(dest, delim, ptr)
 
-#if 1
-
-#define sprintf_s(dst, max, fmt, ...) EOK; \
-  snprintf( dst, max, fmt, ##__VA_ARGS__ );
-
-#else
-
-static inline int sprintf_s (char *str, size_t size, const char *format, ...)
+static inline int sprintf_s (char *str, size_t size, const char *fmt, ...)
 {
-    va_list args;
-    va_start (args, format);
-    vsnprintf (str, size, format, args);
-    va_end (args);
-    return EOK;
-}
+    va_list argp;
+    int len;
 
-#endif
+    va_start (argp, fmt);
+    len = vsnprintf (str, size, fmt, argp);
+    va_end (argp);
+    return len;
+}
 
 static inline int strcmp_s(const char *dst, int dmax, const char *src, int *r) {
         *r = strcmp(dst, src);
