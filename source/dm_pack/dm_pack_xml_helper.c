@@ -390,14 +390,7 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreateNode(PANSC_XML_DOM_NODE_OBJECT pNode, cons
 
   if ( !pNewNode )
   {
-    if(pNode)
-    {
-      AnscTrace("Failed to allocate child Node for  - %s\n", pNode->Name);
-    }
-    else
-    {
-      AnscTrace("Failed to allocate child Node for  - root node\n");
-    }
+    AnscTrace("Failed to allocate child Node for - %s\n", pNode ? pNode->Name : "root node");
     return NULL;
   }
 
