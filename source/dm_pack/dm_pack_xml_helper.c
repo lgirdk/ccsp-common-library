@@ -382,6 +382,7 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreateNode(PANSC_XML_DOM_NODE_OBJECT pNode, cons
 {
   PANSC_XML_DOM_NODE_OBJECT pNewNode = NULL;
   ANSC_HANDLE hOwnerContext = NULL;
+  size_t len;
 
   if(pNode)
     hOwnerContext = pNode->hOwnerContext;
@@ -402,7 +403,17 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreateNode(PANSC_XML_DOM_NODE_OBJECT pNode, cons
     pNewNode->hXMLContext   = pNode->hXMLContext;
   }
 
-  AnscCopyString( pNewNode->Name, (char*)pName);
+  len = strlen(pName);
+
+  /* Sanity check - enable for debug builds only */
+  if (len >= sizeof(pNewNode->Name))
+  {
+    AnscTrace("DMPackCreateNode invalid name - %s\n", pName);
+    AnscFreeMemory(pNewNode);
+    return NULL;
+  }
+
+  memcpy(pNewNode->Name, pName, len + 1);
 
   if(pText)
   {
@@ -410,6 +421,15 @@ PANSC_XML_DOM_NODE_OBJECT DMPackCreateNode(PANSC_XML_DOM_NODE_OBJECT pNode, cons
     if (textSize == 0)
     {
       textSize = strlen(pText);
+    }
+    else
+    {
+      /* Sanity check - enable for debug builds only */
+      if (textSize != strlen(pText))
+      {
+        printf("DMPackCreateNode bad length pName=%s pText=%s textSize=%lu\n", pName, pText, textSize);
+        textSize = strlen(pText);
+      }
     }
 
     pNewNode->DataSize     = textSize;
