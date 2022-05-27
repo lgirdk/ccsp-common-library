@@ -100,10 +100,10 @@
       <Name>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Name>
     </Param>
     <Param invisible="true">
-      <Name>Device.NAT.PortMapping.{i}.X_RDKCENTRAL_InternalPortEndRange</Name>
+      <Name>Device.NAT.PortMapping.{i}.InternalPortEndRange</Name>
     </Param>
     <Param invisible="true">
-      <Name>Device.NAT.PortMapping.{i}.X_RDKCENTRAL_RuleSource</Name>
+      <Name>Device.NAT.PortMapping.{i}.RuleSource</Name>
     </Param>
     <Param invisible="true">
       <Name>Device.NAT.X_CISCO_COM_PortTriggers.TriggerNumberOfEntries</Name>
@@ -1771,11 +1771,11 @@
     </Alias>
     <Alias>
       <External>Device.NAT.PortMapping.{i}.X_LGI-COM_InternalPortEndRange</External>
-      <Internal>Device.NAT.PortMapping.{i}.X_RDKCENTRAL_InternalPortEndRange</Internal>
+      <Internal>Device.NAT.PortMapping.{i}.InternalPortEndRange</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.PortMapping.{i}.X_LGI-COM_RuleSource</External>
-      <Internal>Device.NAT.PortMapping.{i}.X_RDKCENTRAL_RuleSource</Internal>
+      <Internal>Device.NAT.PortMapping.{i}.RuleSource</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.X_LGI-COM_PortTriggers.TriggerNumberOfEntries</External>
