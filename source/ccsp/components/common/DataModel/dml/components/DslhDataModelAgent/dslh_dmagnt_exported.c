@@ -485,6 +485,7 @@ COSAGetParamValueString
 
     if (len >= *pulSize)
     {
+        // AnscTraceWarning(("COSAGetParamValueString: output buffer too small '%s'\n", pParamName));
         result = 1;
     }
     else
@@ -1204,15 +1205,18 @@ COSAGetParamValueByPathName
 
     if ( ret == CCSP_SUCCESS  && size2 >= 1)
     {
-        len = _ansc_strlen(parameterVal[0]->parameterValue);
+        len = strlen(parameterVal[0]->parameterValue);
 
-        if( (int)*parameterValueLength < len )
+        if (len >= *parameterValueLength)
         {
-            *parameterValueLength = len;
-
+            // AnscTraceWarning(("COSAGetParamValueByPathName: buf size error '%s'\n", val->parameterName));
+            memcpy(val->parameterValue, parameterVal[0]->parameterValue, *parameterValueLength - 1);
+            val->parameterValue[*parameterValueLength - 1] = 0;
         }
-        /* Ticket RDKB-39090 purpose */
-        strcpy(val->parameterValue, parameterVal[0]->parameterValue);
+        else
+        {
+            memcpy(val->parameterValue, parameterVal[0]->parameterValue, len + 1);
+        }
 
         *parameterValueLength = len;
     }
