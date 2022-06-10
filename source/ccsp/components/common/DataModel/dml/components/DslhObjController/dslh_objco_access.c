@@ -950,7 +950,7 @@ afterGetValue
     }
 }
 
-BOOL
+static BOOL
 getChildTableCount
     (
         ANSC_HANDLE                 hThisObject,
@@ -1034,7 +1034,9 @@ DslhObjcoGetParamValueByName
 
         if( pFind != NULL && (ULONG)(pFind - pName) == AnscSizeOfString(pName) - AnscSizeOfString(TR69_NUMBER_OF_ENTRIES_STRING))
         {
-            bReturn = getChildTableCount(pMyObject, pName, &pSlapVariable->Variant.varUint32);
+            ULONG value = 0;
+
+            bReturn = getChildTableCount(pMyObject, pName, &value);
             
             if(!bReturn)
             {
@@ -1048,6 +1050,7 @@ DslhObjcoGetParamValueByName
             }
             else
             {
+                pSlapVariable->Variant.varUint32 = (SLAP_UINT32) value;
                 return ANSC_STATUS_SUCCESS;
             }
         }
@@ -1241,12 +1244,18 @@ DslhObjcoGetBulkParamValue
 
                 if( pFind != NULL && (ULONG)(pFind - pParamArray[i]) == AnscSizeOfString(pParamArray[i]) - AnscSizeOfString(TR69_NUMBER_OF_ENTRIES_STRING))
                 {
-                    bReturn = getChildTableCount(pMyObject, pParamArray[i], &ppVarArray[i]->Variant.varUint32);
+                    ULONG value = 0;
+
+                    bReturn = getChildTableCount(pMyObject, pParamArray[i], &value);
             
                     if(!bReturn)
                     {
                         /* there's no back-end support, return 0 */
                         ppVarArray[i]->Variant.varUint32 = 0;
+                    }
+                    else
+                    {
+                        ppVarArray[i]->Variant.varUint32 = (SLAP_UINT32) value;
                     }
 
                     continue;
