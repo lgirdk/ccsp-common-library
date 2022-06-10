@@ -74,6 +74,8 @@
 #ifndef  _SLAP_DEFINITIONS_
 #define  _SLAP_DEFINITIONS_
 
+#include <stdint.h>
+
 #include "user_base.h"
 #include "ansc_wrapper_base.h"
 #include "ansc_common_structures.h"
@@ -247,12 +249,12 @@
  * Object Access). Through this interface, SLAP provides a generic object-access mechansim.
  */
 typedef  void           SLAP_VOID,      *PSLAP_VOID;
-typedef  ULONG          SLAP_BOOL,      *PSLAP_BOOL;
+typedef  uint32_t       SLAP_BOOL,      *PSLAP_BOOL;
 typedef  char           SLAP_CHAR,      *PSLAP_CHAR;
 typedef  char*          SLAP_STRING,    *PSLAP_STRING;
 typedef  int            SLAP_INT,       *PSLAP_INT;
-typedef  UCHAR          SLAP_UCHAR,     *PSLAP_UCHAR;
-typedef  ULONG          SLAP_UINT32,    *PSLAP_UINT32;
+typedef  unsigned char  SLAP_UCHAR,     *PSLAP_UCHAR;
+typedef  uint32_t       SLAP_UINT32,    *PSLAP_UINT32;
 typedef  void*          SLAP_PTR,       *PSLAP_PTR;
 typedef  ANSC_HANDLE    SLAP_HANDLE,    *PSLAP_HANDLE;
 typedef  ANSC_HANDLE    SLAP_OBJECT,    *PSLAP_OBJECT;
