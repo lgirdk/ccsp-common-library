@@ -82,7 +82,7 @@
 #define  DM_ROOTNAME                           "Device."
 
 #define  CONFIG_CCSP_WAN_MGMT_ACCESS
-#ifndef CONFIG_KERNEL_NF_TRIGGER_SUPPORT
+#if !defined(CONFIG_KERNEL_NF_TRIGGER_SUPPORT) && !defined(_COSA_BCM_ARM_)
  #define CONFIG_KERNEL_NF_TRIGGER_SUPPORT
 #endif
 #endif
