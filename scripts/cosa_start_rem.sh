@@ -189,18 +189,6 @@ fi
 echo_t "Launching UI after all CCSP processes are up"
 /etc/start_lighttpd.sh start &
 
-# Wait for wan-status to be ready before launching tr069 agent to communicate with ACS server
-loop_count=0
-while [ $loop_count -lt 6 ]; do
-	wan_event=$(sysevent get wan-status)
-	if [ "$wan_event" = "started" ]; then
-		break
-	fi
-	echo "wan-status is not started yet. sleeping for 10 sec in cosa_start_rem.sh ..."
-	sleep 10
-	loop_count=$((loop_count+1))
-done
-
 if [ -e ./tr069pa ]
 then
 	cd tr069pa
