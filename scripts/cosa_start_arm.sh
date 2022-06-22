@@ -41,9 +41,12 @@ source /etc/device.properties
 
 print_uptime "cosa_service_start"
 
-ulimit -c unlimited
 if [ "$BUILD_TYPE" != "prod" ]; then
+      ulimit -c unlimited
       echo /tmp/%t_core.prog_%e.signal_%s > /proc/sys/kernel/core_pattern
+else
+      ulimit -c 0
+      echo /dev/null > /proc/sys/kernel/core_pattern
 fi
 
 if [ -f /etc/mount-utils/getConfigFile.sh ];then
