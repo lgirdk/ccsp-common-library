@@ -39,11 +39,6 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
-ulimit -c unlimited
-if [ "$BUILD_TYPE" != "prod" ]; then
-      echo /tmp/%t_core.prog_%e.signal_%s > /proc/sys/kernel/core_pattern
-fi
-
 if [ -f /etc/mount-utils/getConfigFile.sh ];then
    . /etc/mount-utils/getConfigFile.sh
 fi
@@ -107,12 +102,19 @@ fi
 # Start coredump
 if [ -f "$PWD/core_compr" ]; then
 	if ! [ -e "/var/core" ]; then
-		mkdir -p /var/core/
+		mkdir -p /var/core
 	fi
 	echo "|$PWD/core_compr /var/core %p %e" >/proc/sys/kernel/core_pattern
 	ulimit -c unlimited
 
 	./core_report.sh &
+
+elif [ "$BUILD_TYPE" = "prod" ]; then
+	echo /dev/null >/proc/sys/kernel/core_pattern
+	ulimit -c 0
+else
+	echo /tmp/%t_core.prog_%e.signal_%s >/proc/sys/kernel/core_pattern
+	ulimit -c unlimited
 fi
 
 cp ccsp_msg.cfg /tmp
