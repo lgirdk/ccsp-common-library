@@ -211,6 +211,9 @@
       <Name>Device.X_LGI-COM_General_Internal.LED.RegistrationErrorConditionTimer</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.LED.Brightness</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Name>
     </Param>
     <Param invisible="true">
@@ -1001,6 +1004,9 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.LED.RegistrationErrorConditionTimer</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.LED.Brightness</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_General.UserBridgeModeAllowed</Name>
@@ -1882,6 +1888,10 @@
     <Alias>
       <External>Device.X_LGI-COM_General.LED.RegistrationErrorConditionTimer</External>
       <Internal>Device.X_LGI-COM_General_Internal.LED.RegistrationErrorConditionTimer</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.LED.Brightness</External>
+      <Internal>Device.X_LGI-COM_General_Internal.LED.Brightness</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_General.UserBridgeModeAllowed</External>
