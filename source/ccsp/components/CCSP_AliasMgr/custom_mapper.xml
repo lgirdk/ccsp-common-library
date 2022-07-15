@@ -801,6 +801,9 @@
     <Param invisible="true">
       <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_Md5KeyValue</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.UserInterface.Enable</Name>
+    </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
@@ -1610,6 +1613,9 @@
     </Param>
     <Param>
       <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyValue</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</Name>
     </Param>
 </ParamList>
 <AliasList>
@@ -2661,6 +2667,10 @@
     <Alias>
       <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</External>
       <Internal>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_AuthenticationType</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</External>
+      <Internal>Device.UserInterface.Enable</Internal>
     </Alias>
     <Alias>
       <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyID</External>
