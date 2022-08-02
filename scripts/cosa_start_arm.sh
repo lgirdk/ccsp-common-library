@@ -165,6 +165,22 @@ if [ -f  /lib/rdk/dcm.service ]; then
     /bin/sh /lib/rdk/dcm.service &
 fi
 
+# Start wiFi here
+# Moved from cosa_start_rem.sh for Broadcom platforms
+if [ -e ./wifi ]
+then
+    cd wifi
+    echo_t "/usr/bin/CcspWifiSsp -subsys $Subsys &"
+    /usr/bin/CcspWifiSsp -subsys $Subsys &
+    cd ..
+fi
+
+if [ -e ./mesh ]
+then
+    #Start mesh agent start script and run as background process
+    /usr/ccsp/mesh_agent_start.sh &
+fi
+
 if [ -e /usr/bin/wanmanager ]
 then
     /usr/bin/wanmanager -subsys $Subsys &
