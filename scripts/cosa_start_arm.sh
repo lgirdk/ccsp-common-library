@@ -157,6 +157,23 @@ if [ -f  /lib/rdk/dcm.service ]; then
     /bin/sh /lib/rdk/dcm.service &
 fi
 
+# Start wiFi here
+# Moved from cosa_start_rem.sh for Broadcom platforms
+if [ -e ./wifi ]
+then
+    cd wifi
+    echo_t "****STARTING CCSPWIFI WITH SUBSYS***"
+    echo_t "/usr/bin/CcspWifiSsp -subsys $Subsys &"
+    /usr/bin/CcspWifiSsp -subsys $Subsys &
+    cd ..
+fi
+if [ -e ./mesh ]
+then
+    #Start mesh agent start script and run as background process
+    /usr/ccsp/mesh_agent_start.sh &
+fi
+
+
 #Mesh-596: We need to start dropbear a bit earlier so that lease sync happens
 #for plume
 if [ "x$MULTI_CORE" == "xyes" ]; then
