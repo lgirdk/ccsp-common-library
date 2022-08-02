@@ -158,14 +158,6 @@ then
 		/usr/bin/harvester &
 		cd ..
 	fi
-
-	if [ -e ./wifi ]
-	then
-		cd wifi
-		echo_t "/usr/bin/CcspWifiSsp -subsys $Subsys &"
-		/usr/bin/CcspWifiSsp -subsys $Subsys &
-		cd ..
-	fi
 fi
 
 # Wait with timeout for last CCSP component (ie CcspLMLite) before starting webui
