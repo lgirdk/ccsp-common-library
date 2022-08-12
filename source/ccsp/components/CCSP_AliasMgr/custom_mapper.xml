@@ -816,6 +816,9 @@
     <Param invisible="true">
       <Name>Device.UserInterface.Enable</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ChannelNumberOfEntries</Name>
+    </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
@@ -1628,6 +1631,9 @@
     </Param>
     <Param>
       <Name>Device.WiFi.Radio.{i}.Stats.X_LGI-COM_ChannelUtilization</Name>
+    </Param>
+    <Param>
+      <Name>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ACSChannelsNumberOfEntries</Name>
     </Param>
     <Param>
       <Name>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</Name>
@@ -2703,6 +2709,10 @@
     <Alias>
       <External>Device.WiFi.Radio.{i}.Stats.X_LGI-COM_ChannelUtilization</External>
       <Internal>Device.WiFi.Radio.{i}.Stats.X_COMCAST-COM_ChannelUtilization</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ACSChannelsNumberOfEntries</External>
+      <Internal>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ChannelNumberOfEntries</Internal>
     </Alias>
     <Alias>
       <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</External>
