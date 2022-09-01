@@ -70,13 +70,7 @@
 
 **********************************************************************/
 
-
 #include "slap_scostd_global.h"
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4047)                     /* 'identifier1' differs in levels of indirection from 'identifier2' */
-#endif
 
 
 /**********************************************************************
