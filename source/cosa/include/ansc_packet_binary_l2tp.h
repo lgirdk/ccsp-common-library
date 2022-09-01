@@ -70,13 +70,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _L2TM_ANSC_PACKET_BINARY_
 #define  _L2TM_ANSC_PACKET_BINARY_
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -271,9 +266,6 @@ L2TP_AVP_HEADER,  *PL2TP_AVP_HEADER;
 
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

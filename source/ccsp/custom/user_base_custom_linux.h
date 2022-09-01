@@ -69,10 +69,6 @@
 /***************************************************************
         Platform/Compiler Specific Definitions
 ***************************************************************/
-/*
- *  Indicate whether massive PRAGMA functions are supported
- */
-/*#define  _ANSC_ENABLE_PRAGMA_*/
 
 #if !defined(__BYTE_ORDER__)
 #error "__BYTE_ORDER__ is not defined?"
