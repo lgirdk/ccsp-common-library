@@ -69,15 +69,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_WPS_
 #define  _ANSC_PACKET_BINARY_WPS_
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
 
 /*
  * All network protocol messages must be defined without any packing. While most protocols were
@@ -85,9 +78,6 @@
  * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
  * to control the byte bounary in C/C++ programs:
  */
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -205,9 +195,6 @@ WPS_IE_HEADER,  *PWPS_IE_HEADER;
 #define  AnscWpsSetData(p, d, l)                    AnscCopyMemory(p->Data, d, l)
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif
