@@ -71,18 +71,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_PIMDM2_
 #define  _ANSC_PACKET_BINARY_PIMDM2_
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -681,9 +671,6 @@ PIMDM2_STATE_REFRESH_MSG,  *PPIMDM2_STATE_REFRESH_MSG;
 
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

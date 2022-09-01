@@ -71,14 +71,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _SLAP_DEFINITIONS_
 #define  _SLAP_DEFINITIONS_
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
 
 #include <stdint.h>
 
@@ -93,9 +87,6 @@
  * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
  * to control the byte bounary in C/C++ programs:
  */
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -1068,9 +1059,6 @@ _SLAP_STD_CALL_DESCRIPTOR
 SLAP_STD_CALL_DESCRIPTOR,  *PSLAP_STD_CALL_DESCRIPTOR;
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

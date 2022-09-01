@@ -68,13 +68,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_RADIUS_
 #define  _ANSC_PACKET_BINARY_RADIUS_
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -205,9 +200,6 @@ RADS_ATTR_HEADER,  *PRADS_ATTR_HEADER;
         }
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

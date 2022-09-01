@@ -68,15 +68,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _SLAP_CFG_SYSTEM_
 #define  _SLAP_CFG_SYSTEM_
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
 
 /***********************************************************
           SLAP STANDARD SYSTEM PARAMETERS DEFINITION

@@ -69,18 +69,15 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_RIP2_
 #define  _ANSC_PACKET_BINARY_RIP2_
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
+/*
+ * All network protocol messages must be defined without any packing. While most protocols were
+ * designed with the packing in mind, i.e. multi-byte values are always aligned on the desired
+ * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
+ * to control the byte bounary in C/C++ programs:
+ */
 
 #ifdef  __GNUC__
 
@@ -96,14 +93,6 @@
 
 #endif
 
-
-
-/*
- * All network protocol messages must be defined without any packing. While most protocols were
- * designed with the packing in mind, i.e. multi-byte values are always aligned on the desired
- * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
- * to control the byte bounary in C/C++ programs:
- */
 
 /***********************************************************
                  DATA STRUCTURES USED BY RIP2
@@ -260,9 +249,6 @@ RIP2_ENTRY_AUTH_MD5,  *PRIP2_ENTRY_AUTH_MD5;
 #define  AnscRip2EntryAuthMD5SetSequenceNum(p, s)   AnscWriteUlong (&p->SequenceNum,  AnscUlongFromHToN(s) )
 #define  AnscRip2EntryAuthMD5SetReserved(p, pr)     AnscCopyMemory (p->Reserved, pr, RIP2_ENTRY_AUTH_MD5_RSV_SIZE)
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

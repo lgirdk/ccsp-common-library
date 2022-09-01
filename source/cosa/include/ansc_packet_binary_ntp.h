@@ -69,13 +69,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _NTM_ANSC_PACKET_BINARY_
 #define  _NTM_ANSC_PACKET_BINARY_
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -253,8 +248,5 @@ NTP_MSG_HEADER,  *PNTP_MSG_HEADER;
 
 #define  AnscNtpAbs(value)                          ((value) > 0? (value) : (-(value)))
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 #endif
