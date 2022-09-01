@@ -69,15 +69,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_TFTP_
 #define  _ANSC_PACKET_BINARY_TFTP_
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
 
 /*
  * All network protocol messages must be defined without any packing. While most protocols were
@@ -85,9 +78,6 @@
  * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
  * to control the byte bounary in C/C++ programs:
  */
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -410,9 +400,6 @@ TFTP_ERROR_PACKET,  *PTFTP_ERROR_PACKET;
          AnscCopyString(AnscTftpErrorGetErrorMsg(p), m); *(AnscTftpErrorGetErrorMsg(p) + AnscSizeOfString(m)) = 0
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif

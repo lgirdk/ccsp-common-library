@@ -73,21 +73,12 @@
 #ifndef  _ANSC_PACKET_BINARY_EAP_
 #define  _ANSC_PACKET_BINARY_EAP_
 
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4200)                     /* nonstandard extension used: zero-sized array in struct/union */
-#endif
-
-
 /*
  * All network protocol messages must be defined without any packing. While most protocols were
  * designed with the packing in mind, i.e. multi-byte values are always aligned on the desired
  * boudary, there're plenty protocols didn't follow this rule. Following are two of typical ways
  * to control the byte bounary in C/C++ programs:
  */
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -299,9 +290,6 @@ EAPOL_HEADER,  *PEAPOL_HEADER;
 #define  AnscEapolSetPacketBodyLength(p, l)         AnscWriteUshort(&p->PacketBodyLength, AnscUshortFromHToN(l))
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif
