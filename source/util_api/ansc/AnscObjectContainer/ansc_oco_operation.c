@@ -76,14 +76,7 @@
 
 **********************************************************************/
 
-
 #include "ansc_oco_global.h"
-
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  warning(disable: 4101)                     /* unreferenced local variable */
-#pragma  warning(disable: 4102)                     /* unreferenced lable */
-#endif
 
 
 /**********************************************************************
