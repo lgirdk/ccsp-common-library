@@ -69,13 +69,8 @@
 
 **********************************************************************/
 
-
 #ifndef  _ANSC_PACKET_BINARY_KBKM_
 #define  _ANSC_PACKET_BINARY_KBKM_
-
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack(1)
-#endif
 
 #ifdef  __GNUC__
 
@@ -627,9 +622,6 @@ KBKM_MSG_REKEY,  *PKBKM_MSG_REKEY;
                                                            AnscKbkmRekeyGetSHA1HMACSize(p)  - (ULONG)(p) )
 
 
-#ifdef   _ANSC_ENABLE_PRAGMA_
-#pragma  pack()
-#endif
 
 
 #endif
