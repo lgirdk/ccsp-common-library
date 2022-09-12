@@ -1647,6 +1647,12 @@
     <Param>
       <Name>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.X_LGI-COM_EventLogging.EventLogNumberOfEntries</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_EventLogging.WiFiEventLogNumberOfEntries</Name>
+    </Param>
 </ParamList>
 <AliasList>
     <Alias>
@@ -2733,6 +2739,10 @@
     <Alias strict="true">
       <External>Device.X_LGI-COM_Gateway.</External>
       <Internal>Device.X_LGI-COM_Gateway.</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_EventLogging.WiFiEventLogNumberOfEntries</External>
+      <Internal>Device.X_LGI-COM_EventLogging.EventLogNumberOfEntries</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
