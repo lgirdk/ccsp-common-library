@@ -91,10 +91,14 @@ fi
 
 cp ccsp_msg.cfg /tmp
 
-# have IP address for dbus config generated
-#./DbusCfg
-if [ "$MANUFACTURE" != "Technicolor" ] && [ "$BOX_TYPE" != "XB3" ]; then
-	$BINPATH/dbus-daemon --config-file=./basic.conf --fork
+/usr/bin/rbus_session_mgr &
+
+if [ "$BOX_TYPE" = "MV1" ]
+then
+	HOST_AND_PORT=$(awk -F "[><=,]" '/<listen>/ { print $4 ":" $6 }' /usr/ccsp/basic.conf)
+	/usr/bin/rtrouted -s tcp://$HOST_AND_PORT
+else
+	/usr/bin/rtrouted -s unix:///tmp/rtrouted
 fi
 
 mkdir -p $LOG_PATH
