@@ -652,9 +652,6 @@
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Name>
     </Param>
     <Param invisible="true">
-      <Name>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_OperatingStandard</Name>
-    </Param>
-    <Param invisible="true">
       <Name>Device.Firewall.X_RDKCENTRAL-COM_Security.MACFiltering.DeviceNumberOfEntries</Name>
     </Param>
     <Param invisible="true">
@@ -2499,10 +2496,6 @@
     <Alias>
       <External>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_ShadowPassphrase</External>
       <Internal>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase</Internal>
-    </Alias>
-    <Alias>
-      <External>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.OperatingStandard</External>
-      <Internal>Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.X_COMCAST-COM_OperatingStandard</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_Gateway.Firewall.MACFiltering.ScheduleEnable</External>
