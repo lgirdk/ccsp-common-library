@@ -258,12 +258,6 @@ then
 	fi
 fi
 
-#TCCBR-3882: Initializing log_journal.service from here until all dependent services are implemented
-if [ "$BOX_TYPE" = "TCCBR" ]
-then
-	/rdklogger/update_journal_log.sh &
-fi
-
 rm -rf /tmp/.dropbear
 
 if [ "$(syscfg get telemetry_enable)" = "true" ]
