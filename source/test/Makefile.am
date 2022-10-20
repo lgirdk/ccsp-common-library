@@ -16,15 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-
-
 AM_CFLAGS =
-
-AM_CPPFLAGS = -Wall -g -Werror
 AM_CXXFLAGS = -std=c++11
 
 ACLOCAL_AMFLAGS = -I m4
+
 bin_PROGRAMS = CcspCommonLibrary_gtest.bin
+
 CcspCommonLibrary_gtest_bin_CPPFLAGS = -I$(PKG_CONFIG_SYSROOT_DIR)$(includedir)/gtest -I${top_srcdir}/gtest/include -I${top_srcdir}/source -I${top_srcdir}/source/include
-CcspCommonLibrary_gtest_bin_SOURCES =  CcspCommonLibTest.cpp gtest_main.cpp
+CcspCommonLibrary_gtest_bin_SOURCES = CcspCommonLibTest.cpp gtest_main.cpp
 CcspCommonLibrary_gtest_bin_LDFLAGS = -lgtest -lgmock -lgcov -lpthread
