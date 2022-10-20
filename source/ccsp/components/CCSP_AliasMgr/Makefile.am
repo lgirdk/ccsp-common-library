@@ -13,19 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-AM_CPPLAGS =
 AM_CFLAGS = -Wall
 
-noinst_LTLIBRARIES = libCcspCommonLibrary_CCSP_AliasMgr.la
-
 ACLOCAL_AMFLAGS = -I m4
+
+noinst_LTLIBRARIES = libCcspCommonLibrary_CCSP_AliasMgr.la
 
 libCcspCommonLibrary_CCSP_AliasMgr_la_SOURCES = \
  ccsp_alias_mgr_base.c \
  ccsp_alias_mgr_helper.c
 
 libCcspCommonLibrary_CCSP_AliasMgr_la_CPPFLAGS = \
- $(AM_CPPFLAGS) \
  -I$(top_srcdir)/source/cosa/include/linux \
  -I$(top_srcdir)/source/debug_api/include \
  -I$(top_srcdir)/source/ccsp/components/common/PoamIrepFolder \
