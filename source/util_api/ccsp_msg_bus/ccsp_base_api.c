@@ -348,10 +348,22 @@ int CcspBaseIf_setParameterValues_rbus(
     }
 
     rbusMessage_GetInt32(response, &ret);
+
+    //"invalidParameterName" is not needed in success case
     if((ret == CCSP_SUCCESS) || (ret == RBUS_RETURN_CODE_SUCCESS))
     {
+        ret = CCSP_SUCCESS;
+    }
+    else//For failure case, obtain invalidParameterName from response object.
+    {
+        if(ret < CCSP_SUCCESS)
+        {
+            ret = Rbus2_to_CCSP_error_mapper(ret);
+        }
+
         const char *str = NULL;
         rbusMessage_GetString(response, &str); //invalid param
+
         if(str)
         {
             *invalidParameterName = bus_info->mallocfunc(strlen(str)+1);
@@ -359,11 +371,7 @@ int CcspBaseIf_setParameterValues_rbus(
         }
         else
             *invalidParameterName = 0;
-        ret = CCSP_SUCCESS;
-    }
-    else if(ret < CCSP_SUCCESS)
-    {
-        ret = Rbus2_to_CCSP_error_mapper(ret);
+
     }
     rbusMessage_Release(response);
     return ret;
