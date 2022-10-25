@@ -164,6 +164,16 @@ if [ -f  /lib/rdk/dcm.service ]; then
     /bin/sh /lib/rdk/dcm.service &
 fi
 
+if [ -e /usr/bin/wanmanager ]
+then
+    /usr/bin/wanmanager -subsys $Subsys &
+fi
+
+if [ -e /usr/bin/VlanManager ]
+then
+    /usr/bin/VlanManager -subsys $Subsys &
+fi
+
 #Mesh-596: We need to start dropbear a bit earlier so that lease sync happens
 #for plume
 if [ "x$MULTI_CORE" == "xyes" ]; then
