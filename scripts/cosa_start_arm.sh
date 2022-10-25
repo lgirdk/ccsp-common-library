@@ -173,6 +173,15 @@ then
     /usr/ccsp/mesh_agent_start.sh &
 fi
 
+if [ -e /usr/bin/wanmanager ]
+then
+    /usr/bin/wanmanager -subsys $Subsys &
+fi
+
+if [ -e /usr/bin/VlanManager ]
+then
+    /usr/bin/VlanManager -subsys $Subsys &
+fi
 
 #Mesh-596: We need to start dropbear a bit earlier so that lease sync happens
 #for plume
