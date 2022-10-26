@@ -826,6 +826,9 @@
       <Name>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ChannelNumberOfEntries</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistUrlNumberOfEntries</Name>
+    </Param>
+    <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
     <Param>
@@ -2763,6 +2766,10 @@
     <Alias>
       <External>Device.X_LGI-COM_EventLogging.WiFiEventLogNumberOfEntries</External>
       <Internal>Device.X_LGI-COM_EventLogging.EventLogNumberOfEntries</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistUrlNumberOfEntries</External>
+      <Internal>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistNumberOfEntries</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
