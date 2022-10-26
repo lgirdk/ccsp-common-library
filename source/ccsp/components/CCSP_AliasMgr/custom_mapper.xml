@@ -2764,5 +2764,9 @@
       <External>Device.X_LGI-COM_EventLogging.WiFiEventLogNumberOfEntries</External>
       <Internal>Device.X_LGI-COM_EventLogging.EventLogNumberOfEntries</Internal>
     </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistUrlNumberOfEntries</External>
+      <Internal>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistNumberOfEntries</Internal>
+    </Alias>
 </AliasList>
 </Tr069Mapper>
