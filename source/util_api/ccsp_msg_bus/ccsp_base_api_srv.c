@@ -1267,7 +1267,8 @@ CcspBaseIf_base_path_message_func (DBusConnection  *conn,
         dbus_int32_t tmp ;
         dbus_int32_t result ;
         dbus_int32_t sessionId ;
-        char * str;
+	/* CID 58495 fix */
+        char * str = NULL;
         
 
         dbus_message_iter_init (message, &iter);

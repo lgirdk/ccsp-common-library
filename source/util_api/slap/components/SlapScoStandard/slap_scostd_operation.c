@@ -1201,6 +1201,8 @@ EXIT2:
     if ( pReturnedVar )
     {
         SlapFreeVariable(pReturnedVar);
+	/* CID 186732 fix */
+	pReturnedVar = NULL;
     }
 
 EXIT1:
@@ -1209,6 +1211,8 @@ EXIT1:
     if ( pReturnedVar )
     {
         SlapFreeVariable(pReturnedVar);
+	/* CID 186732 fix */
+	pReturnedVar = NULL;
     }
     return  returnStatus;
 }
