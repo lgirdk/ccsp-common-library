@@ -825,6 +825,12 @@
     <Param invisible="true">
       <Name>Device.WiFi.Radio.{i}.X_LGI-COM_EnhancedACS.Weight.ChannelNumberOfEntries</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.IP.Diagnostics.TraceRoute.BasePort</Name>
+    </Param>
+    <Param>
+      <Name>Device.IP.Diagnostics.TraceRoute.X_LGI-COM_BasePort</Name>
+    </Param>
     <Param>
       <Name>Device.X_RDKCENTRAL-COM_GRE.InterfaceNumberOfEntries</Name>
     </Param>
@@ -1786,6 +1792,10 @@
     <Alias>
       <External>Device.X_RDKCENTRAL-COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</External>
       <Internal>Device.X_CISCO_COM_GRE.Interface.{i}.Stats.UnknownProtoPacketsReceived</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.IP.Diagnostics.TraceRoute.X_LGI-COM_BasePort</External>
+      <Internal>Device.IP.Diagnostics.TraceRoute.BasePort</Internal>
     </Alias>
     <Alias>
       <External>Device.NAT.PortMapping.{i}.X_LGI-COM_InternalPortEndRange</External>
