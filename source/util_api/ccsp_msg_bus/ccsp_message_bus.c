@@ -1185,7 +1185,7 @@ CCSP_Message_Bus_Init
                     rtLog_Error("<%s>: rbus_registerSubscribeHandler() failed with %d.  Rbus value change will not work.", __FUNCTION__, err);
                 }
 
-                if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.tr069pa") == 0)
+                if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.tdm") == 0)
                 {
                     if((err = rbus_registerEvent(component_id,CCSP_DIAG_COMPLETE_SIGNAL,NULL,NULL)) != RTMESSAGE_BUS_SUCCESS)
                         RBUS_LOG_ERR("%s : rbus_registerEvent returns Err: %d for diagCompleteSignal\n", __FUNCTION__, err);
