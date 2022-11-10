@@ -163,6 +163,9 @@
       <Name>Device.DHCPv6.Server.Pool.{i}.PrefixRangeEnd</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.DHCPv6.Server.Pool.{i}.MaxClients</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.UPnP.Device.X_CISCO_COM_IGD_AdvertisementPeriod</Name>
     </Param>
     <Param invisible="true">
@@ -983,6 +986,9 @@
     </Param>
     <Param>
       <Name>Device.DHCPv6.Server.Pool.{i}.X_LGI-COM_PrefixRangeEnd</Name>
+    </Param>
+    <Param>
+      <Name>Device.DHCPv6.Server.Pool.{i}.X_LGI-COM_MaxClients</Name>
     </Param>
     <Param>
       <Name>Device.UPnP.Device.X_LGI-COM_IGD_AdvertisementPeriod</Name>
@@ -1879,6 +1885,10 @@
     <Alias>
       <External>Device.DHCPv6.Server.Pool.{i}.X_LGI-COM_PrefixRangeEnd</External>
       <Internal>Device.DHCPv6.Server.Pool.{i}.PrefixRangeEnd</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DHCPv6.Server.Pool.{i}.X_LGI-COM_MaxClients</External>
+      <Internal>Device.DHCPv6.Server.Pool.{i}.MaxClients</Internal>
     </Alias>
     <Alias>
       <External>Device.UPnP.Device.X_LGI-COM_IGD_AdvertisementPeriod</External>
