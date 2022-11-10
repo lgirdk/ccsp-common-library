@@ -5084,7 +5084,7 @@ int CcspBaseIf_Register_Event_rbus
     char * comp = NULL;
 
     if(strcmp(event_name, "diagCompleteSignal") == 0)
-        comp = "eRT.com.cisco.spvtg.ccsp.tr069pa";
+        comp = "eRT.com.cisco.spvtg.ccsp.tdm";
     else if(strcmp(event_name, "systemReadySignal") == 0 || strcmp(event_name, "Device.CR.SystemReady") == 0)
         /*systemReadySignal now implemented by Cr using rbus 2.0 api as property Device.CR.SystemReady whose value-change event we subscribe to*/
         return subscribeToRbus2Event_rbus(bus_handle, "Device.CR.SystemReady");
