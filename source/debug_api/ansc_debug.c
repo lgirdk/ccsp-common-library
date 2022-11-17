@@ -381,6 +381,10 @@ const char* CcspTraceGetRdkLogModule(const char* pComponentName)
     else if(!strcmp(pComponentName,"com.cisco.spvtg.ccsp.gatewaymanager"))
         return "LOG.RDK.GATEWAYMANAGER";
 #endif
+#if defined (FEATURE_SUPPORT_EASYMESH_CONTROLLER)
+    else if (!strcmp(pComponentName, "com.cisco.spvtg.ccsp.emctl"))
+        return "LOG.RDK.EASYMESHCTL";
+#endif // FEATURE_SUPPORT_EASYMESH_CONTROLLER
     else
         return  "LOG.RDK.Misc";
 }
