@@ -1279,7 +1279,7 @@ int CcspBaseIf_getParameterAttributes_rbus(
     int param_len = strlen(parameterNames[0]);
     if(dst_component_id)
     {
-        if((parameterNames[0][param_len - 1] == '.') && (strstr(dst_component_id, ".psm")))
+        if((parameterNames[0][param_len - 1] == '.') || (strstr(dst_component_id, ".psm")))
         {
             object_name = dst_component_id;
         }
