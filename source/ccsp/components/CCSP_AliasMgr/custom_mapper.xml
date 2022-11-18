@@ -1680,6 +1680,18 @@
     <Param>
       <Name>Device.X_LGI-COM_EventLogging.WiFiEventLogNumberOfEntries</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshStatus</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshTrigger</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshArgs</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshIdleTimeout</Name>
+    </Param>
 </ParamList>
 <AliasList>
     <Alias>
@@ -2790,6 +2802,22 @@
     <Alias>
       <External>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistUrlNumberOfEntries</External>
       <Internal>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistNumberOfEntries</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DeviceInfo.X_LGI-COM_DeviceMgmt.ReverseSSH.TunnelStatus</External>
+      <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshStatus</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DeviceInfo.X_LGI-COM_DeviceMgmt.ReverseSSH.Enable</External>
+      <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshTrigger</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DeviceInfo.X_LGI-COM_DeviceMgmt.ReverseSSH.Arguments</External>
+      <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshArgs</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.DeviceInfo.X_LGI-COM_DeviceMgmt.ReverseSSH.SessionTimeout</External>
+      <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshIdleTimeout</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
