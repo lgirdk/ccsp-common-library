@@ -79,40 +79,11 @@
 #include "ansc_debug.h"
 
 /*Structure defined to get the log level type from the given Log Names */
-#define NUM_LOGLEVEL_TYPES (sizeof(loglevel_type_table)/sizeof(loglevel_type_table[0]))
 
 typedef struct loglevel_pair {
   char     *name;
   int      level;
 } LOGLEVEL_PAIR;
-
-LOGLEVEL_PAIR loglevel_type_table[] = {
-  { "RDK_LOG_ERROR",  RDK_LOG_ERROR },
-  { "RDK_LOG_WARN",   RDK_LOG_WARN   },
-  { "RDK_LOG_NOTICE", RDK_LOG_NOTICE },
-  { "RDK_LOG_INFO",   RDK_LOG_INFO },
-  { "RDK_LOG_DEBUG",  RDK_LOG_DEBUG },
-  { "RDK_LOG_FATAL",  RDK_LOG_FATAL }
-};
-
-int loglevel_type_from_name(char *name, int *type_ptr)
-{
-  int rc = -1;
-  unsigned int i = 0;
-  if((name == NULL) || (type_ptr == NULL))
-     return 0;
-
-  for (i = 0 ; i < NUM_LOGLEVEL_TYPES ; ++i)
-  {
-      rc = strncmp(name, loglevel_type_table[i].name, strlen(name));
-      if(rc == 0)
-      {
-        *type_ptr = loglevel_type_table[i].level;
-        break;
-      }
-  }
-  return rc;
-}
 
 /**********************************************************************
                     VARIABLES FOR TRACE LEVEL
@@ -184,21 +155,42 @@ AnscSetTraceLevel
     AnscSetTraceLevel_ansc(traceLevel);    
 }
 
-void Ccsplog3(char *pComponentName, char* LogMsg)
+void Ccsplog3(char *pComponentName, char *LogMsg)
 {
-    char* LogLevel = NULL;
-    int level = 0;
+    int i;
+    int level = RDK_LOG_INFO;
 
-    LogLevel = strtok_r(LogMsg, ",", &LogMsg);
-    if (!loglevel_type_from_name(LogLevel, &level))
+    static const LOGLEVEL_PAIR loglevel_type_table[] = {
+        { "RDK_LOG_ERROR",  RDK_LOG_ERROR  },
+        { "RDK_LOG_WARN",   RDK_LOG_WARN   },
+        { "RDK_LOG_NOTICE", RDK_LOG_NOTICE },
+        { "RDK_LOG_INFO",   RDK_LOG_INFO   },
+        { "RDK_LOG_DEBUG",  RDK_LOG_DEBUG  },
+        { "RDK_LOG_FATAL",  RDK_LOG_FATAL  },
+    };
+
+    for (i = 0; i < (sizeof(loglevel_type_table)/sizeof(loglevel_type_table[0])); i++)
     {
-        printf("\ntype name found - %d\n",level);
+        int len = strlen(loglevel_type_table[i].name);
+
+        if (strncmp(LogMsg, loglevel_type_table[i].name, len) == 0)
+        {
+            level = loglevel_type_table[i].level;
+            LogMsg += len;
+            break;
+        }
     }
-    else
+
+    /*
+       LogMsg is a string such as "RDK_LOG_ERROR, ..."
+       Drop any leading commas or spaces which remain after stripping
+       the log level prefix.
+    */
+    while ((*LogMsg == ',') || (*LogMsg == ' '))
     {
-        printf("unrecognized type name");
-        level = RDK_LOG_INFO;
+        LogMsg++;
     }
+
     CcspTraceExec(pComponentName, level, (LogMsg));
 }
 
