@@ -118,7 +118,7 @@ int loglevel_type_from_name(char *name, int *type_ptr)
                     VARIABLES FOR TRACE LEVEL
 **********************************************************************/
 INT  g_iTraceLevel = CCSP_TRACE_LEVEL_WARNING;
-char *g_TraceLevelStr[] = {"EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTICE", "INFO", "DEBUG"};
+
 static void
 AnscSetTraceLevel_ccsp
     (

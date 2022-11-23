@@ -202,9 +202,10 @@ extern char *pComponentName;
     { \
         ANSC_UNIVERSAL_TIME ut; \
         char subComponentName[64]; \
+        char *TraceLevelStr[] = { "EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTICE", "INFO", "DEBUG" }; \
         AnscGetSubComponentName(subComponentName, pComponentName); \
         AnscGetLocalTime(&ut); \
-        fprintf(stderr, "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d-%s-%s-", ut.Year, ut.Month, ut.DayOfMonth, ut.Hour, ut.Minute, ut.Second, subComponentName, g_TraceLevelStr[level]); \
+        fprintf(stderr, "%.4d-%.2d-%.2dT%.2d:%.2d:%.2d-%s-%s-", ut.Year, ut.Month, ut.DayOfMonth, ut.Hour, ut.Minute, ut.Second, subComponentName, TraceLevelStr[level]); \
         CcspTraceBase msg; \
     }
 
