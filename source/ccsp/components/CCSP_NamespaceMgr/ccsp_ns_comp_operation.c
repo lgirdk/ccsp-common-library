@@ -554,6 +554,19 @@ CcspNsCompIsObjectSupported
                     return TRUE;
                 }
 
+                /* Added below to support GPN(NextLevel:true) for "Device.X_LGI-COM_Applications"
+                 * For pCcspName->pName value Device.X_LGI-COM_Applications.Speedtest.SamKnows.Enable this function returns false, causing 
+                 * CcspNsMgrDiscoverNamespace() to return NumComp as 0 and "Invalid parameter name" error on ACS for the GPN call.
+                */
+                pString += AnscSizeOfString(TR69_PARAM_NAME_SEPARATOR);
+                pString  = _ansc_strstr(pString, TR69_PARAM_NAME_SEPARATOR);
+
+                // next object
+                if( pString == NULL)
+                {
+                    return TRUE;
+                }
+
             }
             else
             {
