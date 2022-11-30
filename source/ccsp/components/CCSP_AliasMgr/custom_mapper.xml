@@ -831,6 +831,12 @@
     <Param invisible="true">
       <Name>Device.IP.Diagnostics.TraceRoute.BasePort</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.Time.MaxPollInterval</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.Time.MaxPollInterval</Name>
+    </Param>
     <Param>
       <Name>Device.IP.Diagnostics.TraceRoute.X_LGI-COM_BasePort</Name>
     </Param>
@@ -2815,6 +2821,14 @@
     <Alias>
       <External>Device.DeviceInfo.X_LGI-COM_DeviceMgmt.ReverseSSH.SessionTimeout</External>
       <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ReverseSSH.xOpsReverseSshIdleTimeout</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.Time.X_LGI-COM_MinPollInterval</External>
+      <Internal>Device.Time.MinPollInterval</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.Time.X_LGI-COM_MaxPollInterval</External>
+      <Internal>Device.Time.MaxPollInterval</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
