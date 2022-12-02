@@ -134,8 +134,9 @@ def calcMaxDepth(elem,depth):
   maxdepth = depth
   for subelem in elem:
     childdepth = calcMaxDepth(subelem,depth+1)
-    if childdepth > maxdepth:
-      maxdepth = childdepth
+    if childdepth is not None:
+        if childdepth > maxdepth:
+            maxdepth = childdepth
   return maxdepth
 
 def codeGenObject(elem,depth,fout):
