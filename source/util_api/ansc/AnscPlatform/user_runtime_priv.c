@@ -48,8 +48,6 @@
         This wrapper file implements the commonly used C runtime
         library functions.
 
-        *   _ansc_system
-
     ---------------------------------------------------------------
 
     environment:
@@ -141,8 +139,3 @@ static int kill_by_ppid(int ppid)
     return -1;
 }
 #endif
-
-int _ansc_system(char *command)
-{
-    return system(command);
-}
