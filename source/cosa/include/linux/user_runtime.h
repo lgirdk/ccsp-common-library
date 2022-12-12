@@ -72,7 +72,6 @@
 
 **********************************************************************/
 
-
 #ifndef  _USER_RUNTIME_
 #define  _USER_RUNTIME_
 
@@ -89,62 +88,50 @@
  * the runtime functions with better names, we simplify the interface a little bit.
  */
 
-#ifndef  _ANSC_RUNTIME_LIBRARY_
+#define  _ansc_min(x,y) 			((x)<(y)?(x):(y))
+#define  _ansc_max(x,y) 			((x)>(y)?(x):(y))
 
-    #define  _ansc_min(x,y)                         ((x)<(y)?(x):(y))
-    #define  _ansc_max(x,y)                         ((x)>(y)?(x):(y))
+#define  _ansc_abs				abs
+#define  _ansc_atof				atof
+#define  _ansc_atoi				atoi
+#define  _ansc_atol				atoll
 
-    #define  _ansc_abs                              abs
-    #define  _ansc_atof                             atof
-    #define  _ansc_atoi                             atoi
-    #define  _ansc_atol                             atoll
-/*  #define  _ansc_itoa                             _itoa*/
+char *_ansc_itoa(int value, char *string, int radix);
 
-char*    _ansc_itoa(int value, char* string, int radix);
+#define  _ansc_rand				rand
+#define  _ansc_srand				srand
 
-    #define  _ansc_rand                             rand
-    #define  _ansc_srand                            srand
+#define  _ansc_memccpy  			_memccpy
+#define  _ansc_memchr				memchr
+#define  _ansc_memicmp  			memcmp
+#define  _ansc_memcmp				memcmp
+#define  _ansc_memcpy				memcpy
+#define  _ansc_memset				memset
+#define  _ansc_memmove  			memmove
 
-    #define  _ansc_memccpy                          _memccpy
-    #define  _ansc_memchr                           memchr
-/*    #define  _ansc_memicmp                          _memicmp*/
-    #define  _ansc_memicmp                          memcmp
-    #define  _ansc_memcmp                           memcmp
-    #define  _ansc_memcpy                           memcpy
-    #define  _ansc_memset                           memset
-    #define  _ansc_memmove                          memmove
+#define  _ansc_strset				_strset
+#define  _ansc_strcpy				strcpy
+#define  _ansc_strncpy  			strncpy
+#define  _ansc_strcat				strcat
+#define  _ansc_strcmp				strcmp
+#define  _ansc_strncmp  			strncmp
+#define  _ansc_strlen				strlen
+#define  _ansc_strchr				strchr
 
-    #define  _ansc_strset                           _strset
-    #define  _ansc_strcpy                           strcpy
-    #define  _ansc_strncpy                          strncpy
-    #define  _ansc_strcat                           strcat
-    #define  _ansc_strcmp                           strcmp
-    #define  _ansc_strncmp                          strncmp
-    #define  _ansc_strlen                           strlen
-    #define  _ansc_strchr                           strchr
+#define  _ansc_strcmpi  			_strcmpi
+#define  _ansc_stricmp  			strcasecmp
+#define  _ansc_strcoll  			strcoll
+#define  _ansc_strcspn  			strcspn
+#define  _ansc_strspn				strspn
+#define  _ansc_strstr				strstr
+#define  _ansc_strtok				strtok
 
-    #define  _ansc_strcmpi                          _strcmpi
-    #define  _ansc_stricmp                          strcasecmp
-    #define  _ansc_strcoll                          strcoll
-    #define  _ansc_strcspn                          strcspn
-    #define  _ansc_strspn                           strspn
-    #define  _ansc_strstr                           strstr
-    #define  _ansc_strtok                           strtok
+#define  _ansc_sprintf  			sprintf
+#define  _ansc_snprintf 			snprintf
+#define  _ansc_vsprintf 			vsprintf
+#define  _ansc_sscanf				sscanf
 
-    #define  _ansc_sprintf                          sprintf
-    #define  _ansc_snprintf                         snprintf
-    #define  _ansc_vsprintf                         vsprintf
-    #define  _ansc_sscanf                           sscanf
-
-    int _ansc_system(char *command);
-
-#else
-
-    #define  _ansc_system                           system
+int _ansc_system(char *command);
 
 #endif
-
-
-#endif
-
 
