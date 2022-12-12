@@ -92,6 +92,7 @@
 
 **********************************************************************/
 
+#include <stdlib.h>
 
 #include "scli_shell_global.h"
 #include "safec_lib_common.h"
@@ -4345,7 +4346,7 @@ ScliShoRunShellCmd
 
     AnscDeleteFile(tmp_fname);
 
-    _ansc_system(sys_cmd);
+    system(sys_cmd);
 
     ulTimeNow = AnscGetTickInSeconds();
 

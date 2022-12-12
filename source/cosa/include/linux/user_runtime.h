@@ -131,7 +131,5 @@ char *_ansc_itoa(int value, char *string, int radix);
 #define  _ansc_vsprintf 			vsprintf
 #define  _ansc_sscanf				sscanf
 
-int _ansc_system(char *command);
-
 #endif
 
