@@ -48,8 +48,6 @@
         This wrapper file implements the commonly used C runtime
         library functions.
 
-        *   _ansc_itoa
-
     ---------------------------------------------------------------
 
     environment:
@@ -77,41 +75,3 @@
 
 #include <signal.h>
 #include <dirent.h>
-
-
-
-char*
-_ansc_itoa
-    (
-        int                         value,
-        char*                       string,
-        int                         radix
-    )
-{
-    if ( string )
-    {
-        switch ( radix )
-        {
-            case    8:
-
-                    sprintf(string, "%o", value);
-                    break;
-
-            case    10:
-
-                    sprintf(string, "%d", value);
-                    break;
-
-            case    16:
-
-                    sprintf(string, "%x", value);
-                    break;
-
-            default:
-
-                    UserTrace("_ansc_itoa -- unsupported radix %d!!! *** !!!\n", radix);
-        }
-    }
-
-    return string;
-}
