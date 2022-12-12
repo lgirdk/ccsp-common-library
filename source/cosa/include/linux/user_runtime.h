@@ -75,6 +75,8 @@
 #ifndef  _USER_RUNTIME_
 #define  _USER_RUNTIME_
 
+#include <stdio.h>
+#include <string.h>
 #include <signal.h>
 #include <dirent.h>
 
@@ -95,9 +97,6 @@
 #define  _ansc_atof				atof
 #define  _ansc_atoi				atoi
 #define  _ansc_atol				atoll
-
-char *_ansc_itoa(int value, char *string, int radix);
-
 #define  _ansc_rand				rand
 #define  _ansc_srand				srand
 
@@ -130,6 +129,32 @@ char *_ansc_itoa(int value, char *string, int radix);
 #define  _ansc_snprintf 			snprintf
 #define  _ansc_vsprintf 			vsprintf
 #define  _ansc_sscanf				sscanf
+
+static inline char *_ansc_itoa (int value, char *string, int radix)
+{
+    if (string)
+    {
+        switch (radix)
+        {
+            case 8:
+                sprintf(string, "%o", value);
+                break;
+
+            case 10:
+                sprintf(string, "%d", value);
+                break;
+
+            case 16:
+                sprintf(string, "%x", value);
+                break;
+
+            default:
+                fprintf(stderr, "_ansc_itoa -- unsupported radix %d!!! *** !!!\n", radix);
+        }
+    }
+
+    return string;
+}
 
 #endif
 
