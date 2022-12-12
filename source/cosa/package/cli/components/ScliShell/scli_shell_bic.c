@@ -82,6 +82,7 @@
 
 **********************************************************************/
 
+#include <stdlib.h>
 
 #include "scli_shell_global.h"
 #include "safec_lib_common.h"
@@ -355,7 +356,7 @@ ScliShoRunBicShell
 
     if ( pProperty->ShellType == SCLI_SHELL_TYPE_Local )
     {
-        _ansc_system(SCLI_LOCAL_SHELL_CMD);
+        system(SCLI_LOCAL_SHELL_CMD);
     }
     else
     {
