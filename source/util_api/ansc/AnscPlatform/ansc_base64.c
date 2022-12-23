@@ -76,6 +76,9 @@
 
 
 #include "ansc_platform.h"
+#include "base64.h"
+#include "stdlib.h"
+#include "string.h"
 
 #define  ANSC_BASE64_CODES      \
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
@@ -129,161 +132,17 @@ AnscBase64DecodeLine
         PULONG                      pulSize
     )
 {
-    ULONG                           ulSize  = 0;
-    int                             length  = ((pulSize == NULL) ? 0 : (*pulSize)); /*RDKB-6183, CID-24152, null check before use*/
-
-    if (pString)
-    {      
-        /* do a format verification first */
-        if (length > 0)
-        {
-            int                     count   = 0, rem = 0;
-            const char*             tmp     = (char *)pString;
-
-            while (length > 0)
-            {
-                int                 skip;
-                
-                skip    = _ansc_strspn(tmp, (const char*)ANSC_BASE64_CODES);
-                count   += skip;
-                length  -= skip;
-                tmp     += skip;
-
-                if (length > 0)
-                {
-                    int             i, vrfy;
-                    
-                    vrfy    = _ansc_strcspn(tmp, (const char*)ANSC_BASE64_CODES);
-
-                    for (i = 0; i < vrfy; i++)
-                    {
-                        if (tmp[i] == ' ' || tmp[i] == 0x0D || tmp[i] == 0x0A)
-                        {
-                            continue;
-                        }
-
-                        if (tmp[i] == '=')
-                        {
-                            /* we should check if we're close to the end of the string */
-                            rem = count % 4;
-
-                            /* rem must be either 2 or 3, otherwise no '=' should be here */
-                            if (rem < 2)
-                            {
-                                return NULL;
-                            }
-
-                            /* end-of-message recognized */
-                            goto NEXT;
-                        }
-                        else
-                        {
-                            /* Transmission error; RFC tells us to ignore this, but:
-                             *  - the rest of the message is going to even more corrupt since we're sliding bits out of place
-                             * If a message is corrupt, it should be dropped. Period.
-                             */
-
-                            return NULL;
-                        }
-                    }
-
-                    length -= vrfy;
-                    tmp += vrfy;
-                }
-            }
-
-
-NEXT:
-
-            ulSize  = (count / 4) * 3 + (rem ? (rem - 1) : 0) + ANSC_BASE64_DECODE_OVERRUN_SIZE;
-
-            if (count > 0)
-            {
-                int                 i, qw = 0, tw = 0;
-
-                tmp     = (char *)pString;
-                length  = ((pulSize == NULL) ? 0 : (*pulSize)); /*RDKB-6183, CID-24152, null check before use*/
-
-                for (i = 0; i < length; i++)
-                {
-                    char        ch = pString[i];
-                    UCHAR       bits;
-
-                    if (ch == ' ' || ch == 0x0D || ch == 0x0A)
-                    {
-                        continue;
-                    }
-
-                    bits = 0;
-                    if ((ch >= 'A') && (ch <= 'Z'))
-                    {
-                        bits = (UCHAR) (ch - 'A');
-                    }
-                    else if ((ch >= 'a') && (ch <= 'z'))
-                    {
-                        bits = (UCHAR) (ch - 'a' + 26);
-                    }
-                    else if ((ch >= '0') && (ch <= '9'))
-                    {
-                        bits = (UCHAR) (ch - '0' + 52);
-                    }
-                    else if (ch == '+')
-                    {
-                        bits = (UCHAR)62;
-                    }
-                    else if (ch == '/')
-                    {
-                        bits = (UCHAR)63;
-                    }
-                    else if (ch == '=')
-                    {
-                        break;
-                    }
-
-                    switch (qw++)
-                    {
-                        case    0:
-
-                                pData[tw+0] = (bits << 2)   & 0xFC;
-
-                                break;
-
-                        case    1:
-
-                                pData[tw+0] |= (bits >> 4)  & 0x03;
-                                pData[tw+1] = (bits << 4)   & 0xF0;
-
-                                break;
-
-                        case    2:
-
-                                pData[tw+1] |= (bits >> 2)  & 0x0F;
-                                pData[tw+2] = (bits << 6)   & 0xC0;
-
-                                break;
-
-                        case    3:
-
-                                pData[tw+2] |= bits         & 0x3F;
-
-                                break;
-                    }
-
-                    if (qw == 4)
-                    {
-                        qw = 0;
-                        tw += 3;
-                    }
-                }
-            }
-        }
+    int size = 0;
+    if (pData == NULL || pulSize == NULL)
+    {
+        return NULL;
     }
-
+    size = b64_decode( (const uint8_t*)pString,(size_t) *pulSize, (uint8_t *)pData );
+    CcspTraceWarning(("base64 decoded data contains %d bytes\n",size));
     if (pulSize)
     {
-        *pulSize    = ulSize - ANSC_BASE64_DECODE_OVERRUN_SIZE;
+        *pulSize    = (ULONG)size;
     }
-
     return pData;
 }
 
@@ -342,7 +201,7 @@ AnscBase64Decode
 
         return NULL;
     }
-    
+
     if (pulSize)
     {
         *pulSize    = ulEncodedSize;
@@ -442,4 +301,3 @@ AnscBase64Encode
 
     return pString;
 }
-
