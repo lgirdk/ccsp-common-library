@@ -832,7 +832,7 @@
       <Name>Device.IP.Diagnostics.TraceRoute.BasePort</Name>
     </Param>
     <Param invisible="true">
-      <Name>Device.Time.MaxPollInterval</Name>
+      <Name>Device.Time.MinPollInterval</Name>
     </Param>
     <Param invisible="true">
       <Name>Device.Time.MaxPollInterval</Name>
