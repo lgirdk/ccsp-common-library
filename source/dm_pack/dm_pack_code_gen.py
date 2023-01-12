@@ -128,9 +128,9 @@ def printElement(elem,depth):
 
 def calcMaxDepth(elem,depth):
   if elem.tag=="parameter":
-    return
+    return 0
   if elem.tag=="function":
-    return;
+    return 0
   maxdepth = depth
   for subelem in elem:
     childdepth = calcMaxDepth(subelem,depth+1)
