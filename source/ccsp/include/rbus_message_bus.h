@@ -44,9 +44,7 @@
 #ifndef CCSP_RBUS_INTERNAL_H
 #define CCSP_RBUS_INTERNAL_H
 #include <rbus/rbuscore.h>
-#include <rbus/rbus_filter.h>
 #include <rbus/rbus.h>
-#include <rbus/rbus_value.h>
 
 #define RBUS_RETURN_CODE_SUCCESS 0
 #define RBUS_RETURN_CODE_FAILURE 1
