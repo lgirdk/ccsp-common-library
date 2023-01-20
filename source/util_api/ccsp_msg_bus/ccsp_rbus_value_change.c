@@ -259,6 +259,8 @@ static void rbusValueChange_handlePublish(ValueChangeRecord* rec, parameterValSt
     {
         rbusMessage_SetInt32(msg, 0);
     }
+    rbusMessage_SetInt32(msg, rec->interval);
+    rbusMessage_SetInt32(msg, rec->duration);
     rbusMessage_SetInt32(msg, rec->componentId);
 
     CcspTraceDebug(("%s: publising event %s to listener %s componentId %d\n", __FUNCTION__, rec->parameter, rec->listener, rec->componentId));
