@@ -357,41 +357,16 @@ static void* rbusValueChange_pollingThreadFunc(void *userData)
     return NULL;
 }
 
-static void Ccsp_RbusValueChange_ReadPayload(
-    rbusMessage payload,
-    int32_t* componentId,
-    int32_t* interval,
-    int32_t* duration,
-    rbusFilter_t* filter)
-{
-    *componentId = 0;
-    *interval = 0;
-    *duration = 0;
-    *filter = NULL;
-
-    if(payload)
-    {
-        int hasFilter;
-        rbusMessage_GetInt32(payload, componentId);
-        rbusMessage_GetInt32(payload, interval);
-        rbusMessage_GetInt32(payload, duration);
-        rbusMessage_GetInt32(payload, &hasFilter);
-        if(hasFilter)
-            rbusFilter_InitFromMessage(filter, payload);
-    }
-}
-
 int Ccsp_RbusValueChange_Subscribe(
     void* handle, 
     const char* listener, 
     const char* parameter,
-    rbusMessage payload)
+    int32_t componentId,
+    int32_t interval,
+    int32_t duration,
+    rbusFilter_t filter)
 {
     ValueChangeRecord* rec;
-    int32_t componentId = 0;
-    int32_t interval = 0;
-    int32_t duration = 0;
-    rbusFilter_t filter = NULL;
 
     CcspTraceDebug(("%s: %s\n", __FUNCTION__, parameter));
 
@@ -408,8 +383,6 @@ int Ccsp_RbusValueChange_Subscribe(
         CcspTraceError(("%s NULL bus info\n", __FUNCTION__));
         return CCSP_FAILURE;
     }
-
-    Ccsp_RbusValueChange_ReadPayload(payload, &componentId, &interval, &duration, &filter);
 
     /* only add the property if its not already in the list */
 
@@ -471,13 +444,10 @@ int Ccsp_RbusValueChange_Unsubscribe(
     void* handle,
     const char* listener, 
     const char* parameter, 
-    rbusMessage payload)
+    int32_t componentId,
+    rbusFilter_t filter)
 {
     ValueChangeRecord* rec;
-    int32_t componentId = 0;
-    int32_t interval = 0;
-    int32_t duration = 0;
-    rbusFilter_t filter = NULL;
 
     (void)(handle);
 
@@ -487,8 +457,6 @@ int Ccsp_RbusValueChange_Unsubscribe(
     {
         return CCSP_FAILURE;
     }
-
-    Ccsp_RbusValueChange_ReadPayload(payload, &componentId, &interval, &duration, &filter);
 
     VC_LOCK();
 

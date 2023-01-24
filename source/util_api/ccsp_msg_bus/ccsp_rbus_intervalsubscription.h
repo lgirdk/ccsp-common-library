@@ -17,8 +17,8 @@
  * limitations under the License.
 */
 
-#ifndef __CCSP_RBUS_VALUE_CHANGE_H
-#define __CCSP_RBUS_VALUE_CHANGE_H
+#ifndef __CCSP_RBUS_INTERVALSUBSCRIPTION_H
+#define __CCSP_RBUS_INTERVALSUBSCRIPTION_H
 
 #include <stdint.h>
 #include <rbus/rbuscore_message.h>
@@ -29,24 +29,23 @@ typedef struct _rbusFilter* rbusFilter_t;
 extern "C" {
 #endif
 
-int Ccsp_RbusValueChange_Subscribe(
-    void* handle, 
-    const char* listener, 
-    const char* parameter, 
-    int32_t componentId,
-    int32_t interval,
-    int32_t duration,
-    rbusFilter_t filter);
+int Ccsp_RbusInterval_Subscribe(
+        void* handle,
+        const char* listener,
+        const char* parameter,
+        int32_t componentId,
+        int32_t interval,
+        int32_t duration,
+        rbusFilter_t filter);
 
-int Ccsp_RbusValueChange_Unsubscribe(
-    void* handle,
-    const char* listener, 
-    const char* parameter, 
-    int32_t componentId,
-    rbusFilter_t filter);
-
-int Ccsp_RbusValueChange_Close(
-    void* handle);
+int Ccsp_RbusInterval_Unsubscribe(
+        void* handle,
+        const char* listener,
+        const char* parameter,
+        int32_t componentId,
+        int32_t interval,
+        int32_t duration,
+        rbusFilter_t filter);
 
 #ifdef __cplusplus
 }

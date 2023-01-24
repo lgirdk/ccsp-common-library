@@ -47,6 +47,7 @@
 #include "ansc_platform.h"
 #include <dslh_definitions_database.h>
 #include "ccsp_rbus_value_change.h"
+#include "ccsp_rbus_intervalsubscription.h"
 #include "safec_lib_common.h"
 
 #include <sys/time.h>
@@ -87,6 +88,8 @@ extern int   CcspBaseIf_timeout_getval_seconds;
 extern int   deadlock_detection_enable;
 extern DEADLOCK_ARRAY*  deadlock_detection_log;
 extern void* CcspBaseIf_Deadlock_Detection_Thread(void *);
+extern void rbusFilter_InitFromMessage(rbusFilter_t* filter, rbusMessage msg);
+extern void rbusEventData_appendToMessage(rbusEvent_t* event, rbusFilter_t filter, uint32_t interval, uint32_t duration, int32_t componentId, rbusMessage msg);
 
 // GLOBAL VAR
 static int ccsp_bus_ref_count = 0;
@@ -140,7 +143,8 @@ static int tunnelStatus_signal_rbus(const char * destination, const char * metho
 static int webcfg_signal_rbus (const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
 static int wifiDbStatus_signal_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
 static int telemetry_send_signal_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
-static int cssp_event_subscribe_override_handler_rbus(char const* object,  char const* eventName, char const* listener, int added, const rbusMessage payload, void* userData);
+static int cssp_event_subscribe_override_handler_rbus(char const* object,  char const* eventName, char const* listener, int added, int componentId, int interval, int duration, rbusFilter_t filter, void* userData);
+static void Ccsp_Rbus_ReadPayload(rbusMessage payload, int32_t* componentId, int32_t* interval, int32_t* duration, rbusFilter_t* filter);
 int rbus_enabled = 0;
 
 // External Interface, defined in ccsp_message_bus.h
@@ -1180,11 +1184,6 @@ CCSP_Message_Bus_Init
             }
             else
             {
-                if((err = rbus_registerSubscribeHandler(component_id, cssp_event_subscribe_override_handler_rbus, bus_info)) != RBUSCORE_SUCCESS)
-                {
-                    RBUS_LOG_ERR("<%s>: rbus_registerSubscribeHandler() failed with %d.  Rbus value change will not work.", __FUNCTION__, err);
-                }
-
                 if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.tr069pa") == 0)
                 {
                     if((err = rbus_registerEvent(component_id,CCSP_DIAG_COMPLETE_SIGNAL,NULL,NULL)) != RBUSCORE_SUCCESS)
@@ -2618,6 +2617,139 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                 bus_info->freefunc(val);
             }
         }
+        else if((!strncmp(method, METHOD_SUBSCRIBE, MAX_METHOD_NAME_LENGTH)) || (!strncmp(method, METHOD_UNSUBSCRIBE, MAX_METHOD_NAME_LENGTH)))
+        {
+            const char * sender = NULL;
+            const char * event_name = NULL;
+            int has_payload = 0;
+            rbusMessage payload = NULL;
+            int32_t componentId = 0;
+            int32_t interval = 0;
+            int32_t duration = 0;
+            int publishOnSubscribe = 0;
+            rbusFilter_t filter = NULL;
+            int size = 0;
+            rbusCoreError_t err = RBUSCORE_SUCCESS;
+
+            rbusMessage_Init(response);
+
+            if((RT_OK == rbusMessage_GetString(request, &event_name)) &&
+                (RT_OK == rbusMessage_GetString(request, &sender)))
+            {
+                /*Extract arguments*/
+                if((NULL == sender) || (NULL == event_name))
+                {
+                    RBUS_LOG_ERR("Malformed subscription request. Sender: %s. Event: %s.", sender, event_name);
+                    rbusMessage_SetInt32(*response, RBUSCORE_ERROR_INVALID_PARAM);
+                }
+                else
+                {
+                    rbusMessage_GetInt32(request, &has_payload);
+                    if(has_payload)
+                        rbusMessage_GetMessage(request, &payload);
+                    if(payload)
+                    {
+                        Ccsp_Rbus_ReadPayload(payload, &componentId, &interval, &duration, &filter);
+                    }
+                    else
+                    {
+                        RBUS_LOG_ERR("%s: payload missing in subscribe request for event %s from %s", __FUNCTION__, event_name, sender);
+                    }
+                    int added = strncmp(method, METHOD_SUBSCRIBE, MAX_METHOD_NAME_LENGTH) == 0 ? 1 : 0;
+                    if(added)
+                        rbusMessage_GetInt32(request, &publishOnSubscribe);
+                    err = cssp_event_subscribe_override_handler_rbus(NULL, event_name, sender, added, componentId, interval, duration, filter, user_data);
+                    rbusMessage_SetInt32(*response, err);
+
+                    if(err == RBUSCORE_SUCCESS && publishOnSubscribe)
+                    {
+                        rbusEvent_t event = {0};
+                        rbusObject_t data = NULL;
+                        rbusProperty_t tmpProperties = NULL;
+                        size_t slen = 0;
+
+                        rbusObject_Init(&data, NULL);
+                        //determine if eventName is a parameter or wildcard query which is used for table identification
+                        slen = strlen(event_name);
+                        if(event_name[slen-1] == '.')
+                        {
+                            int i = 0;
+                            unsigned int requestedDepth = 1;
+                            int32_t result = 0;
+                            parameterInfoStruct_t **val = 0;
+
+                            result = func->getParameterNames((char*)event_name, requestedDepth, &size, &val, func->getParameterNames_data);
+                            if( result == CCSP_SUCCESS)
+                            {
+                                char buf[CCSP_BASE_PARAM_LENGTH] = {0};
+                                int inst_num = 0;
+                                int type = 0;
+
+                                rbusProperty_Init(&tmpProperties, "numberOfEntries", NULL);
+
+                                if(size != 0)
+                                {
+                                    for(i = 0; i < size; i++)
+                                    {
+                                        char fullName[RBUS_MAX_NAME_LENGTH] = {0};
+                                        char row_instance[RBUS_MAX_NAME_LENGTH] = {0};
+                                        type = CcspBaseIf_getObjType((char *)event_name, val[i]->parameterName, &inst_num, buf);
+
+                                        if(type != CCSP_BASE_INSTANCE)
+                                            continue;
+                                        snprintf(fullName, RBUS_MAX_NAME_LENGTH, "%s%d.", event_name, inst_num);
+                                        if(i == 0)
+                                        {
+                                            rbusProperty_SetInt32(tmpProperties, size);
+                                        }
+                                        snprintf(row_instance, RBUS_MAX_NAME_LENGTH, "path%d", inst_num);
+                                        rbusProperty_AppendString(tmpProperties, row_instance, fullName);
+                                    }
+                                }
+                                else
+                                {
+                                    rbusProperty_SetInt32(tmpProperties, size);
+                                }
+                                rbusObject_SetProperty(data, tmpProperties);
+                            }
+                            rbusProperty_Release(tmpProperties);
+                            free_parameterInfoStruct_t(bus_info, size, val);
+                        }
+                        else
+                        {
+                            if(func->getParameterValues)
+                            {
+                                parameterValStruct_t **val = 0;
+                                rbusValue_t value = NULL;
+                                rbusValue_Init(&value);
+                                unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
+                                err = func->getParameterValues(writeID, (char **)&event_name, 1, &size, &val , func->getParameterValues_data);
+                                rbusValue_SetString(value, val[0]->parameterValue);
+                                rbusObject_SetValue(data, "initialValue", value);
+                                rbusValue_Release(value);
+                                free_parameterValStruct_t(bus_info, size, val);
+                            }
+                            else
+                            {
+                                err = RBUS_ERROR_INVALID_OPERATION;
+                                rbusMessage_SetInt32(*response, 0); /* No initial value returned, as get handler is not present */
+                                RBUS_LOG_ERR("%s: Get handler does not exist %s", __FUNCTION__, event_name);
+                            }
+                        }
+                        event.name = event_name;
+                        event.type = RBUS_EVENT_INITIAL_VALUE;
+                        event.data = data;
+                        rbusMessage_SetInt32(*response, 1); /* Based on this value initial value will be published to the consumer */
+                        rbusEventData_appendToMessage(&event, filter, interval, duration, componentId, *response);
+                        rbusObject_Release(data);
+                    }
+                    if(payload)
+                    {
+                        rbusMessage_Release(payload);
+                    }
+                }
+            }
+        }
     }
     return 0;
 }
@@ -2717,6 +2849,29 @@ CCSP_Message_Bus_Register_Path_Priv_rbus
     return CCSP_Message_Bus_OK;
 }
 
+static void Ccsp_Rbus_ReadPayload(
+    rbusMessage payload,
+    int32_t* componentId,
+    int32_t* interval,
+    int32_t* duration,
+    rbusFilter_t* filter)
+{
+    *componentId = 0;
+    *interval = 0;
+    *duration = 0;
+    *filter = NULL;
+    if(payload)
+    {
+        int hasFilter;
+        rbusMessage_GetInt32(payload, componentId);
+        rbusMessage_GetInt32(payload, interval);
+        rbusMessage_GetInt32(payload, duration);
+        rbusMessage_GetInt32(payload, &hasFilter);
+        if(hasFilter)
+            rbusFilter_InitFromMessage(filter, payload);
+    }
+}
+
 /*
  *  Added to support rbus value-change detection
  *  This will check if eventName refers to a parameter (and not an event like CCSP_SYSTEM_READY_SIGNAL)
@@ -2727,7 +2882,10 @@ static int cssp_event_subscribe_override_handler_rbus(
     char const* eventName,
     char const* listener,
     int added,
-    const rbusMessage payload,
+    int componentId,
+    int interval,
+    int duration,
+    rbusFilter_t filter,
     void* userData)
 {
     size_t slen;
@@ -2743,14 +2901,32 @@ static int cssp_event_subscribe_override_handler_rbus(
     }
 
     CcspTraceDebug(("%s: %s\n", __FUNCTION__, eventName));
-
-    if(added)
+    if (interval)
     {
-        Ccsp_RbusValueChange_Subscribe(userData, listener, eventName, payload);
+        if ((duration != 0) && (duration < interval))
+        {
+            CcspTraceError(("Invalid parameter, the duration should be greater than the interval.\n"));
+            return RBUSCORE_ERROR_INVALID_PARAM;
+        }
+        if(added)
+        {
+            Ccsp_RbusInterval_Subscribe(userData, listener, eventName, componentId, interval, duration, filter);
+        }
+        else
+        {
+            Ccsp_RbusInterval_Unsubscribe(userData, listener, eventName, componentId, interval, duration, filter);
+        }
     }
     else
     {
-        Ccsp_RbusValueChange_Unsubscribe(userData, listener, eventName, payload);
+        if(added)
+        {
+            Ccsp_RbusValueChange_Subscribe(userData, listener, eventName, componentId, interval, duration, filter);
+        }
+        else
+        {
+            Ccsp_RbusValueChange_Unsubscribe(userData, listener, eventName, componentId, filter);
+        }
     }
 
     return RBUSCORE_SUCCESS;

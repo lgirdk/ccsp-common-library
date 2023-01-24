@@ -2381,7 +2381,7 @@ int CcspBaseIf_discComponentSupportingNamespace_rbus (
 #endif
     {
         int i = 0;
-        char **compName = 0, *pcomp =NULL;
+        char **compName = 0;
         int num = 0; //only 1 element is passed to get it's component name
 
         /* Set to 0 before we discover; the discovery will result a proper number */
@@ -2391,19 +2391,14 @@ int CcspBaseIf_discComponentSupportingNamespace_rbus (
         if(RBUSCORE_SUCCESS == rbus_discoverElementObjects(name_space, &num, &compName))
         {
             /*CID: 126470 Dereference before null check*/
-	    if(*compName == NULL)
+            if(num > 0)
             {
-              RBUS_LOG_ERR("Couldnt find the matching component returning Failure");
-              return CCSP_FAILURE;
-	    }
-            pcomp = compName[0];
-            if ((num == 1) && (0 == strcmp(pcomp, "")))
-            {
-                RBUS_LOG("%s Namespace: %s is not supported\n", __FUNCTION__, name_space);
-                return CCSP_CR_ERR_UNSUPPORTED_NAMESPACE;
-            }
-            else
-            {
+                if(*compName == NULL)
+                {
+                    RBUS_LOG_ERR("Couldnt find the matching component returning Failure");
+                    return CCSP_CR_ERR_UNSUPPORTED_NAMESPACE;
+                }
+
                 *size = num;
                 val = bus_info->mallocfunc(num * sizeof(componentStruct_t *));
 
@@ -2420,6 +2415,11 @@ int CcspBaseIf_discComponentSupportingNamespace_rbus (
                     val[i]->remoteCR_name = NULL;
                     val[i]->remoteCR_dbus_path = NULL;
                 }
+            }
+            else
+            {
+                RBUS_LOG("%s Namespace: %s is not supported\n", __FUNCTION__, name_space);
+                return CCSP_CR_ERR_UNSUPPORTED_NAMESPACE;
             }
 
             /* Free the memory */
