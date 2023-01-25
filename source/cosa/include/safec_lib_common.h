@@ -17,6 +17,9 @@
  * limitations under the License.
 */
 
+#ifndef _SAFEC_LIB_COMMON_H_
+#define _SAFEC_LIB_COMMON_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
@@ -118,4 +121,6 @@ static inline int strcasecmp_s(const char *dst, int dmax, const char *src, int *
          *r = strcasecmp(dst, src);
          return EOK;
 }
+#endif
+
 #endif
