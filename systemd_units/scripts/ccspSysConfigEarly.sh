@@ -36,7 +36,17 @@ if [ "$MODEL_NUM" = "CGA4332COM" ]; then
     fi
 fi
 
-if [ "$BOX_TYPE" = "HUB4" ] || [ "$BOX_TYPE" = "XB6" -a "$MANUFACTURE" = "Technicolor" ] || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ]; then
+XLE_DISABLE_CORE="false"
+if [ "$BOX_TYPE" = "WNXL11BWL" ]; then
+    isgdb=`cat /version.txt | grep -c "gdb"`
+    if [ "$isgdb" -eq "0" ]; then
+        XLE_DISABLE_CORE="true"
+    else
+        XLE_DISABLE_CORE="false"
+    fi
+fi
+
+if [ "$BOX_TYPE" = "HUB4" ] || [ "$BOX_TYPE" = "XB6" -a "$MANUFACTURE" = "Technicolor" ] || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ] || [ "$XLE_DISABLE_CORE" = "true" ]; then
     #Disable core dump generation
     ulimit -c 0
 else
@@ -44,7 +54,7 @@ else
 fi
 
 if [ "$BUILD_TYPE" != "prod" ]; then
-    if [ "$BOX_TYPE" = "HUB4" ] || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ]; then
+    if [ "$BOX_TYPE" = "HUB4" ] || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ] || [ "$XLE_DISABLE_CORE" = "true" ]; then
         #Disable core dump generation
         echo /dev/null/ > /proc/sys/kernel/core_pattern
     else
