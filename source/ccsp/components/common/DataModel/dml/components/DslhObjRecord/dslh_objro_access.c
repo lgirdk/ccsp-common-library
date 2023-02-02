@@ -1588,8 +1588,9 @@ static void Notify_Table_Entry(PDSLH_OBJ_RECORD_OBJECT pMyObject, ULONG old_valu
 	char Param_NumberOfEntryTemp[512] = {0};
 	int ret = CCSP_FAILURE;
 	errno_t                         rc              = -1;
+	CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
 
-	rc = strcpy_s(Param_NumberOfEntry, sizeof(Param_NumberOfEntry), pMyObject->FullName);
+	rc = strcpy_s(Param_NumberOfEntryTemp, sizeof(Param_NumberOfEntryTemp), pMyObject->FullName);
 	ERR_CHK(rc);
 	len = _ansc_strlen(Param_NumberOfEntryTemp);
 	Param_NumberOfEntryTemp[len-1]= '\0';
@@ -1627,7 +1628,10 @@ static void Notify_Table_Entry(PDSLH_OBJ_RECORD_OBJECT pMyObject, ULONG old_valu
 		{
 			CcspTraceError(("NOTIFICATION: %s : CcspBaseIf_setParameterValues failed. ret value = %d \n", __FUNCTION__, ret));
 			CcspTraceError(("NOTIFICATION: %s : Parameter = %s \n", __FUNCTION__, notif_val[0].parameterValue));
-
+			if(faultParam)
+			{
+				bus_info->freefunc(faultParam);
+			}
 		}
 
 }

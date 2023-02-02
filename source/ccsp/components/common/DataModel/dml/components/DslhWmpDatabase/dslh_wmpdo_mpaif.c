@@ -902,7 +902,7 @@ DslhWmpdoMpaSetParameterValues
 		       }
                        g_isBusy = TRUE;
 
-				str1[j] = strdup(str);
+				str1[j] = AnscCloneString(str);
 				if (! str1[j])
 				{
 					CcspTraceWarning(("<< %s, failed for allocation or copy to memory >>\n",__FUNCTION__));
@@ -921,7 +921,10 @@ DslhWmpdoMpaSetParameterValues
 		               j++;
 			pthread_mutex_unlock(&NotifyMutex);
                     }
-
+                    if(vcSig.newValue)
+                        AnscFreeMemory((char*)vcSig.newValue);
+                    if(vcSig.oldValue)
+                        AnscFreeMemory((char*)vcSig.oldValue);
                     printf("<< %s sending Notification ulArraySize %lu >>\n",__FUNCTION__,ulArraySize);
                     bPendingNotificaton = TRUE;
                     paramCount = j;
