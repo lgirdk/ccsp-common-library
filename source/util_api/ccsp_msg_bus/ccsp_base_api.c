@@ -344,6 +344,11 @@ int CcspBaseIf_setParameterValues_rbus(
     rbusMessage_GetInt32(response, &ret);
     if((ret == CCSP_SUCCESS) || (ret == RBUS_RETURN_CODE_SUCCESS))
     {
+        ret = CCSP_SUCCESS;
+        RBUS_LOG("Successfully Set the Value");
+    }
+    else
+    {
         const char *str = NULL;
         rbusMessage_GetString(response, &str); //invalid param
         if(str)
@@ -355,11 +360,8 @@ int CcspBaseIf_setParameterValues_rbus(
         }
         else
             *invalidParameterName = 0;
-        ret = CCSP_SUCCESS;
-    }
-    else if(ret < CCSP_SUCCESS)
-    {
-        ret = Rbus2_to_CCSP_error_mapper(ret);
+        if(ret < CCSP_SUCCESS)
+            ret = Rbus2_to_CCSP_error_mapper(ret);
     }
     rbusMessage_Release(response);
     return ret;
