@@ -2413,7 +2413,7 @@ int CcspBaseIf_discComponentSupportingNamespace_rbus (
         if(RBUSCORE_SUCCESS == rbus_discoverElementObjects(name_space, &num, &compName))
         {
             /*CID: 126470 Dereference before null check*/
-	    if(*compName == NULL)
+	    if(compName == NULL || *compName == NULL)
             {
               RBUS_LOG_ERR("Couldnt find the matching component returning Failure");
               return CCSP_FAILURE;
