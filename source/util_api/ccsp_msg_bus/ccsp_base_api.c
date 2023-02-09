@@ -348,8 +348,10 @@ int CcspBaseIf_setParameterValues_rbus(
         rbusMessage_GetString(response, &str); //invalid param
         if(str)
         {
+            errno_t rc = -1;
             *invalidParameterName = bus_info->mallocfunc(strlen(str)+1);
-            strcpy(*invalidParameterName, str);
+            rc = strcpy_s(*invalidParameterName, (strlen(str)+1), str);
+            ERR_CHK(rc);
         }
         else
             *invalidParameterName = 0;
