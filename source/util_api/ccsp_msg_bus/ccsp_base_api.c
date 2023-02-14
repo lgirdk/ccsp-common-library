@@ -2860,8 +2860,8 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
 {
     UNREFERENCED_PARAMETER(dst_component_id);
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    char** elements;
-    int num_elements;
+    char** elements = 0;
+    int num_elements = 0;
     int ret = CCSP_FAILURE;
     name_spaceType_t **val = NULL;
     *name_space = 0;
@@ -2870,6 +2870,11 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
 
     RBUS_LOG("calling %s for %s \n", __FUNCTION__, component_name);
     ret = rbus_discoverObjectElements(component_name, &num_elements, &elements);
+    if(elements == NULL || *elements == NULL)
+    {
+        RBUS_LOG_ERR("Could not find the matching component for %s returning failure",component_name);
+        return CCSP_FAILURE;
+    }
 
     if(ret == RBUSCORE_SUCCESS)
     {
