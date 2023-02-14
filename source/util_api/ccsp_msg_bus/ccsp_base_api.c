@@ -2854,44 +2854,52 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
     UNREFERENCED_PARAMETER(dst_component_id);
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     char** elements = NULL;
-    int num_elements;
+    int num_elements = 0;
     int ret = CCSP_FAILURE;
     name_spaceType_t **val = NULL;
-    *name_space = 0;
-    *size = 0;
     errno_t rc = -1;
 
+    *name_space = 0;
+    *size = 0;
+
     RBUS_LOG("calling %s for %s \n", __FUNCTION__, component_name);
+
     ret = rbus_discoverObjectElements(component_name, &num_elements, &elements);
+
+    if ((elements == NULL) || (*elements == NULL))
+    {
+        RBUS_LOG_ERR("Could not find matching component for %s - returning failure", component_name);
+        return CCSP_FAILURE;
+    }
 
     if(ret == RBUSCORE_SUCCESS)
     {
-        int i;
         RBUS_LOG("%s returns num_elements as %d\n", __FUNCTION__, num_elements);
+
         if(num_elements)
         {
+            int i;
             val = bus_info->mallocfunc(num_elements * sizeof(name_spaceType_t *));
             memset(val, 0, num_elements * sizeof(name_spaceType_t *));
 
             for(i = 0; i < num_elements; i++)
             {
+                size_t len = strlen(elements[i]);
                 val[i] = bus_info->mallocfunc(sizeof(name_spaceType_t));
-                val[i]->name_space = bus_info->mallocfunc(strlen(elements[i])+1);
-                rc = strcpy_s(val[i]->name_space, (strlen(elements[i])+1), elements[i]);
-                ERR_CHK(rc);
+                val[i]->name_space = bus_info->mallocfunc(len + 1);
+                memcpy(val[i]->name_space, elements[i], len + 1);
+                free(elements[i]);
                 RBUS_LOG("%s returns name_space %d as %s\n", __FUNCTION__, i, val[i]->name_space);
             }
+
+            free(elements);
         }
 
-        RBUS_LOG("exiting %s\n", __FUNCTION__);
-        if(elements)
-        {
-             for(i = 0; i < num_elements; i++)
-                 free(elements[i]);
-             free(elements);
-        }
         *name_space = val;
         *size = num_elements;
+
+        RBUS_LOG("exiting %s\n", __FUNCTION__);
+
         return CCSP_SUCCESS;
     }
 
