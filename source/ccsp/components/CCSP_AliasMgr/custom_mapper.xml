@@ -229,6 +229,9 @@
       <Name>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_LGI-COM_General_Internal.LocalUIonStaticIPEnable</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable</Name>
     </Param>
     <Param invisible="true">
@@ -1989,6 +1992,10 @@
       <External>Device.X_LGI-COM_General.UserBridgeModeAllowed</External>
       <Internal>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Internal>
     </Alias>
+    </Alias>
+      <External>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</External>
+      <Internal>Device.X_LGI-COM_General_Internal.LocalUIonStaticIPEnable</Internal>
+    </Alias>
     <Alias>
       <External>Device.X_LGI-COM_General.CloudUIEnable</External>
       <Internal>Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable</Internal>
@@ -2781,10 +2788,6 @@
     <Alias>
       <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_AuthenticationType</External>
       <Internal>Device.Routing.RIP.InterfaceSetting.{i}.X_CISCO_COM_AuthenticationType</Internal>
-    </Alias>
-    <Alias>
-      <External>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</External>
-      <Internal>Device.UserInterface.Enable</Internal>
     </Alias>
     <Alias>
       <External>Device.Routing.RIP.InterfaceSetting.{i}.X_LGI-COM_KeyID</External>
