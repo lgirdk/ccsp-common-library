@@ -2846,7 +2846,7 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
 {
     UNREFERENCED_PARAMETER(dst_component_id);
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    char** elements;
+    char** elements = NULL;
     int num_elements;
     int ret = CCSP_FAILURE;
     name_spaceType_t **val = NULL;
@@ -2861,7 +2861,6 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
     {
         int i;
         RBUS_LOG("%s returns num_elements as %d\n", __FUNCTION__, num_elements);
-
         if(num_elements)
         {
             val = bus_info->mallocfunc(num_elements * sizeof(name_spaceType_t *));
@@ -2878,9 +2877,12 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
         }
 
         RBUS_LOG("exiting %s\n", __FUNCTION__);
-        for(i = 0; i < num_elements; i++)
-            free(elements[i]);
-        free(elements);
+        if(elements)
+        {
+             for(i = 0; i < num_elements; i++)
+                 free(elements[i]);
+             free(elements);
+        }
         *name_space = val;
         *size = num_elements;
         return CCSP_SUCCESS;
