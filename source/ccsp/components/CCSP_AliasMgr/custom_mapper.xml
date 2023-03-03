@@ -1992,7 +1992,7 @@
       <External>Device.X_LGI-COM_General.UserBridgeModeAllowed</External>
       <Internal>Device.X_LGI-COM_General_Internal.UserBridgeModeAllowed</Internal>
     </Alias>
-    </Alias>
+    <Alias>
       <External>Device.X_LGI-COM_General.LocalUIonStaticIPEnable</External>
       <Internal>Device.X_LGI-COM_General_Internal.LocalUIonStaticIPEnable</Internal>
     </Alias>
