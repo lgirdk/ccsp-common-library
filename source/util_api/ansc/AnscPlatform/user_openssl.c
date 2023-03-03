@@ -346,12 +346,16 @@ SSL * openssl_connect (int fd, hostNames *hosts)
   SSL_CTX *ssl_ctx = g_ssl_ctx[SSL_CLIENT_CALLS];
 
   if (ssl_ctx == NULL) {
-	  goto error;
+    goto error;
   }
 
   ssl = SSL_new (ssl_ctx);
-  int i = 0;
+
+  if (!ssl)
+    goto error;
+
   if ( hosts->peerVerify ) {
+     int i = 0;
   
      //RDKB-9319 : Add host validation
      param = SSL_get0_param(ssl);
@@ -367,9 +371,6 @@ SSL * openssl_connect (int fd, hostNames *hosts)
      SSL_set_verify(ssl, SSL_VERIFY_PEER, 0);
   }
   
-  if (!ssl)
-    goto error;
-
   if ( hosts->peerVerify ) {
      AnscTraceWarning(("openssl_connect - Hostnames added to verify \n"));
   }
@@ -390,24 +391,22 @@ SSL * openssl_connect (int fd, hostNames *hosts)
     AnscTraceWarning(("openssl_connect - failed in SSL_set_connect_state \n"));
     goto error;
   }
-  else
-  {
-    if ( hosts->peerVerify ) {
-       AnscTraceWarning(("openssl_connect - get peer certificate result\n"));
-       X509 *cert = SSL_get_peer_certificate(ssl);
-       if(cert) {
-          const long cert_res = SSL_get_verify_result(ssl);
-          if(cert_res != X509_V_OK)
-          {
-             AnscTraceError(("openssl_connect - get peer certificate verification result is NOT OK. ACS %s \n", X509_verify_cert_error_string (cert_res))); 
-          }
-          else
-          {
-             AnscTraceInfo(("openssl_connect - get peer certificate result is OK.\n"));
-          }
-          X509_free(cert);
-       }
-    }
+
+  if ( hosts->peerVerify ) {
+     AnscTraceWarning(("openssl_connect - get peer certificate result\n"));
+     X509 *cert = SSL_get_peer_certificate(ssl);
+     if(cert) {
+        const long cert_res = SSL_get_verify_result(ssl);
+        if(cert_res != X509_V_OK)
+        {
+           AnscTraceError(("openssl_connect - get peer certificate verification result is NOT OK. ACS %s \n", X509_verify_cert_error_string (cert_res))); 
+        }
+        else
+        {
+           AnscTraceInfo(("openssl_connect - get peer certificate result is OK.\n"));
+        }
+        X509_free(cert);
+     }
   }
 
   AnscTraceWarning(("openssl_connect - connected socket %d to SSL handle %p\n", fd, ssl));
@@ -415,11 +414,11 @@ SSL * openssl_connect (int fd, hostNames *hosts)
 
 error:
 
-  AnscTraceWarning(("openssl_connect - SSL handshake failed -- ssl state = %s.\n", SSL_state_string(ssl)));
-  openssl_print_errors (ssl);
-
-  if (ssl)
+  if (ssl) {
+    AnscTraceWarning(("openssl_connect - SSL handshake failed -- ssl state = %s.\n", SSL_state_string(ssl)));
+    openssl_print_errors (ssl);
     SSL_free (ssl);
+  }
 
   return NULL;
 }
@@ -451,10 +450,10 @@ SSL * openssl_accept (int conn_fd)
 error:
     AnscTraceWarning(("openssl_accept - SSL handshake failed.\n"));
 
-    openssl_print_errors (ssl);
-
-    if (ssl)
+    if (ssl) {
+        openssl_print_errors (ssl);
         SSL_free (ssl);
+    }
 
     return NULL;
 }
