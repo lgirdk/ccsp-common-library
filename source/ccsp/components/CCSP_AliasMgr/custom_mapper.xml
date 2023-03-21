@@ -841,6 +841,9 @@
       <Name>Device.Time.MaxPollInterval</Name>
     </Param>
     <Param>
+      <Name>Device.X_LGI-COM_Gateway.DNSRebindProtection.WhitelistUrlNumberOfEntries</Name>
+    </Param>
+    <Param>
       <Name>Device.IP.Diagnostics.TraceRoute.X_LGI-COM_BasePort</Name>
     </Param>
     <Param>
