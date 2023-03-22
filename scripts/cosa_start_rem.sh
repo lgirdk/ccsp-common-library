@@ -183,18 +183,12 @@ echo_t "Launching UI after all CCSP processes are up"
 
 if [ -e ./tr069pa ]
 then
-	bridge_mode=$(sysevent get bridge_mode)
-	if [ "$bridge_mode" = "0" ]
-	then
-		cd tr069pa
-		echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys &"
-		/usr/bin/CcspTr069PaSsp -subsys $Subsys &
-		cd ..
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
-#		sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
-	else
-		echo "Modem is in bridge mode. Skip launching TR069..."
-	fi
+	cd tr069pa
+	echo_t "/usr/bin/CcspTr069PaSsp -subsys $Subsys &"
+	/usr/bin/CcspTr069PaSsp -subsys $Subsys &
+	cd ..
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT -i erouter0 -p tcp --dport=7547 -j ACCEPT "
+#	sysevent setunique GeneralPurposeFirewallRule " -A INPUT ! -i erouter0 -p tcp -m tcp --dport 7547 -j DROP "
 fi
 
 sleep 5
