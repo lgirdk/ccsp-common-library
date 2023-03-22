@@ -127,68 +127,6 @@ AnscSetTraceLevel_ccsp
     else if(g_iTraceLevel < CCSP_TRACE_LEVEL_ALERT) g_iTraceLevel = CCSP_TRACE_LEVEL_ALERT;
 }
 
-#define HOST_NAME_MAX_LEN 256
-//HOSTNAME VALIDATION
-/*
-As per RFC1123(https://tools.ietf.org/html/rfc1123#page-13),
-Each element of the hostname must be from 1 to 63 characters long.
-Valid characters for hostnames are ASCII letters
-from a to z(in a case-insensitive manner), the digits from 0 to 9,
-and the hyphen (-). A hostname may not start with a hyphen.
-
-As per TR-181 specification(https://cwmp-data-models.broadband-forum.org/tr-181-2-13-0-cwmp.html#D.Device:2.Device.NAT.PortMapping.{i}.InternalClient), the hostname can be at most 256 characters long.
-
-For example "monet.example.com" is a valid hostname.
-*/
-BOOL Check_hostname(char* input)
-{
-    regex_t reg;
-    const char *pattern="^([A-Z0-9]|[A-Z0-9][A-Z0-9-]{0,61}[A-Z0-9])([.]([A-Z0-9]|[A-Z0-9][A-Z0-9-]{0,61}[A-Z0-9]))*$";
-    if ((input != NULL) && (strlen(input) < HOST_NAME_MAX_LEN))
-    {
-        if(regcomp(&reg ,pattern, REG_EXTENDED|REG_ICASE) == 0)
-        {
-            if (0 == regexec(&reg, input, 0, NULL, 0))
-                return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-//MAC ADDRESS VALIDATION
-BOOL Check_MAC(char* input)
-{
-    regex_t reg;
-    const char *macString="^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
-    if(input != NULL)
-    {
-       if(regcomp(&reg ,macString, REG_EXTENDED|REG_ICASE) == 0)
-       {
-           if ( 0 ==  regexec(&reg, input, 0, NULL, 0))
-               return TRUE;
-       }
-    }
-    return FALSE;
-}
-
-BOOL Check_IP(char* input)
-{
-    regex_t reg;
-    const char *invalid_IP = "^([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})$";
-    if(input != NULL)
-    {
-         if(regcomp(&reg ,invalid_IP, REG_EXTENDED|REG_ICASE) == 0)
-         {
-              if( 0 ==  regexec(&reg, input, 0, NULL, 0))
-              {
-                   return FALSE;
-              }
-         }
-         return TRUE;
-    }
-    return FALSE;
-}
-
 static void
 AnscSetTraceLevel_ansc
     (
