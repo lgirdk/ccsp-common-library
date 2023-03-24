@@ -63,6 +63,7 @@ typedef struct ValueChangeRecord
     void* handle;
     char* listener; 
     char* parameter; 
+    char* eventName;
     int32_t componentId;
     rbusFilter_t filter;
     int32_t interval;
@@ -97,6 +98,8 @@ static void vcParams_Free(void* p)
         free(rec->listener);
     if(rec->parameter)
         free(rec->parameter);
+    if(rec->eventName)
+        free(rec->eventName);
     if(rec->value)
         free(rec->value);
     if(rec->filter)
@@ -104,7 +107,7 @@ static void vcParams_Free(void* p)
     free(rec);
 }
 
-static ValueChangeRecord* vcParams_Find(void* handle, const char* listener, const char* parameter, int32_t componentId, rbusFilter_t filter)
+static ValueChangeRecord* vcParams_Find(void* handle, const char* listener, const char* parameter,  const char* eventName, int32_t componentId, rbusFilter_t filter)
 {
     size_t i;
 
@@ -118,6 +121,7 @@ static ValueChangeRecord* vcParams_Find(void* handle, const char* listener, cons
             rec->handle == handle &&
             strcmp(rec->listener, listener) == 0 &&
             strcmp(rec->parameter, parameter) == 0 &&
+            strcmp(rec->eventName, eventName) == 0 &&
             rec->componentId == componentId &&
             rbusFilter_Compare(rec->filter, filter) == 0)
         {
@@ -263,11 +267,11 @@ static void rbusValueChange_handlePublish(ValueChangeRecord* rec, parameterValSt
     rbusMessage_SetInt32(msg, rec->duration);
     rbusMessage_SetInt32(msg, rec->componentId);
 
-    CcspTraceDebug(("%s: publising event %s to listener %s componentId %d\n", __FUNCTION__, rec->parameter, rec->listener, rec->componentId));
+    CcspTraceDebug(("%s: publising event %s to listener %s componentId %d\n", __FUNCTION__, rec->eventName, rec->listener, rec->componentId));
 
     err = rbus_publishSubscriberEvent(
         ((CCSP_MESSAGE_BUS_INFO*)rec->handle)->component_id,  
-        rec->parameter, 
+        rec->eventName, /* use the same event name the consumer subscribed with */
         rec->listener, 
         msg);
 
@@ -363,6 +367,7 @@ int Ccsp_RbusValueChange_Subscribe(
     void* handle, 
     const char* listener, 
     const char* parameter,
+    const char* eventName,
     int32_t componentId,
     int32_t interval,
     int32_t duration,
@@ -390,7 +395,7 @@ int Ccsp_RbusValueChange_Subscribe(
 
     VC_LOCK();
 
-    rec = vcParams_Find(handle, listener, parameter, componentId, filter);
+    rec = vcParams_Find(handle, listener, parameter, eventName, componentId, filter);
 
     VC_UNLOCK();
 
@@ -402,6 +407,7 @@ int Ccsp_RbusValueChange_Subscribe(
         rec->handle = handle;
         rec->listener = strdup(listener);
         rec->parameter = strdup(parameter);
+        rec->eventName = strdup(eventName);
         rec->componentId = componentId;
         rec->filter = filter;
         rec->interval = interval;
@@ -446,6 +452,7 @@ int Ccsp_RbusValueChange_Unsubscribe(
     void* handle,
     const char* listener, 
     const char* parameter, 
+    const char* eventName,
     int32_t componentId,
     rbusFilter_t filter)
 {
@@ -462,7 +469,7 @@ int Ccsp_RbusValueChange_Unsubscribe(
 
     VC_LOCK();
 
-    rec = vcParams_Find(handle, listener, parameter, componentId, filter);
+    rec = vcParams_Find(handle, listener, parameter, eventName, componentId, filter);
 
     VC_UNLOCK();
 

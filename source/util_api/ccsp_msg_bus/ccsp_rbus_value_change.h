@@ -33,6 +33,7 @@ int Ccsp_RbusValueChange_Subscribe(
     void* handle, 
     const char* listener, 
     const char* parameter, 
+    const char* eventName,
     int32_t componentId,
     int32_t interval,
     int32_t duration,
@@ -42,6 +43,7 @@ int Ccsp_RbusValueChange_Unsubscribe(
     void* handle,
     const char* listener, 
     const char* parameter, 
+    const char* eventName,
     int32_t componentId,
     rbusFilter_t filter);
 

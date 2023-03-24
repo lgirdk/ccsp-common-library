@@ -143,7 +143,7 @@ static int tunnelStatus_signal_rbus(const char * destination, const char * metho
 static int webcfg_signal_rbus (const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
 static int wifiDbStatus_signal_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
 static int telemetry_send_signal_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
-static int cssp_event_subscribe_override_handler_rbus(char const* object,  char const* eventName, char const* listener, int added, int componentId, int interval, int duration, rbusFilter_t filter, void* userData);
+static int cssp_event_subscribe_override_handler_rbus(char const* object,  char const* paramName,  char const* eventName, char const* listener, int added, int componentId, int interval, int duration, rbusFilter_t filter, void* userData);
 static void Ccsp_Rbus_ReadPayload(rbusMessage payload, int32_t* componentId, int32_t* interval, int32_t* duration, rbusFilter_t* filter);
 int rbus_enabled = 0;
 
@@ -2235,6 +2235,58 @@ unsigned int string_to_writeid(const char *str)
     return DSLH_MPA_ACCESS_CONTROL_CLI;
 }
 
+void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName, rbusMessage *req, int *param_size)
+{
+    CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
+    CCSP_Base_Func_CB* func = (CCSP_Base_Func_CB* )bus_info->CcspBaseIf_func;
+    int result = 0, i = 0, tmp;
+    int wild_param_size = 0;
+    char* context = NULL;
+    parameterInfoStruct_t **info = 0;
+    rbusMessage msg;
+    if (req != NULL && *req != NULL)
+    {
+        msg = (*req);
+    }
+
+    char *token1 = strtok_r(parameterName, "*", &context);
+    char *token2 = strtok_r(NULL, "", &context);
+
+    if (!token1 || !token2 )
+    {
+        return;
+    }
+
+    if (func->getParameterNames)
+    {
+        result = func->getParameterNames(token1, 1, &wild_param_size, &info, func->getParameterNames_data);
+        tmp = result;
+        if((tmp == CCSP_SUCCESS) && info)
+        {
+            for (i = 0; i < wild_param_size; i++)
+            {
+                char fullName[RBUS_MAX_NAME_LENGTH] = {0};
+                char* tmpPtr = NULL;
+                snprintf(fullName, RBUS_MAX_NAME_LENGTH, "%s%s", info[i]->parameterName, token2+1);
+                tmpPtr = strstr (fullName, "*");
+                if (tmpPtr)
+                {
+                    get_recursive_wildcard_parameterNames(bus_info, fullName, &msg, param_size);
+                }
+                else
+                {
+                    if (msg)
+                    {
+                        rbusMessage_SetString(msg, fullName);
+                        *param_size = (*param_size)+1;
+                    }
+                }
+            }
+            free_parameterInfoStruct_t(bus_info, wild_param_size, info);
+        }
+    }
+}
+
 static int thread_path_message_func_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr)
 {
     UNREFERENCED_PARAMETER(destination);
@@ -2248,48 +2300,74 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
         if(!strncmp(method, METHOD_GETPARAMETERVALUES, MAX_METHOD_NAME_LENGTH) && func->getParameterValues)
         {
             int result = 0, i =0, size =0;
+            char **parameterNames = 0;
             unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
             const char *writeID_str = NULL;
-            int32_t param_size = 1, tmp = 0;
-            char **parameterNames = 0;
+            int32_t param_size = 0, tmp = 0;
             parameterValStruct_t **val = 0;
-
+            rbusMessage req;
             if(rbusMessage_GetString(request, &writeID_str) == RT_OK)
                 writeID = get_writeid(writeID_str);
-            rbusMessage_GetInt32(request, &param_size);
+            rbusMessage_GetInt32(request, &size);
+            rbusMessage_Init(&req);
+
+            for(i = 0; i < size; i++)
+            {
+                char *param_name = 0;
+                char* tmpPtr = NULL;
+                rbusMessage_GetString(request, (const char**)&param_name);
+                /* wildcard */
+                tmpPtr = strstr (param_name, "*");
+                if (tmpPtr)
+                {
+                    get_recursive_wildcard_parameterNames(bus_info,  param_name, &req, &param_size);
+                }
+                else
+                {
+                    rbusMessage_SetString(req, param_name);
+                    param_size++;
+                }
+            }
 
             if(param_size > 0)
             {
                 parameterNames = bus_info->mallocfunc(param_size*sizeof(char *));
                 memset(parameterNames, 0, param_size*sizeof(char *));
             }
-
             for(i = 0; i < param_size; i++)
             {
                 parameterNames[i] = NULL;
-                rbusMessage_GetString(request, (const char**)&parameterNames[i]);
-                RBUS_LOG("%s parameterNames[%d]: %s\n", __FUNCTION__, i, parameterNames[i]);
-            }
-
-            result = func->getParameterValues(writeID, parameterNames, param_size, &size, &val , func->getParameterValues_data);
-            RBUS_LOG("%s size %d result %d\n", __FUNCTION__, size, result);
-            bus_info->freefunc(parameterNames);
-
-            rbusMessage_Init(response);
-            tmp = result;
-            rbusMessage_SetInt32(*response, tmp); //result
-            if(tmp == CCSP_SUCCESS )
-            {
-                rbusMessage_SetInt32(*response, size);
-                for(i = 0; i < size; i++)
+                if (req)
                 {
-                    RBUS_LOG("%s val[%d]->parameterName %s val[%d]->parameterValue %s\n", __FUNCTION__, i, val[i]->parameterName, i, val[i]->parameterValue);
-                    rbusMessage_SetString(*response, val[i]->parameterName);
-                    rbusMessage_SetInt32(*response, val[i]->type);
-                    rbusMessage_SetString(*response, val[i]->parameterValue);
+                    rbusMessage_GetString(req, (const char**)&parameterNames[i]);
+                    RBUS_LOG("%s parameterNames[%d]: %s\n", __FUNCTION__, i, parameterNames[i]);
                 }
             }
-            free_parameterValStruct_t(bus_info, size, val);
+
+            size = 0;
+            if (parameterNames != NULL)
+            {
+                result = func->getParameterValues(writeID, parameterNames, param_size, &size, &val , func->getParameterValues_data);
+                RBUS_LOG("%s size %d result %d\n", __FUNCTION__, size, result);
+                bus_info->freefunc(parameterNames);
+                rbusMessage_Release(req);
+
+                rbusMessage_Init(response);
+                tmp = result;
+                rbusMessage_SetInt32(*response, tmp); //result
+                if(tmp == CCSP_SUCCESS )
+                {
+                    rbusMessage_SetInt32(*response, size);
+                    for(i = 0; i < size; i++)
+                    {
+                        RBUS_LOG("%s val[%d]->parameterName %s val[%d]->parameterValue %s\n", __FUNCTION__, i, val[i]->parameterName, i, val[i]->parameterValue);
+                        rbusMessage_SetString(*response, val[i]->parameterName);
+                        rbusMessage_SetInt32(*response, val[i]->type);
+                        rbusMessage_SetString(*response, val[i]->parameterValue);
+                    }
+                }
+                free_parameterValStruct_t(bus_info, size, val);
+            }
         }
         else if(!strncmp(method, METHOD_GETHEALTH, MAX_METHOD_NAME_LENGTH) && func->getHealth)
         {
@@ -2620,7 +2698,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
         else if((!strncmp(method, METHOD_SUBSCRIBE, MAX_METHOD_NAME_LENGTH)) || (!strncmp(method, METHOD_UNSUBSCRIBE, MAX_METHOD_NAME_LENGTH)))
         {
             const char * sender = NULL;
-            const char * event_name = NULL;
+            const char * eventName = NULL;
             int has_payload = 0;
             rbusMessage payload = NULL;
             int32_t componentId = 0;
@@ -2629,17 +2707,21 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             int publishOnSubscribe = 0;
             rbusFilter_t filter = NULL;
             int size = 0;
+            char* tmpPtr = NULL;
+            int32_t param_size = 0;
+            int i;
+            rbusMessage req;
             rbusCoreError_t err = RBUSCORE_SUCCESS;
 
             rbusMessage_Init(response);
 
-            if((RT_OK == rbusMessage_GetString(request, &event_name)) &&
-                (RT_OK == rbusMessage_GetString(request, &sender)))
+            if((RT_OK == rbusMessage_GetString(request, &eventName)) &&
+                    (RT_OK == rbusMessage_GetString(request, &sender)))
             {
                 /*Extract arguments*/
-                if((NULL == sender) || (NULL == event_name))
+                if((NULL == sender) || (NULL == eventName))
                 {
-                    RBUS_LOG_ERR("Malformed subscription request. Sender: %s. Event: %s.", sender, event_name);
+                    RBUS_LOG_ERR("Malformed subscription request. Sender: %s. Event: %s.", sender, eventName);
                     rbusMessage_SetInt32(*response, RBUSCORE_ERROR_INVALID_PARAM);
                 }
                 else
@@ -2653,98 +2735,167 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                     }
                     else
                     {
-                        RBUS_LOG_ERR("%s: payload missing in subscribe request for event %s from %s", __FUNCTION__, event_name, sender);
+                        RBUS_LOG_ERR("%s: payload missing in subscribe request for event %s from %s", __FUNCTION__, eventName, sender);
                     }
                     int added = strncmp(method, METHOD_SUBSCRIBE, MAX_METHOD_NAME_LENGTH) == 0 ? 1 : 0;
                     if(added)
                         rbusMessage_GetInt32(request, &publishOnSubscribe);
-                    err = cssp_event_subscribe_override_handler_rbus(NULL, event_name, sender, added, componentId, interval, duration, filter, user_data);
-                    rbusMessage_SetInt32(*response, err);
-
-                    if(err == RBUSCORE_SUCCESS && publishOnSubscribe)
+                    rbusMessage_Init(&req);
+                    /* Handling Wildcard subscription */
+                    tmpPtr = strstr (eventName, "*");
+                    if (tmpPtr)
                     {
-                        rbusEvent_t event = {0};
-                        rbusObject_t data = NULL;
-                        rbusProperty_t tmpProperties = NULL;
-                        size_t slen = 0;
+                        char paramName[RBUS_MAX_NAME_LENGTH] = {0};
+                        snprintf(paramName, RBUS_MAX_NAME_LENGTH, "%s", (char *)eventName);
+                        get_recursive_wildcard_parameterNames(bus_info, paramName, &req, &param_size);
+                    }
+                    else
+                    {
+                        rbusMessage_SetString(req, eventName);
+                        param_size++;
+                    }
 
-                        rbusObject_Init(&data, NULL);
-                        //determine if eventName is a parameter or wildcard query which is used for table identification
-                        slen = strlen(event_name);
-                        if(event_name[slen-1] == '.')
+                    rbusObject_t data = NULL;
+                    rbusProperty_t tmpProperties = NULL;
+                    rbusObject_Init(&data, NULL);
+                    for (i = 0; i < param_size; i++)
+                    {
+                        char *parameter_name = 0;
+                        rbusMessage_GetString(req, (const char**)&parameter_name);
+
+                        /* Handling interval based subscription */
+                        if (interval)
                         {
-                            int i = 0;
-                            unsigned int requestedDepth = 1;
-                            int32_t result = 0;
-                            parameterInfoStruct_t **val = 0;
-
-                            result = func->getParameterNames((char*)event_name, requestedDepth, &size, &val, func->getParameterNames_data);
-                            if( result == CCSP_SUCCESS)
+                            if (i == 0)
                             {
-                                char buf[CCSP_BASE_PARAM_LENGTH] = {0};
-                                int inst_num = 0;
-                                int type = 0;
-
-                                rbusProperty_Init(&tmpProperties, "numberOfEntries", NULL);
-
-                                if(size != 0)
-                                {
-                                    for(i = 0; i < size; i++)
-                                    {
-                                        char fullName[RBUS_MAX_NAME_LENGTH] = {0};
-                                        char row_instance[RBUS_MAX_NAME_LENGTH] = {0};
-                                        type = CcspBaseIf_getObjType((char *)event_name, val[i]->parameterName, &inst_num, buf);
-
-                                        if(type != CCSP_BASE_INSTANCE)
-                                            continue;
-                                        snprintf(fullName, RBUS_MAX_NAME_LENGTH, "%s%d.", event_name, inst_num);
-                                        if(i == 0)
-                                        {
-                                            rbusProperty_SetInt32(tmpProperties, size);
-                                        }
-                                        snprintf(row_instance, RBUS_MAX_NAME_LENGTH, "path%d", inst_num);
-                                        rbusProperty_AppendString(tmpProperties, row_instance, fullName);
-                                    }
-                                }
-                                else
-                                {
-                                    rbusProperty_SetInt32(tmpProperties, size);
-                                }
-                                rbusObject_SetProperty(data, tmpProperties);
+                                err = cssp_event_subscribe_override_handler_rbus(NULL, parameter_name, eventName,
+                                        sender, added, componentId, interval, duration, filter, user_data);
                             }
-                            rbusProperty_Release(tmpProperties);
-                            free_parameterInfoStruct_t(bus_info, size, val);
                         }
                         else
                         {
-                            if(func->getParameterValues)
+                            err = cssp_event_subscribe_override_handler_rbus(NULL, parameter_name, eventName,
+                                    sender, added, componentId, interval, duration, filter, user_data);
+                        }
+                        if (i == 0)
+                        {
+                            rbusMessage_SetInt32(*response, err);
+
+                        }
+                        /* Handling Intial value */
+                        if(publishOnSubscribe)
+                        {
+                            /*get wildcard qurey initial value*/
+                            if (param_size > 1)
                             {
+                                if (i == 0)
+                                {
+                                    rbusProperty_Init(&tmpProperties, "numberOfEntries", NULL);
+                                    rbusProperty_SetInt32(tmpProperties, param_size);
+                                }
                                 parameterValStruct_t **val = 0;
-                                rbusValue_t value = NULL;
-                                rbusValue_Init(&value);
                                 unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
-                                err = func->getParameterValues(writeID, (char **)&event_name, 1, &size, &val , func->getParameterValues_data);
-                                rbusValue_SetString(value, val[0]->parameterValue);
-                                rbusObject_SetValue(data, "initialValue", value);
-                                rbusValue_Release(value);
-                                free_parameterValStruct_t(bus_info, size, val);
+                                if (func->getParameterValues)
+                                {
+                                    err = func->getParameterValues(writeID, (char **)&parameter_name, 1, &size, &val , func->getParameterValues_data);
+                                    rbusProperty_AppendString(tmpProperties, parameter_name, val[0]->parameterValue);
+                                    free_parameterValStruct_t(bus_info, size, val);
+                                }
                             }
                             else
                             {
-                                err = RBUS_ERROR_INVALID_OPERATION;
-                                rbusMessage_SetInt32(*response, 0); /* No initial value returned, as get handler is not present */
-                                RBUS_LOG_ERR("%s: Get handler does not exist %s", __FUNCTION__, event_name);
+                                size_t slen = 0;
+                                //determine if parameter_name is a parameter or partial path which is used for table identification
+                                slen = strlen(parameter_name);
+                                if ((parameter_name[slen-1] == '.') && (func->getParameterNames))
+                                {
+                                    int j = 0;
+                                    unsigned int requestedDepth = 1;
+                                    int32_t result = 0;
+                                    parameterInfoStruct_t **val = 0;
+                                    result = func->getParameterNames((char*)parameter_name, requestedDepth, &size, &val, func->getParameterNames_data);
+                                    if( result == CCSP_SUCCESS)
+                                    {
+                                        char buf[CCSP_BASE_PARAM_LENGTH] = {0};
+                                        int inst_num = 0;
+                                        int type = 0;
+                                        rbusProperty_Init(&tmpProperties, "numberOfEntries", NULL);
+                                        if(size != 0)
+                                        {
+                                            for(j = 0; j < size; j++)
+                                            {
+                                                char fullName[RBUS_MAX_NAME_LENGTH] = {0};
+                                                char row_instance[RBUS_MAX_NAME_LENGTH] = {0};
+                                                type = CcspBaseIf_getObjType((char *)parameter_name, val[j]->parameterName, &inst_num, buf);
+                                                if(type != CCSP_BASE_INSTANCE)
+                                                    continue;
+                                                snprintf(fullName, RBUS_MAX_NAME_LENGTH, "%s%d.", parameter_name, inst_num);
+                                                if(j == 0)
+                                                {
+                                                    rbusProperty_SetInt32(tmpProperties, size);
+                                                }
+                                                snprintf(row_instance, RBUS_MAX_NAME_LENGTH, "path%d", inst_num);
+                                                rbusProperty_AppendString(tmpProperties, row_instance, fullName);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rbusProperty_SetInt32(tmpProperties, size);
+                                        }
+                                    }
+                                    rbusProperty_Release(tmpProperties);
+                                    free_parameterInfoStruct_t(bus_info, size, val);
+                                }
+                                else
+                                {
+                                    if(func->getParameterValues)
+                                    {
+                                        parameterValStruct_t **val = 0;
+                                        rbusValue_t value = NULL;
+                                        rbusValue_Init(&value);
+                                        unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
+                                        err = func->getParameterValues(writeID, (char **)&parameter_name, 1, &size, &val , func->getParameterValues_data);
+                                        rbusValue_SetString(value, val[0]->parameterValue);
+                                        rbusObject_SetValue(data, "initialValue", value);
+                                        rbusValue_Release(value);
+                                        free_parameterValStruct_t(bus_info, size, val);
+                                    }
+                                    else
+                                    {
+                                        err = RBUS_ERROR_INVALID_OPERATION;
+                                        rbusMessage_SetInt32(*response, 0); /* No initial value returned, as get handler is not present */
+                                        RBUS_LOG_ERR("%s: Get handler does not exist %s", __FUNCTION__, parameter_name);
+                                    }
+                                }
+                            }
+
+                            if (i == (param_size-1))
+                            {
+                                if (tmpProperties)
+                                {
+                                    rbusObject_SetProperty(data, tmpProperties);
+                                }
+
+                                rbusEvent_t event = {0};
+                                event.name = eventName; /* use the same eventName the consumer subscribed with */
+                                event.type = RBUS_EVENT_INITIAL_VALUE;
+                                event.data = data;
+                                rbusMessage_SetInt32(*response, 1); /* Based on this value initial value will be published to the consumer */
+                                rbusEventData_appendToMessage(&event, filter, interval, duration, componentId, *response);
                             }
                         }
-                        event.name = event_name;
-                        event.type = RBUS_EVENT_INITIAL_VALUE;
-                        event.data = data;
-                        rbusMessage_SetInt32(*response, 1); /* Based on this value initial value will be published to the consumer */
-                        rbusEventData_appendToMessage(&event, filter, interval, duration, componentId, *response);
-                        rbusObject_Release(data);
                     }
+
+                    if(req)
+                        rbusMessage_Release(req);
+                    rbusObject_Release(data);
+                    rbusProperty_Release(tmpProperties);
                     if(payload)
                     {
+                        if(filter)
+                        {
+                            rbusFilter_Release(filter);
+                        }
                         rbusMessage_Release(payload);
                     }
                 }
@@ -2879,6 +3030,7 @@ static void Ccsp_Rbus_ReadPayload(
  */
 static int cssp_event_subscribe_override_handler_rbus(
     char const* object,
+    char const* paramName,
     char const* eventName,
     char const* listener,
     int added,
@@ -2921,11 +3073,11 @@ static int cssp_event_subscribe_override_handler_rbus(
     {
         if(added)
         {
-            Ccsp_RbusValueChange_Subscribe(userData, listener, eventName, componentId, interval, duration, filter);
+            Ccsp_RbusValueChange_Subscribe(userData, listener, paramName, eventName, componentId, interval, duration, filter);
         }
         else
         {
-            Ccsp_RbusValueChange_Unsubscribe(userData, listener, eventName, componentId, filter);
+            Ccsp_RbusValueChange_Unsubscribe(userData, listener, paramName, eventName, componentId, filter);
         }
     }
 
