@@ -1187,6 +1187,29 @@ CcspCcMbi_GetParameterNames
             
             returnStatus = ANSC_STATUS_RESOURCES;
 
+            if( i > 0 )
+            {
+                for(--i; (int)i >= 0; --i)
+                {
+                     if(ppReturnVal[i]->parameterName)
+                     {
+                           AnscFreeMemory(ppReturnVal[i]->parameterName);
+                           ppReturnVal[i]->parameterName = NULL;
+                     }
+                     if(ppReturnVal[i])
+                     {
+                           AnscFreeMemory(ppReturnVal[i]);
+                           ppReturnVal[i] = NULL;
+                     }
+                }
+            }
+
+            if(ppReturnVal)
+            {
+                AnscFreeMemory(ppReturnVal);
+                ppReturnVal = NULL;
+            }
+
             goto EXIT1;
         }
 
