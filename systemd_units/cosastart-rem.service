@@ -29,7 +29,6 @@ ExecStartPre=/bin/sh -c 'sleep 10'
 ExecStart=/bin/sh -c '/usr/ccsp/cosa_start_rem.sh'
 ExecStop=/bin/sh -c '/usr/ccsp/cosa_start_rem.sh stop'
 RemainAfterExit=yes
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

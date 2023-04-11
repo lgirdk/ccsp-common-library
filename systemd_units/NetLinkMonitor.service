@@ -26,7 +26,6 @@ EnvironmentFile=/etc/device.properties
 ExecStart=/usr/bin/NetworkMonitor &
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping Netlink monitor service due to crash" >> ${PROCESS_RESTART_LOG}'
 Restart=always
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

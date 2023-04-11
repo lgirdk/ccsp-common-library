@@ -28,7 +28,6 @@ Environment="Subsys=eRT."
 ExecStart=/bin/sh -c '/etc/process_monitor.sh &'
 RemainAfterExit=yes
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

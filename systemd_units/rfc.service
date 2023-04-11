@@ -27,7 +27,6 @@ ExecStart=/bin/sh -c 'echo "Enable RFC feature" >> ${PARODUS_START_LOG_FILE}'
 ExecStart=/bin/sh -c '/lib/rdk/rfc.service &'
 RemainAfterExit=yes
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=wan-initialized.target

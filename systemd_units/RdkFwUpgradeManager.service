@@ -29,7 +29,6 @@ ExecStart=/usr/bin/fwupgrademanager -subsys $Subsys
 ExecStop=/bin/sh -c 'echo "`date`: Stopping/Restarting RdkFwUpgradeManager"'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

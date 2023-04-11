@@ -29,7 +29,6 @@ ExecStart=/usr/bin/pppmanager -subsys $Subsys
 ExecStop=/bin/sh -c 'echo "`date`: Stopping/Restarting RdkPPPManager" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

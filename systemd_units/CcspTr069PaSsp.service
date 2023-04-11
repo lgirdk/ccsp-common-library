@@ -34,7 +34,6 @@ ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting CcspTr069PaSsp" >> ${
 Restart=always
 SuccessExitStatus=SIGTERM
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

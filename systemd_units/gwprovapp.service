@@ -31,7 +31,6 @@ ExecStartPre=-/bin/sh -c 'mkdir -p /rdklogs/logs/'
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping Gwprovapp service due to GWPROV_crash" >> ${PROCESS_RESTART_LOG}'
 ExecStopPost=/bin/sh -c 'echo 0 >> /tmp/GWPROV_Restarted'
 Restart=always
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

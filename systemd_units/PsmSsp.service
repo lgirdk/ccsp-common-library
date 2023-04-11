@@ -35,7 +35,6 @@ ExecStartPost=/bin/sh -c '(/etc/migration_to_psm.sh)'
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting PsmSsp" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

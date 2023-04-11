@@ -27,7 +27,6 @@ ExecStartPre=-/bin/sh -c 'mkdir -p /rdklogs/logs/'
 ExecStart=/usr/bin/gw_prov_ethwan
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting gw_prov_ethwan" >> ${PROCESS_RESTART_LOG}'
 Restart=always
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

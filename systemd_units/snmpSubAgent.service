@@ -34,7 +34,6 @@ WorkingDirectory=/usr/ccsp/snmp
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting snmp_v2_subagent" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

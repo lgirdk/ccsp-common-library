@@ -31,7 +31,6 @@ ExecStart=/usr/bin/VlanManager -subsys $Subsys
 ExecStop=/bin/sh -c 'echo "`date`: Stopping/Restarting VlanManager" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

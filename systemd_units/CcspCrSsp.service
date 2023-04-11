@@ -33,7 +33,6 @@ ExecStart=/usr/bin/CcspCrSsp -subsys $Subsys
 ExecStopPost=/bin/sh -c 'echo 0 >> /tmp/CcspCrSsp_Restarted'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

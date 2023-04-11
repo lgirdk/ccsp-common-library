@@ -23,4 +23,3 @@ Description=Process Restart Service
 Type=simple
 ExecStart=/bin/sh -c '(/usr/ccsp/ProcessResetCheck.sh)'
 
-StandardOutput=syslog+console

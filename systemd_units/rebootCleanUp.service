@@ -27,7 +27,6 @@ ExecStart=/bin/sh -c 'echo "starting reboot cleanup service" '
 ExecStop=/bin/sh -c '/etc/utopia/service.d/reboot_cleanup.sh'
 RemainAfterExit=yes
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

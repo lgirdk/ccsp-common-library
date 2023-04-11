@@ -28,7 +28,6 @@ ExecStop=killall -9 OneWiFi_Selfheal.sh
 ExecStopPost=/bin/echo "OneWiFi SelfHeal  Stopping"
 RemainAfterExit=yes
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

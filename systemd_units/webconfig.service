@@ -29,7 +29,6 @@ ExecStart=/usr/bin/webconfig
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting webconfig" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=wan-initialized.target

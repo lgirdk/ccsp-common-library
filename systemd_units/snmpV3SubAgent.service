@@ -35,7 +35,6 @@ ExecStart=/usr/bin/snmp_subagent -x /var/tmp/cm_snmp_ma_2 -i 2
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting snmp_v3_subagent" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=multi-user.target

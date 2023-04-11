@@ -28,6 +28,5 @@ WorkingDirectory=/usr/ccsp/wanagent
 ExecStart=/usr/ccsp/wanagent/wanagent -subsys $Subsys
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting CcspWanAgent" >> ${PROCESS_RESTART_LOG}'
 Restart=always
-StandardOutput=syslog+console
 [Install]
 WantedBy=multi-user.target

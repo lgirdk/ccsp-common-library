@@ -33,7 +33,6 @@ ExecStart=/usr/bin/aker -p ${PARODUS_URL} -c ${AKER_URL} -w /usr/bin/parcon -d /
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting aker" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=wan-initialized.target

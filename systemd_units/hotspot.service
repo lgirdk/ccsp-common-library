@@ -5,7 +5,6 @@ Description=Hotspot service
 Type=oneshot
 ExecStart=/bin/sh -c '/etc/utopia/service.d/service_multinet/handle_gre.sh hotspot-start NULL &'
 RemainAfterExit=Yes
-StandardOutput=syslog+console
 
 [Install]
 WantedBy=wifi-initialized.target
