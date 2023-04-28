@@ -1224,7 +1224,7 @@ static rbusCoreError_t registerComponentWithCr_rbus(const char *component_name)
     rbusMessage_SetBytes(request, (uint8_t const*)component_name, strlen(component_name)+1);/*the actual value*/
     rbusMessage_SetInt32(request, 0);/*object child object count*/
 
-    if((err = rbus_invokeRemoteMethod("Device.CR.RegisterComponent()", METHOD_RPC, request, 1000, &response)) == RBUSCORE_SUCCESS)
+    if((err = rbus_invokeRemoteMethod("Device.CR.RegisterComponent()", METHOD_RPC, request, CcspBaseIf_timeout_rbus, &response)) == RBUSCORE_SUCCESS)
     {
         int returnCode = 0;
         rbusMessage_GetInt32(response, &returnCode);
