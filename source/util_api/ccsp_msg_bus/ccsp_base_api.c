@@ -4530,6 +4530,7 @@ int CcspBaseIf_SenddeviceProfileChangeSignal (
     return CCSP_SUCCESS;
 }
 
+#if 0 /* Commenting this part as sessionID is taken care of session_mgr of rbus */
 int CcspBaseIf_SendcurrentSessionIDSignal_rbus (
     void* bus_handle,
     int priority,
@@ -4605,6 +4606,7 @@ int CcspBaseIf_SendcurrentSessionIDSignal (
     dbus_message_unref (message);
     return CCSP_SUCCESS;
 }
+#endif
 
 void* CcspBaseIf_SendTelemetryDataSignal_rbus(void* telemetry_data)
 {
@@ -5054,10 +5056,14 @@ int CcspBaseIf_Register_Event_rbus
         return subscribeToRbus2Event_rbus(bus_handle, "Device.CR.SystemReady");
     else if(strcmp(event_name, "systemRebootSignal") == 0)
         comp = "eRT.com.cisco.spvtg.ccsp.rm";
-    else if((strcmp(event_name, "currentSessionIDSignal") == 0) || (strcmp(event_name, "deviceProfileChangeSignal") == 0))
+    else if(strcmp(event_name, "deviceProfileChangeSignal") == 0)
     {
-    	RBUS_LOG("%s currentSessionIDSignal/deviceProfileChangeSignal not supported in rbus mode\n", __FUNCTION__);
+        RBUS_LOG("%s deviceProfileChangeSignal not supported in rbus mode\n", __FUNCTION__);
         return CCSP_SUCCESS;
+    }
+    else if(strcmp(event_name, "currentSessionIDSignal") == 0)
+    {
+        comp = "_rbus_session_mgr";
     }
     else if ((strcmp(event_name, "webconfigSignal") == 0) || (strcmp(event_name, "parameterValueChangeSignal") == 0) || (strcmp(event_name, "reboot") == 0) || (strcmp(event_name, "TunnelStatus")  == 0) || (strcmp(event_name, "WifiDbStatus") == 0))
     {

@@ -427,7 +427,7 @@ CcspCcMbi_SetParameterValues
     }
 
 
-    if ( (sessionId != 0) && (sessionId != g_currentSessionID) )
+    if ( sessionId != g_currentSessionID )
     {
         AnscTraceWarning(("!!! SetParameterValues discarded, session id is NOT match !!!\n"));
 
