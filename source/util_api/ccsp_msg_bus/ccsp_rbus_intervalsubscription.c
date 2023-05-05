@@ -40,6 +40,7 @@
   } \
 }
 
+extern void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName, rbusMessage *req, int *param_size);
 static rtVector gRecord = NULL;
 static pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -57,10 +58,11 @@ typedef struct sRecord
     rbusFilter_t filter;
     int32_t interval;
     int32_t duration;
-    char* value;
 } sRecord;
 
 void rbusFilter_AppendToMessage(rbusFilter_t filter, rbusMessage msg);/*from librbus.so*/
+void rbusEventData_appendToMessage(rbusEvent_t* event, rbusFilter_t filter, uint32_t interval,
+         uint32_t duration, int32_t componentId, rbusMessage msg);
 static void init_thread(sRecord* rec)
 {
     pthread_mutexattr_t attrib;
@@ -89,8 +91,6 @@ static void sub_Free(void* p)
             free(rec->listener);
         if(rec->parameter)
             free(rec->parameter);
-        if(rec->value)
-            free(rec->value);
         if(rec->filter)
             rbusFilter_Release(rec->filter);
         free(rec);
@@ -119,30 +119,75 @@ static sRecord* sub_Find(void* handle, const char* listener,
     return NULL;
 }
 
-static parameterValStruct_t** rbusValueChange_GetParameterValue(sRecord* rec)
+static parameterValStruct_t** rbusValueChange_GetParameterValue(sRecord* rec, int* size)
 {
     int rc;
-    int num_values;
+    int num_values = 0;
+    int param_size = 0;
+    int i;
+    bool is_wildcard_query = false;
+    char fullName[RBUS_MAX_NAME_LENGTH] = {0};
     parameterValStruct_t **values = 0;
+    char **parameterNames = 0;
+    rbusMessage req;
     CCSPBASEIF_GETPARAMETERVALUES getParameterValues =
         ((CCSP_Base_Func_CB* )(((CCSP_MESSAGE_BUS_INFO*)rec->handle)->CcspBaseIf_func))->getParameterValues;
 
     void* getParameterValues_data =
         ((CCSP_Base_Func_CB* )(((CCSP_MESSAGE_BUS_INFO*)rec->handle)->CcspBaseIf_func))->getParameterValues_data;
+    rbusMessage_Init(&req);
+    snprintf(fullName, RBUS_MAX_NAME_LENGTH, "%s", rec->parameter);
+    *size = num_values;
+    char *tmptr = strstr(rec->parameter, "*");
+    /* wildcard */
+    if (tmptr)
+    {
+        get_recursive_wildcard_parameterNames(rec->handle, fullName, &req, &param_size);
+        is_wildcard_query = true;
+    }
+    else
+    {
+        rbusMessage_SetString(req, fullName);
+        param_size += 1;
 
-    rc = getParameterValues(0, &rec->parameter, 1, &num_values, &values, getParameterValues_data);
+    }
+
+    if (param_size > 0)
+    {
+
+        parameterNames = ((CCSP_MESSAGE_BUS_INFO*)rec->handle)->mallocfunc(param_size*sizeof(char *));
+        memset(parameterNames, 0, param_size*sizeof(char *));
+    }
+
+    for(i = 0; i < param_size; i++)
+    {
+        parameterNames[i] = NULL;
+        if (req)
+        {
+            rbusMessage_GetString(req, (const char**)&parameterNames[i]);
+            RBUS_LOG("%s parameterNames[%d]: %s\n", __FUNCTION__, i, parameterNames[i]);
+        }
+    }
+
+    rc = getParameterValues(0, parameterNames, param_size, &num_values, &values, getParameterValues_data);
+
+    ((CCSP_MESSAGE_BUS_INFO*)rec->handle)->freefunc(parameterNames);
+
+    rbusMessage_Release(req);
     if(rc == CCSP_SUCCESS)
     {
-        if(num_values == 1)
+        if(!is_wildcard_query && (num_values > 1))
         {
-            CcspTraceDebug(("%s %s success %s\n", __FUNCTION__, rec->parameter, values[0]->parameterValue));
-            return values;
+            CcspTraceWarning(("%s %s unexpected num_vals %d\n", __FUNCTION__, rec->parameter, num_values));
+            free_parameterValStruct_t(rec->handle, num_values, values);
+            return NULL;
         }
         else
         {
-            CcspTraceWarning(("%s %s unexpected num_vals %d\n", __FUNCTION__, rec->parameter, num_values));
+            CcspTraceDebug(("%s %s success\n", __FUNCTION__, rec->parameter));
+            *size = num_values;
+            return values;
         }
-        free_parameterValStruct_t(rec->handle, num_values, values);
     }
     else
     {
@@ -157,12 +202,14 @@ static void* rbusInterval_PublishingThreadFunc(void *rec)
     struct sRecord *sub_rec = (struct sRecord*)rec;
     int count = 0;
     int duration_count = 0;
+    char *tmp = NULL;
     bool duration_complete = false;
     pthread_mutex_lock(&sub_rec->mutex);
     while(sub_rec->running)
     {
         parameterValStruct_t **val = NULL;
-        int err;
+        int i, err;
+        int size = 0;
         rtTime_t timeout;
         rtTimespec_t ts;
         rtTime_Later(NULL, (sub_rec->interval*1000), &timeout);
@@ -174,15 +221,33 @@ static void* rbusInterval_PublishingThreadFunc(void *rec)
             CcspTraceError(("Error %d:%s running command pthread_cond_timedwait", err, strerror(err)));
         }
 
-        val = rbusValueChange_GetParameterValue(sub_rec);
+        val = rbusValueChange_GetParameterValue(sub_rec, &size);
         if(val)
         {
             rbusMessage msg;
-            rbusCoreError_t err;
-            /*construct a message just like rbus would construct it*/
+            rbusProperty_t tmpProperties = NULL;
+            rbusObject_t data = NULL;
             rbusMessage_Init(&msg);
-            rbusMessage_SetString(msg, sub_rec->parameter);/*event name*/
+            rbusObject_Init(&data, NULL);
+            rbusCoreError_t err;
+            rbusProperty_Init(&tmpProperties, "numberOfEntries", NULL);
+            rbusProperty_SetInt32(tmpProperties, size);
 
+            for (i = 0; i < size; i++)
+            {
+                rbusProperty_AppendString(tmpProperties, val[i]->parameterName, val[i]->parameterValue);
+            }
+            /* wildcard event*/
+            tmp = strstr( sub_rec->parameter, "*");
+            if (tmp)
+            {
+                rbusObject_SetProperty(data, tmpProperties);
+            }
+            else
+            {
+                rbusObject_SetProperty(data, rbusProperty_GetNext(tmpProperties)); /* "numberOfEntries" property not requried for normal event */
+            }
+            rbusProperty_Release(tmpProperties);
             if (sub_rec->duration != 0)
             {
                 duration_count = sub_rec->duration/sub_rec->interval;
@@ -190,36 +255,16 @@ static void* rbusInterval_PublishingThreadFunc(void *rec)
                     duration_complete = true;
             }
 
+            rbusEvent_t event = {0};
+            event.name = sub_rec->parameter; /* use the same eventName the consumer subscribed with */
+            event.data = data;
+            event.type = RBUS_EVENT_INTERVAL;
             if (duration_complete)
             {
                 /* Update event type after duration timeout*/
-                rbusMessage_SetInt32(msg, RBUS_EVENT_DURATION_COMPLETE);/*event type*/
+                event.type = RBUS_EVENT_DURATION_COMPLETE;
             }
-            else
-            {
-                rbusMessage_SetInt32(msg, RBUS_EVENT_INTERVAL);/*event type*/
-            }
-            rbusMessage_SetString(msg, NULL);/*object name*/
-            rbusMessage_SetInt32(msg, RBUS_OBJECT_SINGLE_INSTANCE);/*object type*/
-            rbusMessage_SetInt32(msg, 1);/*number properties*/
-            //prop 1: value
-            rbusMessage_SetString(msg, "value");
-            rbusMessage_SetInt32(msg, val[0]->type);/*alternavitely we could use the true rbus type/value currently stored in newVal*/
-            rbusMessage_SetString(msg, val[0]->parameterValue);
-            rbusMessage_SetInt32(msg, 0);/*object child object count*/
-            if(sub_rec->filter)
-            {
-                rbusMessage_SetInt32(msg, 1);
-                rbusFilter_AppendToMessage(sub_rec->filter, msg);
-            }
-            else
-            {
-                rbusMessage_SetInt32(msg, 0);
-            }
-            rbusMessage_SetInt32(msg, sub_rec->interval);
-            rbusMessage_SetInt32(msg, sub_rec->duration);
-            rbusMessage_SetInt32(msg, sub_rec->componentId);
-
+            rbusEventData_appendToMessage(&event, sub_rec->filter, sub_rec->interval, sub_rec->duration, sub_rec->componentId, msg);
             CcspTraceDebug(("%s: publising event %s to listener %s componentId %d\n", __FUNCTION__,
                         sub_rec->parameter, sub_rec->listener, sub_rec->componentId));
             err = rbus_publishSubscriberEvent(
@@ -228,13 +273,12 @@ static void* rbusInterval_PublishingThreadFunc(void *rec)
                     sub_rec->listener,
                     msg);
             rbusMessage_Release(msg);
+            rbusObject_Release(data);
             if(err != RBUSCORE_SUCCESS)
             {
                 CcspTraceError(("%s rbus_publishSubscriberEvent failed error %d\n", __FUNCTION__, err));
             }
-            free(sub_rec->value);
-            sub_rec->value = strdup(val[0]->parameterValue);
-            free_parameterValStruct_t(sub_rec->handle, 1, val);
+            free_parameterValStruct_t(sub_rec->handle, size, val);
             /*Duration complete*/
             if (duration_complete)
             {
@@ -290,7 +334,6 @@ int Ccsp_RbusInterval_Subscribe(void* handle, const char* listener,
 
     if(!rec)
     {
-        parameterValStruct_t **val = NULL;
         rec = (sRecord*)malloc(sizeof(sRecord));
         init_thread(rec);
         rec->handle = handle;
@@ -300,15 +343,8 @@ int Ccsp_RbusInterval_Subscribe(void* handle, const char* listener,
         rec->filter = filter;
         rec->interval = interval;
         rec->duration = duration;
-        rec->value = NULL;
         if(rec->filter)
             rbusFilter_Retain(rec->filter);
-        val = rbusValueChange_GetParameterValue(rec);
-        if(val)
-        {
-            rec->value = strdup(val[0]->parameterValue);
-            free_parameterValStruct_t(rec->handle, 1, val);
-        }
         CcspTraceDebug(("%s: %s new subscriber from listener %s componentId %d\n", __FUNCTION__,
                     rec->parameter, rec->listener, rec->componentId));
         rec->running = 1;

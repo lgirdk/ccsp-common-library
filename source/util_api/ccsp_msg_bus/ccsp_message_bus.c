@@ -2243,7 +2243,7 @@ void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName
     int wild_param_size = 0;
     char* context = NULL;
     parameterInfoStruct_t **info = 0;
-    rbusMessage msg;
+    rbusMessage msg = NULL;
     if (req != NULL && *req != NULL)
     {
         msg = (*req);
@@ -2257,7 +2257,7 @@ void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName
         return;
     }
 
-    if (func->getParameterNames)
+    if (func->getParameterNames && msg)
     {
         result = func->getParameterNames(token1, 1, &wild_param_size, &info, func->getParameterNames_data);
         tmp = result;
@@ -2275,11 +2275,8 @@ void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName
                 }
                 else
                 {
-                    if (msg)
-                    {
-                        rbusMessage_SetString(msg, fullName);
-                        *param_size = (*param_size)+1;
-                    }
+                    rbusMessage_SetString(msg, fullName);
+                    *param_size = (*param_size)+1;
                 }
             }
             free_parameterInfoStruct_t(bus_info, wild_param_size, info);
@@ -2709,6 +2706,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             int size = 0;
             char* tmpPtr = NULL;
             int32_t param_size = 0;
+            bool is_wildcard_query = false;
             int i;
             rbusMessage req;
             rbusCoreError_t err = RBUSCORE_SUCCESS;
@@ -2748,6 +2746,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                         char paramName[RBUS_MAX_NAME_LENGTH] = {0};
                         snprintf(paramName, RBUS_MAX_NAME_LENGTH, "%s", (char *)eventName);
                         get_recursive_wildcard_parameterNames(bus_info, paramName, &req, &param_size);
+                        is_wildcard_query = true;
                     }
                     else
                     {
@@ -2786,7 +2785,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                         if(publishOnSubscribe)
                         {
                             /*get wildcard qurey initial value*/
-                            if (param_size > 1)
+                            if (is_wildcard_query)
                             {
                                 if (i == 0)
                                 {
@@ -2843,7 +2842,6 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                             rbusProperty_SetInt32(tmpProperties, size);
                                         }
                                     }
-                                    rbusProperty_Release(tmpProperties);
                                     free_parameterInfoStruct_t(bus_info, size, val);
                                 }
                                 else
@@ -2875,7 +2873,6 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                 {
                                     rbusObject_SetProperty(data, tmpProperties);
                                 }
-
                                 rbusEvent_t event = {0};
                                 event.name = eventName; /* use the same eventName the consumer subscribed with */
                                 event.type = RBUS_EVENT_INITIAL_VALUE;
