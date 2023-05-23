@@ -38,6 +38,7 @@
 
 #define CCSP_SYSTEM_LOG_FACILITY LOG_LOCAL5 
 #define CCSP_EVENT_LOG_FACILITY LOG_LOCAL4
+#define CCSP_NETWORK_LOG_FACILITY LOG_LOCAL0
 
 #define syslog_systemlog(MODULE_NAME, priority, format, args...) { \
     openlog("[" MODULE_NAME "]", LOG_PID, CCSP_SYSTEM_LOG_FACILITY); \
@@ -50,6 +51,18 @@
     syslog(priority, format, ## args); \
     closelog();\
 } 
+
+#define syslog_networklog(MODULE_NAME, priority, format, args...) { \
+    time_t _now; \
+    char _date[26]; \
+    time(&_now); \
+    if (ctime_r(&_now, _date)) { \
+        _date[24] = 0; /* drop trailing newline */ \
+        openlog(MODULE_NAME, LOG_NDELAY, CCSP_NETWORK_LOG_FACILITY); \
+        syslog(CCSP_NETWORK_LOG_FACILITY|priority,"%s " format, _date, ##args); \
+        closelog();\
+    } \
+}
 
 #endif
 
