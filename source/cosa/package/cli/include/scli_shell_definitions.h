@@ -113,7 +113,7 @@
 #define  SCLI_SYSTEM_SHELL_EXIT_PROMPT              "Enter 'exit' to go back to CLI"
 
 #define  SCLI_LOCAL_SHELL_CMD                       "/bin/sh"
-#define  SCLI_LOCAL_TEMP_FILE_TEMPLATE              "/tmp/sh_cout_%u"
+#define  SCLI_LOCAL_TEMP_FILE_TEMPLATE              "/tmp/sh_cout_%lu"
 
 #define  SCLI_SHELL_TEXTBOX_LEFT                    "["
 #define  SCLI_SHELL_TEXTBOX_RIGHT                   "]"
