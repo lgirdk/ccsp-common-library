@@ -3,7 +3,7 @@ Description=WAN Initialized Path
 
 [Path]
 # Path Is Written By Utopia service_wan.c when WAN-STATUS is set to started
-PathExists=/var/wan_started
+PathChanged=/var/wan_started
 Unit=wan-initialized.target
 
 [Install]

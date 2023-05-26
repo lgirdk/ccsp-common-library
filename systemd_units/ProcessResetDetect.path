@@ -20,8 +20,8 @@
 Description=Process Restart Occurred Path
 
 [Path]
-PathExists=/tmp/CcspCrSsp_Restarted
-PathExists=/tmp/GWPROV_Restarted
+PathChanged=/tmp/CcspCrSsp_Restarted
+PathChanged=/tmp/GWPROV_Restarted
 Unit=ProcessResetDetect.service
 
 [Install]

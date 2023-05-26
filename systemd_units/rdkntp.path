@@ -20,7 +20,7 @@
 Description=NTP Synchronized Path
 
 [Path]
-PathExists=/tmp/clock-event
+PathChanged=/tmp/clock-event
 Unit=rdkntp.target
 
 [Install]
