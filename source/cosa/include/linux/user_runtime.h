@@ -82,16 +82,9 @@
     PLATFORM DEPENDENT DATA TYPE AND MACRO DEFINITIONS
 ***********************************************************/
 
-/*
- * We provide a platform-independent wrapper for all the C runtime library functions. However,
- * since the original C library functions are pretty stupid and ugly, instead of wrapping around
- * the runtime functions with better names, we simplify the interface a little bit.
- */
-
 #define  _ansc_min(x,y) 			((x)<(y)?(x):(y))
 #define  _ansc_max(x,y) 			((x)>(y)?(x):(y))
 
-#define  _ansc_abs				abs
 #define  _ansc_atof				atof
 #define  _ansc_atoi				atoi
 #define  _ansc_atol				atoll
@@ -101,7 +94,6 @@ char *_ansc_itoa(int value, char *string, int radix);
 #define  _ansc_rand				rand
 #define  _ansc_srand				srand
 
-#define  _ansc_memccpy  			_memccpy
 #define  _ansc_memchr				memchr
 #define  _ansc_memicmp  			memcmp
 #define  _ansc_memcmp				memcmp
@@ -109,7 +101,6 @@ char *_ansc_itoa(int value, char *string, int radix);
 #define  _ansc_memset				memset
 #define  _ansc_memmove  			memmove
 
-#define  _ansc_strset				_strset
 #define  _ansc_strcpy				strcpy
 #define  _ansc_strncpy  			strncpy
 #define  _ansc_strcat				strcat
@@ -118,9 +109,7 @@ char *_ansc_itoa(int value, char *string, int radix);
 #define  _ansc_strlen				strlen
 #define  _ansc_strchr				strchr
 
-#define  _ansc_strcmpi  			_strcmpi
 #define  _ansc_stricmp  			strcasecmp
-#define  _ansc_strcoll  			strcoll
 #define  _ansc_strcspn  			strcspn
 #define  _ansc_strspn				strspn
 #define  _ansc_strstr				strstr
