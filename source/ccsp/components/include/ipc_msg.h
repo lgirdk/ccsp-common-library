@@ -8,6 +8,8 @@
 #define PPP_MANAGER_ADDR               "tcp://127.0.0.1:50322"
 #define IHC_IPC_ADDR               "tcp://127.0.0.1:50323"
 #define DHCP_MANAGER_ADDR              "tcp://127.0.0.1:50324"
+#define IHC_IPC_ADDR_MG0               "tcp://127.0.0.1:50325"
+#define IHC_IPC_ADDR_VOIP              "tcp://127.0.0.1:50326"
 
 #define DEFAULT_IPC_SOCKET_TIMEOUT       5000 //5 seconds
 
@@ -189,9 +191,12 @@ typedef enum
     IPOE_MSG_IHC_ECHO_FAIL_IPV4,
     IPOE_MSG_IHC_ECHO_FAIL_IPV6,
     IPOE_MSG_IHC_ECHO_RENEW_IPV4,
+    IPOE_MSG_IHC_ECHO_RENEW_MGMT,
+    IPOE_MSG_IHC_ECHO_RENEW_VOIP,
     IPOE_MSG_IHC_ECHO_RENEW_IPV6,
     IPOE_MSG_IHC_ECHO_IPV4_UP,
     IPOE_MSG_IHC_ECHO_IPV6_UP,
+    IPOE_MSG_IHC_RESTART_DUO_BINDING_ERROR,
 }ipoe_msg_type_t;
 
 typedef struct
