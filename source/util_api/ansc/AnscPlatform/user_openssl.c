@@ -521,10 +521,17 @@ SSL * openssl_connect (int fd, hostNames *hosts)
      AnscTraceWarning(("openssl_connect - Hostnames added to verify \n"));
   }
 
-  if (!SSL_set_fd (ssl, fd))
-    goto error;
 
+  if (!SSL_set_fd (ssl, fd))
+  {
+    AnscTraceWarning(("openssl_connect - failed to associate socket %d to SSL handle %p\n", fd, ssl));
+    goto error;
+  }
+
+  AnscTraceWarning(("openssl_connect - associated socket %d to SSL handle %p\n", fd, ssl));
   SSL_set_connect_state (ssl);
+
+  AnscTraceWarning(("openssl_connect - set the SSL object into the connect state SSL handle %p \n", ssl));
 
 #if (OPENSSL_VERSION_NUMBER >= 0x10101000L)
   if (SSL_connect (ssl) <= 0 || SSL_get_state(ssl) != TLS_ST_OK)
@@ -538,6 +545,7 @@ SSL * openssl_connect (int fd, hostNames *hosts)
     goto error;
   }
 
+  AnscTraceWarning(("openssl_connect - SSL_connect is successful SSL handle %p \n", ssl));
   /*
      Temp solution: ccsp-tr069-pa may not be setting up hosts->peerVerify yet, so don't rely on it.
   */
