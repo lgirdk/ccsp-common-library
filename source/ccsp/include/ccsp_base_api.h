@@ -162,7 +162,7 @@ Notes:
 typedef unsigned int dbus_bool ; //1 is true, 0 is false
 
 #define RBUS_LOG(...) do {\
-    if(access("/nvram/rbus_support_log_to_file", F_OK) == 0) {\
+    if (0 /* && (access("/nvram/rbus_support_log_to_file", F_OK) == 0) */ ) {\
         CcspTraceInfo((__VA_ARGS__));\
     }\
 } while(0)
