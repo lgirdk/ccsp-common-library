@@ -1343,7 +1343,8 @@ DslhCpecoRegisterDataModelInternal
              {
                 AnscTraceWarning(("!!! %s registerCapabilities failed with code %lu! Waiting for %lu seconds to retry...!!! \n", pComponentName, returnStatus, uWait));
                 AnscSleep(uWait * 1000);
-                uWait *=2;
+                if (uWait < 80)
+                    uWait *= 2;
             }
             else
             {
