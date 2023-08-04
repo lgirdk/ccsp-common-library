@@ -2903,7 +2903,7 @@ int CcspBaseIf_discNamespaceSupportedByComponent_rbus (
                 val[i]->name_space = bus_info->mallocfunc(len + 1);
                 memcpy(val[i]->name_space, elements[i], len + 1);
                 free(elements[i]);
-                RBUS_LOG("%s returns name_space %d as %s\n", __FUNCTION__, i, val[i]->name_space);
+                CcspTraceDebug(("%s returns name_space %d as %s\n", __FUNCTION__, i, val[i]->name_space));
             }
 
             free(elements);
