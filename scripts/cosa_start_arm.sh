@@ -39,6 +39,16 @@ source /etc/utopia/service.d/log_env_var.sh
 source /etc/utopia/service.d/log_capture_path.sh
 source /etc/device.properties
 
+set_tz() {
+    timezone=$(syscfg get TZ)
+    if [ $timezone ]
+    then
+        export TZ=$timezone
+    fi
+}
+
+set_tz
+
 print_uptime "cosa_service_start"
 
 if [ -f /etc/mount-utils/getConfigFile.sh ];then
