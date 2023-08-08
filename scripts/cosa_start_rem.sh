@@ -56,6 +56,16 @@ if [ "x"$1 = "xstop" ]; then
     exit 0
 fi
 
+set_tz() {
+    timezone=$(syscfg get TZ)
+    if [ $timezone ]
+    then
+        export TZ=$timezone
+    fi
+}
+
+set_tz
+
 if [ -f /tmp/cosa_start_rem_triggered ]; then
 	echo_t "Already cosa_start_rem.sh script was triggered"
 	exit
