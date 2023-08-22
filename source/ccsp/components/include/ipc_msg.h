@@ -192,6 +192,7 @@ typedef struct
    char ifName[IFNAME_LENGTH];
    char ipv4Address[IP_ADDR_LENGTH];
    char ipv6Address[BUFLEN_48];
+   char domainName[BUFLEN_128];
 } ipc_ihc_data_t;
 
 typedef struct _ipc_msg_payload_t
