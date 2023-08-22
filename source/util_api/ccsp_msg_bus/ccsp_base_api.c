@@ -3676,46 +3676,6 @@ int CcspBaseIf_SetRemoteParameterValue
 
 }
 
-int getPartnerId (char *partnerID)
-{
-	char buffer[64];
-	FILE *file;
-	char *pos = NULL;
-
-	if ((file = popen ("syscfg get PartnerID", "r")) != NULL)
-	{
-		pos = fgets (buffer, sizeof(buffer), file);
-		pclose (file);
-	}
-
-	if ((pos == NULL) && ((file = popen ("/lib/rdk/getpartnerid.sh GetPartnerID", "r")) != NULL))
-	{
-		pos = fgets (buffer, sizeof(buffer), file);
-		pclose (file);
-	}
-
-	if (pos)
-	{
-		size_t len = strlen (pos);
-
-		if ((len > 0) && (pos[len - 1] == '\n'))
-		{
-			len--;
-		}
-
-		memcpy (partnerID, pos, len);
-		partnerID[len] = 0;
-
-		return CCSP_SUCCESS;
-	}
-
-	CcspTraceInfo(("%s : Error in opening File\n", __FUNCTION__));
-
-	*partnerID = 0;
-
-	return CCSP_FAILURE;
-}
-
 int Rbus_to_CCSP_error_mapper (int Rbus_error_code)
 {
     int CCSP_error_code = CCSP_Message_Bus_ERROR;
