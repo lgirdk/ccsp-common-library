@@ -1314,7 +1314,12 @@ int CcspBaseIf_SetRemoteParameterValue
     char ** invalidParameterName
 );
 
-int getPartnerId ( char *partnerID ) ;
+static inline int getPartnerId (char *partnerID)
+{
+    strcpy (partnerID, "RDKM");
+
+    return CCSP_SUCCESS;
+}
 
 #define SHM_PARAM_NAME "dbus use SHM"
 
