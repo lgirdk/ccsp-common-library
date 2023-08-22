@@ -1316,7 +1316,16 @@ int CcspBaseIf_SetRemoteParameterValue
 
 static inline int getPartnerId (char *partnerID)
 {
+#if 0
     strcpy (partnerID, "RDKM");
+#else
+    /* avoid strcpy() so we don't need to include string.h in a 'global' header */
+    *partnerID++ = 'R';
+    *partnerID++ = 'D';
+    *partnerID++ = 'K';
+    *partnerID++ = 'M';
+    *partnerID = 0;
+#endif
 
     return CCSP_SUCCESS;
 }
