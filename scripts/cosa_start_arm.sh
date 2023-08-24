@@ -92,7 +92,7 @@ export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/var/run/dbus/system_bus_socket
 export BOX_TYPE ATOM_ARPING_IP
 
 if [ "$BUILD_TYPE" = "prod" ]; then
-	echo /dev/null >/proc/sys/kernel/core_pattern
+	echo '|/bin/false' >/proc/sys/kernel/core_pattern
 	ulimit -c 0
 else
 	echo /tmp/%t_core.prog_%e.signal_%s >/proc/sys/kernel/core_pattern
