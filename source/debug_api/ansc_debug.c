@@ -74,6 +74,7 @@
 #include "user_time.h"
 #include "ansc_time.h"
 #include "ansc_debug.h"
+#include <rdk_debug.h>
 
 /*Structure defined to get the log level type from the given Log Names */
 

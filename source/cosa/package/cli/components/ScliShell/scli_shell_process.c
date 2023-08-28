@@ -4329,11 +4329,7 @@ ScliShoRunShellCmd
         return ANSC_STATUS_SUCCESS;
     }
 
-#ifdef _64BIT_ARCH_SUPPORT_
     rc = sprintf_s(tmp_fname, sizeof(tmp_fname), SCLI_LOCAL_TEMP_FILE_TEMPLATE, (ULONG)pSession);
-#else
-    rc = sprintf_s(tmp_fname, sizeof(tmp_fname), SCLI_LOCAL_TEMP_FILE_TEMPLATE, (unsigned int)pSession);
-#endif
     if(rc < EOK)
     {
         ERR_CHK(rc);
