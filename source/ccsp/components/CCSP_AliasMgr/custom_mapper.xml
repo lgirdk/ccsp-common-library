@@ -1342,9 +1342,6 @@
       <Name>Device.GRE.Tunnel.{i}.Status</Name>
     </Param>
     <Param>
-      <Name>Device.GRE.Tunnel.{i}.Alias</Name>
-    </Param>
-    <Param>
       <Name>Device.GRE.Tunnel.{i}.KeepAlivePolicy</Name>
     </Param>
     <Param>
@@ -2363,10 +2360,6 @@
     <Alias>
       <External>Device.GRE.Tunnel.{i}.Status</External>
       <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Status</Internal>
-    </Alias>
-    <Alias>
-      <External>Device.GRE.Tunnel.{i}.Alias</External>
-      <Internal>Device.X_COMCAST-COM_GRE.Tunnel.{i}.Alias</Internal>
     </Alias>
     <Alias>
       <External>Device.GRE.Tunnel.{i}.KeepAlivePolicy</External>
