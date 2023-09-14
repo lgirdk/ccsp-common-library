@@ -55,6 +55,7 @@ typedef enum
     DHCP6C_STATE_CHANGED,
     IPC_MSG_PPP_STATE_CHANGE,
     IHC_STATE_CHANGE,
+    MAPT_STATE_CHANGED
 }ipc_msg_type_t;
 
 typedef struct _ipc_ppp_ipcp_msg_t

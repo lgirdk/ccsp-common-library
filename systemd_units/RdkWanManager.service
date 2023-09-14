@@ -19,7 +19,7 @@
 [Unit]
 Description=Rdk Wan Manager service
 
-After=CcspCrSsp.service
+After=CcspCrSsp.service PsmSsp.service
 
 [Service]
 Type=forking
