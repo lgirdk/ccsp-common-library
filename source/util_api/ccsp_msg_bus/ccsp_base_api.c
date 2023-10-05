@@ -2049,6 +2049,7 @@ static rbusCoreError_t registerComponentWithCr_rbus(const char *component_name)
     /*pack the message the specific way rbus 2.0 requires*/
     rbusMessage_SetInt32(request, 0);
     rbusMessage_SetString(request, "Device.CR.RegisterComponent()"); 
+    rbusMessage_SetInt32(request, 1); /*hasInParam*/
     rbusMessage_SetString(request, NULL);/*object name*/
     rbusMessage_SetInt32(request, 0);/*object type*/
     rbusMessage_SetInt32(request, 1);/*num properties*/
