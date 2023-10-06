@@ -2287,11 +2287,10 @@ void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName
 static int thread_path_message_func_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr)
 {
     UNREFERENCED_PARAMETER(destination);
-    (void)hdr;
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)user_data;
 
     CCSP_Base_Func_CB* func = (CCSP_Base_Func_CB* )bus_info->CcspBaseIf_func;
-    RBUS_LOG("%s Component ID: %s\n", __FUNCTION__, bus_info->component_id);
+    CcspTraceDebug(("%s Component ID: %s method: %s reply_topic:%s\n", __FUNCTION__, bus_info->component_id, method, hdr->reply_topic));
     if(NULL != method && func != NULL)
     {
         if(!strncmp(method, METHOD_GETPARAMETERVALUES, MAX_METHOD_NAME_LENGTH) && func->getParameterValues)
@@ -2337,7 +2336,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                 if (req)
                 {
                     rbusMessage_GetString(req, (const char**)&parameterNames[i]);
-                    RBUS_LOG("%s parameterNames[%d]: %s\n", __FUNCTION__, i, parameterNames[i]);
+                    CcspTraceDebug(("parameterNames[%d]: %s\n", i, parameterNames[i]));
                 }
             }
 
@@ -2345,7 +2344,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             if (parameterNames != NULL)
             {
                 result = func->getParameterValues(writeID, parameterNames, param_size, &size, &val , func->getParameterValues_data);
-                RBUS_LOG("%s size %d result %d\n", __FUNCTION__, size, result);
+                CcspTraceDebug(("getParameterValues: size %d result %d\n", size, result));
                 bus_info->freefunc(parameterNames);
                 rbusMessage_Release(req);
 
@@ -2357,7 +2356,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                     rbusMessage_SetInt32(*response, size);
                     for(i = 0; i < size; i++)
                     {
-                        RBUS_LOG("%s val[%d]->parameterName %s val[%d]->parameterValue %s\n", __FUNCTION__, i, val[i]->parameterName, i, val[i]->parameterValue);
+                        CcspTraceDebug(("val[%d]->parameterName %s val[%d]->parameterValue %s\n", i, val[i]->parameterName, i, val[i]->parameterValue));
                         rbusMessage_SetString(*response, val[i]->parameterName);
                         rbusMessage_SetInt32(*response, val[i]->type);
                         rbusMessage_SetString(*response, val[i]->parameterValue);
@@ -2372,7 +2371,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             result = func->getHealth();
             rbusMessage_Init(response);
             rbusMessage_SetInt32(*response, result);
-            RBUS_LOG("exiting METHOD_GETHEALTH with result %d\n", result);
+            CcspTraceDebug(("exiting METHOD_GETHEALTH with result %d\n", result));
             return DBUS_HANDLER_RESULT_HANDLED;
         }
         else if(!strncmp(method, METHOD_SETPARAMETERVALUES, MAX_METHOD_NAME_LENGTH) && func->setParameterValues)
@@ -2416,7 +2415,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             rbusMessage_GetString(request, &str); //commit
             commit = (str && strcasecmp(str, "TRUE") == 0)?1:0;
             result = func->setParameterValues(sessionId, writeID, parameterVal, param_size, commit,&invalidParameterName, func->setParameterValues_data);
-            RBUS_LOG("%s :setParameterValues result %d\n", __FUNCTION__, result);
+            CcspTraceDebug(("setParameterValues result %d\n", result));
             rbusMessage_Init(response);
             tmp = result;
             rbusMessage_SetInt32(*response, tmp); //result
@@ -2446,7 +2445,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             {
                 parameterNames[i] = NULL;
                 rbusMessage_GetString(request, (const char**)&parameterNames[i]);
-                RBUS_LOG("%s parameterNames[%d]: %s\n", __FUNCTION__, i, parameterNames[i]);
+                CcspTraceDebug(("parameterNames[%d]: %s\n", i, parameterNames[i]));
             }
 
             size = 0;
@@ -2557,7 +2556,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                     
                     type = CcspBaseIf_getObjType(parameterName, val[i]->parameterName, &inst_num, buf);
 
-                    RBUS_LOG("%s Param [%d] Name=%s, Writable=%d, Type=%d\n", __FUNCTION__, i, val[i]->parameterName, val[i]->writable, type);
+                    CcspTraceDebug(("Param [%d] Name=%s, Writable=%d, Type=%d\n", i, val[i]->parameterName, val[i]->writable, type));
 
                     if(rowNamesOnly)
                     {
@@ -2715,7 +2714,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                     }
                     else
                     {
-                        RBUS_LOG_ERR("%s: payload missing in subscribe request for event %s from %s", __FUNCTION__, eventName, sender);
+                        RBUS_LOG_ERR("payload missing in subscribe request for event %s from %s", eventName, sender);
                     }
                     int added = strncmp(method, METHOD_SUBSCRIBE, MAX_METHOD_NAME_LENGTH) == 0 ? 1 : 0;
                     if(added)
@@ -2844,7 +2843,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                     {
                                         err = RBUS_ERROR_INVALID_OPERATION;
                                         rbusMessage_SetInt32(*response, 0); /* No initial value returned, as get handler is not present */
-                                        RBUS_LOG_ERR("%s: Get handler does not exist %s", __FUNCTION__, parameter_name);
+                                        RBUS_LOG_ERR("Get handler does not exist %s", parameter_name);
                                     }
                                 }
                             }

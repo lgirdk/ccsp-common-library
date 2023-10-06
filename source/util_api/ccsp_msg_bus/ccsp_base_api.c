@@ -294,7 +294,8 @@ int CcspBaseIf_setParameterValues_rbus(
 {
     UNREFERENCED_PARAMETER(dbus_path);
     int i = 0;
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     char *writeID_str = writeid_to_string(writeID);
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     if (*invalidParameterName)
@@ -310,7 +311,6 @@ int CcspBaseIf_setParameterValues_rbus(
     {
         CcspTraceWarning(("%s component calls SET without the dml element name. Returning success as there no action taken\n", bus_info->component_id));
         *invalidParameterName = 0;
-        ret = CCSP_SUCCESS;
         return ret;
     }
 
@@ -335,9 +335,10 @@ int CcspBaseIf_setParameterValues_rbus(
     }
 
     RBUS_LOG("%s Calling rbus_invokeRemoteMethod for param on %s\n", __FUNCTION__, object_name);
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(object_name, METHOD_SETPARAMETERVALUES, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((err = rbus_invokeRemoteMethod(object_name, METHOD_SETPARAMETERVALUES, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod: for param[0]=%s failed with Err: %d\n", __FUNCTION__, val[0].parameterName, ret);
+        ret = Rbus_to_CCSP_error_mapper(err);
+        RBUS_LOG_ERR("SetParameterValues for param[0]=%s failed with Err: %d\n", val[0].parameterName, err);
         return ret;
     }
 
@@ -491,7 +492,8 @@ int CcspBaseIf_setCommit_rbus(
 {
     UNREFERENCED_PARAMETER(bus_handle);
     UNREFERENCED_PARAMETER(dbus_path);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     char *writeID_str = writeid_to_string(writeID);
     rbusMessage request, response;
 
@@ -500,9 +502,10 @@ int CcspBaseIf_setCommit_rbus(
     rbusMessage_SetString(request, writeID_str);
     rbusMessage_SetInt32(request, (int32_t)commit);
 
-     if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(dst_component_id , METHOD_COMMIT, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+     if((err = rbus_invokeRemoteMethod(dst_component_id , METHOD_COMMIT, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
      {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod on %s: Err: %d\n", __FUNCTION__, dst_component_id, ret);
+        ret = Rbus_to_CCSP_error_mapper(err);
+        RBUS_LOG_ERR("SetCommit on %s: failed with Error: %d\n", dst_component_id, err);
         return ret;
     }
 
@@ -578,6 +581,7 @@ int CcspBaseIf_getParameterValues_rbus(
     parameterValStruct_t **val = 0;
     *val_size = 0;
     int err = CCSP_FAILURE, ret = CCSP_FAILURE;
+    rbusCoreError_t result = RBUSCORE_SUCCESS;
     int i = 0;
     int param_len = 0;
     int32_t type = 0;
@@ -591,7 +595,6 @@ int CcspBaseIf_getParameterValues_rbus(
     if (0 == param_size)
     {
         CcspTraceWarning(("%s component calls GET without the dml element name. Returning success as there no action taken\n", bus_info->component_id));
-        ret = CCSP_SUCCESS;
         *val_size = 0;
         return ret;
     }
@@ -614,9 +617,10 @@ int CcspBaseIf_getParameterValues_rbus(
     }
 
     RBUS_LOG("Calling rbus_invokeRemoteMethod for %s\n", object_name);
-    if((err = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERVALUES, request, CcspBaseIf_timeout_getval_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((result = rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERVALUES, request, CcspBaseIf_timeout_getval_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod: for param[0]=%s failed with Err: %d\n", __FUNCTION__, parameterNames[0], err);
+        err = Rbus_to_CCSP_error_mapper(result);
+        RBUS_LOG_ERR("GetParameterValues for param[0]=%s failed with Error: %d\n", parameterNames[0], result);
         return err;
     }
 
@@ -892,21 +896,20 @@ int CcspBaseIf_setParameterAttributes_rbus(
     )
 {
     UNREFERENCED_PARAMETER(dbus_path);
-    int i = 0, ret = 0, ret1 = 0;
+    int i = 0, ret = CCSP_SUCCESS, ret1 = 0;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     rbusMessage request, response;
 
     if (0 == size)
     {
         CcspTraceWarning(("%s component calls SET attributes without the dml element name. Returning success as there no action taken\n", bus_info->component_id));
-        ret = CCSP_SUCCESS;
         return ret;
     }
 
     if (NULL == val)
     {
         CcspTraceWarning(("%s component calls SET with invalid attributes. Returning success as there no action taken\n", bus_info->component_id));
-        ret = CCSP_SUCCESS;
         return ret;
     }
 
@@ -986,9 +989,10 @@ int CcspBaseIf_setParameterAttributes_rbus(
         }
     }
 
-     if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(object_name, METHOD_SETPARAMETERATTRIBUTES, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
-     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod on %s: Err: %d\n", __FUNCTION__, dst_component_id, ret);
+    if((err = rbus_invokeRemoteMethod(object_name, METHOD_SETPARAMETERATTRIBUTES, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
+    {
+        ret = Rbus_to_CCSP_error_mapper(err);
+        RBUS_LOG_ERR("SetParameterAttributes on %s: RBUSErrCode: %d\n", dst_component_id, err);
         return ret;
     }
 
@@ -1232,6 +1236,7 @@ int CcspBaseIf_getParameterAttributes_rbus(
     UNREFERENCED_PARAMETER(dbus_path);
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     int i=0, err = CCSP_FAILURE, ret = CCSP_FAILURE;
+    rbusCoreError_t result = RBUSCORE_SUCCESS;
     parameterAttributeStruct_t **val = 0;
     *val_size = 0;
     rbusMessage request, response;
@@ -1240,7 +1245,6 @@ int CcspBaseIf_getParameterAttributes_rbus(
     if (0 == size)
     {
         CcspTraceWarning(("%s component calls GET attributes without the dml element name. Returning success as there no action taken\n", bus_info->component_id));
-        ret = CCSP_SUCCESS;
         return ret;
     }
 
@@ -1249,7 +1253,6 @@ int CcspBaseIf_getParameterAttributes_rbus(
         if(NULL == parameterNames[i])
         {
             CcspTraceWarning(("%s component calls GET attributes with NULL parameter names. Returning success as there no action taken\n", bus_info->component_id));
-            ret = CCSP_SUCCESS;
             return ret;
         }
     }
@@ -1271,9 +1274,10 @@ int CcspBaseIf_getParameterAttributes_rbus(
         }
     }
 
-     if((err = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERATTRIBUTES, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+     if((result = rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERATTRIBUTES, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod on %s: Err: %d\n", __FUNCTION__, dst_component_id, err);
+        err = Rbus_to_CCSP_error_mapper(result);
+        RBUS_LOG_ERR("getParameterAttributes on %s failed with Error: %d\n", dst_component_id, result);
         return err;
     }
 
@@ -1500,7 +1504,8 @@ int CcspBaseIf_AddTblRow_rbus(
 {
     UNREFERENCED_PARAMETER(bus_handle);
     UNREFERENCED_PARAMETER(dbus_path);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     int32_t tmp = 0;
     rbusMessage request, response;
 
@@ -1512,9 +1517,10 @@ int CcspBaseIf_AddTblRow_rbus(
     rbusMessage_SetInt32(request, sessionId);
     rbusMessage_SetString(request, objectName);
 
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(dst_component_id, METHOD_ADDTBLROW, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((err = rbus_invokeRemoteMethod(dst_component_id, METHOD_ADDTBLROW, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for %s: Err: %d\n", __FUNCTION__, dst_component_id, ret);
+        ret = Rbus_to_CCSP_error_mapper(err);
+        RBUS_LOG_ERR("AddTblRow for %s failed with Error: %d\n", dst_component_id, err);
         return ret;
     }
 
@@ -1597,19 +1603,19 @@ int CcspBaseIf_DeleteTblRow_rbus(
 {
     UNREFERENCED_PARAMETER(bus_handle);
     UNREFERENCED_PARAMETER(dbus_path);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     rbusMessage request, response;
 
     rbusMessage_Init(&request);
     rbusMessage_SetInt32(request, sessionId);
     rbusMessage_SetString(request, objectName);
 
-     if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(dst_component_id, METHOD_DELETETBLROW, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+     if((err = rbus_invokeRemoteMethod(dst_component_id, METHOD_DELETETBLROW, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod on %s: Err: %d\n", __FUNCTION__, dst_component_id, ret);
+        RBUS_LOG_ERR("DeleteTblRow on %s failed with Error: %d\n", dst_component_id, err);
         return CCSP_FAILURE;
     }
-
     rbusMessage_GetInt32(response, &ret);
     rbusMessage_Release(response);
 
@@ -1684,7 +1690,8 @@ int CcspBaseIf_getParameterNames_rbus(
 {
     UNREFERENCED_PARAMETER(dbus_path);
     int32_t elemType = 0, accessFlags = 0;
-    int i = 0, param_len = 0, ret = CCSP_FAILURE;
+    int i = 0, param_len = 0, ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     rbusMessage request, response;
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     parameterInfoStruct_t **val=NULL;
@@ -1695,7 +1702,6 @@ int CcspBaseIf_getParameterNames_rbus(
     if(NULL == parameterName)
     {
         CcspTraceWarning(("%s component calls GET with invalid parameter name. Returning success as there no action taken\n", bus_info->component_id));
-        ret = CCSP_SUCCESS;
         return ret;
     }
     rbusMessage_Init(&request);
@@ -1714,9 +1720,10 @@ int CcspBaseIf_getParameterNames_rbus(
     }
 
     RBUS_LOG("Calling rbus_invokeRemoteMethod for %s\n",object_name);
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERNAMES, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((err = rbus_invokeRemoteMethod(object_name, METHOD_GETPARAMETERNAMES, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod on %s: Err: %d\n", __FUNCTION__, dst_component_id, ret);
+        ret = Rbus_to_CCSP_error_mapper(err);
+        RBUS_LOG_ERR("GetParameterNames on %s failed with Error: %d\n", dst_component_id, err);
         return ret;
     }
 
@@ -2057,13 +2064,13 @@ static rbusCoreError_t registerComponentWithCr_rbus(const char *component_name)
         rbusMessage_Release(response);
         if(returnCode != 0)
         {
-            RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for Device.CR.RegisterComponent() for %s got returnCode Err: %d\n", __FUNCTION__, component_name, returnCode);
+            RBUS_LOG_ERR("registerComponentWithCr for Device.CR.RegisterComponent() for %s got returnCode Err: %d\n", component_name, returnCode);
             err = RBUSCORE_ERROR_GENERAL;
         }
     }
     else
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for Device.CR.RegisterComponent() for %s returned with Err: %d\n", __FUNCTION__, component_name, err);
+        RBUS_LOG_ERR("registerComponentWithCr for Device.CR.RegisterComponent() for %s returned with Err: %d\n", component_name, err);
     }
     return err;
 }
@@ -2093,7 +2100,7 @@ int CcspBaseIf_registerCapabilities_rbus(
     {
         if((err = rbus_addElement(component_name, name_space[i].name_space)) != RBUSCORE_SUCCESS)
         {
-            RBUS_LOG_ERR("rbus_addElement: %s Err: %d\n", name_space[i].name_space, err);
+            RBUS_LOG_ERR("addElement: %s failed with Err: %d\n", name_space[i].name_space, err);
             failedIndex = i;
             break;
         }
@@ -2115,7 +2122,7 @@ int CcspBaseIf_registerCapabilities_rbus(
         {
             if((err = rbus_removeElement(component_name, name_space[i].name_space)) != RBUSCORE_SUCCESS)
             {
-                RBUS_LOG_ERR("rbus_removeElement: %s Err: %d\n", name_space[i].name_space, err);
+                RBUS_LOG_ERR("removeElement: %s failed with Err: %d\n", name_space[i].name_space, err);
             }
         }
         ret = CCSP_FAILURE;
@@ -3854,14 +3861,14 @@ int CcspBaseIf_getHealth_rbus(
     }
     else
     {
-        int ret = CCSP_FAILURE;
+        rbusCoreError_t err = RBUSCORE_SUCCESS;
         int32_t status = 0;
         rbusMessage request, response;
 
         rbusMessage_Init(&request);
-        if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod(dst_component_id, METHOD_GETHEALTH, request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+        if((err = rbus_invokeRemoteMethod(dst_component_id, METHOD_GETHEALTH, request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
         {
-            RBUS_LOG_ERR("%s rbus_invokeRemoteMethod: Err: %d\n", __FUNCTION__, ret);
+            RBUS_LOG_ERR("GetHealth on %s failed with Error: %d\n", dst_component_id, err);
             return CCSP_FAILURE;
         }
 
@@ -4279,7 +4286,7 @@ int CcspBaseIf_SendparameterValueChangeSignal_rbus (
     err = rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.tr069pa", "parameterValueChangeSignal", request, CcspBaseIf_timeout_rbus, &response);
     if(err != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s : rbus_publishEvent returns Err: %d for bus_info->component_id =%s\n", __FUNCTION__, err,bus_info->component_id);
+        RBUS_LOG_ERR("SendparameterValueChangeSignal returns Err: %d for bus_info->component_id =%s\n", err,bus_info->component_id);
         return CCSP_FAILURE;
     }
 
@@ -4471,7 +4478,7 @@ int CcspBaseIf_SenddeviceProfileChangeSignal_rbus (
     err = rbus_publishEvent(bus_info->component_id,"deviceProfileChangeSignal",request);
     if (err != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s : rbus_publishEvent returns Err: %d\n", __FUNCTION__, err);
+        RBUS_LOG_ERR("publishEvent object name: %s returns Err: %d\n", bus_info->component_id, err);
         ret = CCSP_FAILURE;
     }
     rbusMessage_Release(request);
@@ -4610,15 +4617,15 @@ int CcspBaseIf_SendcurrentSessionIDSignal (
 
 void* CcspBaseIf_SendTelemetryDataSignal_rbus(void* telemetry_data)
 {
-  int ret;
+  rbusCoreError_t ret = RBUSCORE_SUCCESS;
   rbusMessage out;
   rbusMessage response;
   rbusMessage_Init(&out);
   char* Telemetry_data = (char*)telemetry_data;
   rbusMessage_SetString(out, Telemetry_data);
-  if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.telemetry", CCSP_TELEMETRY_DATA_SIGNAL,out, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+  if((ret = rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.telemetry", CCSP_TELEMETRY_DATA_SIGNAL,out, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
   {
-            RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for telemetry data:%s returns with Err: %d\n", __FUNCTION__,Telemetry_data, ret);
+            RBUS_LOG_ERR("SendTelemetryDataSignal for telemetry data:%s returns with Error: %d\n",Telemetry_data, ret);
   }
   rbusMessage_Release(response);
   return NULL;
@@ -4822,19 +4829,20 @@ int CcspBaseIf_TunnelStatus_Tr181_Signal_rbus (
 )
 {
     UNREFERENCED_PARAMETER(bus_handle);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     rbusMessage request, response;
 
     rbusMessage_Init(&request);
     rbusMessage_SetString(request,TunnelStatus);
     RBUS_LOG("%s : rbus_publishEvent :: event_name : %s :: \n", __FUNCTION__,
                                                 "Device.X_COMCAST-COM_GRE.Tunnel.1.TunnelStatus");
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi",
+    if((err = rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi",
                                      "Device.X_COMCAST-COM_GRE.Tunnel.1.TunnelStatus", request,
-                                      CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+                                      CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for TunnelStatus failed & returns with Err: %d\n",
-                                                                                __FUNCTION__, ret);
+        RBUS_LOG_ERR(" TunnelStatus_Tr181_Signal for eRT.com.cisco.spvtg.ccsp.wifi failed & returns with Error: %d\n"
+                                                                                , err);
         ret = CCSP_FAILURE;
     }
     rbusMessage_Release(response);
@@ -4847,15 +4855,16 @@ int CcspBaseIf_TunnelStatusSignal_rbus (
 )
 {
     UNREFERENCED_PARAMETER(bus_handle);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     rbusMessage request, response;
 
     rbusMessage_Init(&request);
     rbusMessage_SetString(request,TunnelStatus);
     RBUS_LOG("%s : rbus_publishEvent :: event_name : %s :: \n", __FUNCTION__, "TunnelStatus");
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi", "TunnelStatus", request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((err = rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi", "TunnelStatus", request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for TunnelStatus failed & returns with Err: %d\n", __FUNCTION__, ret);
+        RBUS_LOG_ERR("TunnelStatus failed for eRT.com.cisco.spvtg.ccsp.wifi & returns with Error: %d\n", err);
         ret = CCSP_FAILURE;
     }
     rbusMessage_Release(response);
@@ -4868,15 +4877,16 @@ int CcspBaseIf_WifiDbStatusSignal_rbus (
 )
 {
     UNREFERENCED_PARAMETER(bus_handle);
-    int ret = CCSP_FAILURE;
+    int ret = CCSP_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
     rbusMessage request, response;
 
     rbusMessage_Init(&request);
     rbusMessage_SetString(request,WifiDbStatus);
     RBUS_LOG("%s : rbus_publishEvent :: event_name : %s :: \n", __FUNCTION__, "WifiDbStatus");
-    if((ret = Rbus_to_CCSP_error_mapper(rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi", "WifiDbStatus", request, CcspBaseIf_timeout_rbus, &response))) != CCSP_Message_Bus_OK)
+    if((err = rbus_invokeRemoteMethod("eRT.com.cisco.spvtg.ccsp.wifi", "WifiDbStatus", request, CcspBaseIf_timeout_rbus, &response)) != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s rbus_invokeRemoteMethod for WifiDbStatus failed & returns with Err: %d\n", __FUNCTION__, ret);
+        RBUS_LOG_ERR("WifiDbStatus failed for & eRT.com.cisco.spvtg.ccsp.wifi returns with RbusErrCode: %d\n", err);
         ret = CCSP_FAILURE;
     }
     rbusMessage_Release(response);
@@ -4992,7 +5002,7 @@ int CcspBaseIf_SendSignal_rbus(void * bus_handle, char *event)
     err = rbus_publishEvent(bus_info->component_id, event, out);
     if (err != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s : rbus_publishEvent returns Err: %d\n", __FUNCTION__, err);
+        RBUS_LOG_ERR("rbus_publishEvent object name: %s event_name : %s returns Err: %d\n", bus_info->component_id, event, err);
         ret = CCSP_FAILURE;
     }
 
@@ -5032,7 +5042,7 @@ int subscribeToRbus2Event_rbus
     }
     else
     {
-        RBUS_LOG_ERR("%s : rbus_subscribeToEvent returned err:%d provider_err:%d for %s\n", __FUNCTION__, err, provider_err, event_name);
+        RBUS_LOG_ERR("subscribeToEvent returned err:%d provider_err:%d for %s\n", err, provider_err, event_name);
         return CCSP_FAILURE;
     }
 }
@@ -5080,7 +5090,7 @@ int CcspBaseIf_Register_Event_rbus
 
     if (err != RBUSCORE_SUCCESS)
     {
-        RBUS_LOG_ERR("%s : rbus_subscribeToEvent returns Err: %d : Event %s\n", __FUNCTION__, err, event_name);
+        RBUS_LOG_ERR("subscribeToEvent returns Err: %d : Event %s\n", err, event_name);
         return CCSP_FAILURE;
     }
 
@@ -5840,7 +5850,7 @@ int CcspBaseIf_UnRegister_Event_rbus(
 
     if(RBUSCORE_SUCCESS != rbus_unsubscribeFromEvent(sender, event_name, NULL))
     {
-        RBUS_LOG_ERR("rbus_unsubscribeFromEvent::CcspBaseIf_UnRegister_Event_rbus returns error for sender %s for event_name %s \n", sender, event_name);
+        RBUS_LOG_ERR("unsubscribeFromEvent::CcspBaseIf_UnRegister_Event returns error for sender %s for event_name %s \n", sender, event_name);
         return CCSP_FAILURE;
     }
     return CCSP_SUCCESS;
