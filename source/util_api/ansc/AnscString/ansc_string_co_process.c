@@ -1112,7 +1112,7 @@ AnscStringCOTrimLeftChar
             }
 
             ulStrLen    -= pos;
-
+            pValue[ulStrLen] ='\0';  //Added Null at the end of string
             pStringObj->ulValueLen  = ulStrLen;
         }
     }
