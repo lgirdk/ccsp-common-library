@@ -2384,6 +2384,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             dbus_bool commit = 0;
             char *invalidParameterName = 0;
             int32_t dataType = 0;
+            char *tmpParamVal = NULL;
 
             rbusMessage_GetInt32(request, &sessionId);
             if(rbusMessage_GetString(request, &writeID_str) == RT_OK)
@@ -2398,13 +2399,22 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
             for(i = 0; i < param_size; i++)
             {
                 parameterVal[i].parameterName = NULL;
+                parameterVal[i].parameterValue = NULL;
                 rbusMessage_GetString(request, (const char**)&parameterVal[i].parameterName);
                 rbusMessage_GetInt32(request, &dataType);
                 if (dataType < RBUS_BOOLEAN)
                 {
                     parameterVal[i].type = dataType;
-                    parameterVal[i].parameterValue = NULL;
-                    rbusMessage_GetString(request, (const char**)&parameterVal[i].parameterValue);
+                    rbusMessage_GetString(request, (const char**)&tmpParamVal);
+                    if(tmpParamVal)
+                    {
+                        parameterVal[i].parameterValue = bus_info->mallocfunc((strlen(tmpParamVal)+1));
+                        if(parameterVal[i].parameterValue)
+                        {
+                            memset(parameterVal[i].parameterValue,0,(strlen(tmpParamVal)+1));
+                            strncpy(parameterVal[i].parameterValue,tmpParamVal,strlen(tmpParamVal));
+                        }
+                    }
                 }
                 else
                 {
@@ -2423,6 +2433,15 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                 rbusMessage_SetString(*response, invalidParameterName); //invalid param
             else
                 rbusMessage_SetString(*response, ""); //invalid param
+
+            for(i = 0; i < param_size; i++)
+            {
+                if(parameterVal[i].parameterValue)
+                {
+                    bus_info->freefunc(parameterVal[i].parameterValue);
+                }
+            }
+
             bus_info->freefunc(parameterVal);
             bus_info->freefunc(invalidParameterName);
             return DBUS_HANDLER_RESULT_HANDLED;
