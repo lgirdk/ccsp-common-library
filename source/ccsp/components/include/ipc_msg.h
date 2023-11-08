@@ -7,6 +7,7 @@
 #define WAN_MANAGER_ADDR               "tcp://127.0.0.1:50321"
 #define PPP_MANAGER_ADDR               "tcp://127.0.0.1:50322"
 #define IHC_IPC_ADDR               "tcp://127.0.0.1:50323"
+#define DHCP_MANAGER_ADDR              "tcp://127.0.0.1:50324"
 
 #define DEFAULT_IPC_SOCKET_TIMEOUT       5000 //5 seconds
 
@@ -139,6 +140,8 @@ typedef struct _ipc_dhcpv4_data_t
     char dhcpState[BUFLEN_64];         /** Dhcp state. */
     bool mtuAssigned;                  /** Have we been assigned MTU size ? */ 
     uint32_t mtuSize;                  /** MTU Size, if mtuAssigned==TRUE */
+    char sipsrv[BUFLEN_64];            /** Dhcp sipsrv. */
+    char staticroutes[BUFLEN_64];      /** Dhcp classless static route */
 } ipc_dhcpv4_data_t;
 
 typedef struct _ipc_dhcpv6_data_t
