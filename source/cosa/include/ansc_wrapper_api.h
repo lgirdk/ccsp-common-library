@@ -2547,12 +2547,4 @@ AnscMacToLower
         size_t                      n
     );
 
-BOOL
-AnscIsThisValidInputString
-    (
-        char*                       string,
-        char*                       restrictChars,
-        ULONG                       range
-    );
-
 #endif
