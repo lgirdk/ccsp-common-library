@@ -81,6 +81,32 @@
 #include "dslh_varro_global.h"
 #include "slap_vco_internal_api.h"
 
+/*
+   Return FALSE if pString contains any character from invalid_chars
+*/
+static BOOL AnscIsThisValidInputString (char *pString, char *invalid_chars)
+{
+    int i;
+    int len;
+
+    len = strlen(invalid_chars);
+
+    while (*pString != '\0')
+    {
+        for (i = 0; i < len; i++)
+        {
+            if (*pString == invalid_chars[i])
+            {
+                return FALSE;
+            }
+        }
+
+        pString++;
+    }
+
+    return TRUE;
+}
+
 /**********************************************************************
 
     caller:     owner of this object
@@ -474,7 +500,7 @@ DslhVarroTstValue
                      * To restrict certain charecters during set. For ex: <>'%`
                      */
                     if ( pNewValue->Variant.varString &&
-                         ( FALSE == AnscIsThisValidInputString(pNewValue->Variant.varString, pParamDescr->PreventCharecters, AnscSizeOfString(pNewValue->Variant.varString))) )
+                         ( FALSE == AnscIsThisValidInputString(pNewValue->Variant.varString, pParamDescr->PreventCharecters)) )
                     {
                         return  FALSE;
                     }
