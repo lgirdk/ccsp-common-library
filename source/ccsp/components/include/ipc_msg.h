@@ -8,6 +8,8 @@
 #define PPP_MANAGER_ADDR               "tcp://127.0.0.1:50322"
 #define IHC_IPC_ADDR               "tcp://127.0.0.1:50323"
 
+#define DEFAULT_IPC_SOCKET_TIMEOUT       5000 //5 seconds
+
 #define BUFLEN_4                         4           //!< buffer length 4
 #define BUFLEN_8                         8           //!< buffer length 8
 #define BUFLEN_16                        16          //!< buffer length 16
