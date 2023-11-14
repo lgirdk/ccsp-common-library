@@ -116,7 +116,7 @@ AnscCryptoGetRandomUlong
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char                            hashString[16];
+    char                            hashString[20];
     ANSC_CRYPTO_HASH                hashResult;
 
     *(PULONG)&hashString[ 0] = AnscGetTickInMilliSeconds();
@@ -169,7 +169,7 @@ AnscCryptoGetRandomUshort
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char                            hashString[16];
+    char                            hashString[20];
     ANSC_CRYPTO_HASH                hashResult;
 
     *(PULONG)&hashString[ 0] = AnscGetTickInMilliSeconds();

@@ -933,7 +933,7 @@ AnscAsn1IntegerEncodingData
      */
     PUCHAR                          pCharData       = (PUCHAR)*ppEncoding;
     PUCHAR                          pBackData       = pCharData;
-    CHAR                            pTmp[5]         = { 0 };
+    CHAR                            pTmp[sizeof(ULONG) + 1]         = { 0 };
 
     /*
      * If it's optional, don't need encode

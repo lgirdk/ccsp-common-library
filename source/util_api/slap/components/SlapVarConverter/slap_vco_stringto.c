@@ -1229,7 +1229,7 @@ SlapVcoHexStringToUint32
     ULONG                           ulUcharCount = 0;
     ULONG                           ulTmpValue   = 0;
     ULONG                           i            = 0;
-    UCHAR                           tempValue[4];
+    UCHAR                           tempValue[4] = {0};
     char                            temp_char[3];
 
     if ( !hex_string )
@@ -1239,7 +1239,6 @@ SlapVcoHexStringToUint32
     else
     {
         ulUcharCount = AnscGetMin2(AnscSizeOfString(hex_string) / 2, sizeof(ULONG)); /*RDKB-6307, CID-24443, Use after null check*/
-        *(PULONG)tempValue = 0;
     }
 
     for ( i = 0; i < ulUcharCount; i++ )
@@ -1268,7 +1267,7 @@ SlapVcoHexStringToUint32
         tempValue[i] = (UCHAR)ulTmpValue;
     }
 
-    return  AnscUlongFromNToH(*(PULONG)tempValue);
+    return  AnscUlongFromNToH((ULONG)tempValue);
 }
 
 
