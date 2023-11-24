@@ -2101,7 +2101,7 @@ int CcspBaseIf_registerCapabilities_rbus(
         if((err = rbus_addElement(component_name, name_space[i].name_space)) != RBUSCORE_SUCCESS)
         {
             RBUS_LOG_ERR("addElement: %s failed with Err: %d\n", name_space[i].name_space, err);
-            failedIndex = i;
+            failedIndex = i + 1;
             break;
         }
     }
