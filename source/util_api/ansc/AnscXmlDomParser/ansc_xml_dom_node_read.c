@@ -513,14 +513,35 @@ AnscXmlDomNodeGetAttrString
     }
 
     /*RDKB-5653, CID-24133, 11 May 2016 Null check before use*/
-    if(!pulSize)
+    if ( !pulSize )
     {
         return  ANSC_STATUS_XML_INVALID_LENGTH;
     }
 
     /*
+     * check text size;
+     */
+    if ( pAttribute->DataSize <= 0 )
+    {
+        if ((sTarget != NULL) && (*pulSize > 0))
+        {
+            sTarget[0] = 0;
+        }
+
+        *pulSize = 0;
+
+        return ANSC_STATUS_SUCCESS;
+    }
+
+    /*
      * read out the data
      */
+    if ( sTarget == NULL )
+    {
+        *pulSize = pAttribute->DataSize;
+
+        return  ANSC_STATUS_XML_INVALID_LENGTH;
+    }
 
     if ( *pulSize < pAttribute->DataSize )
     {
@@ -529,18 +550,26 @@ AnscXmlDomNodeGetAttrString
         return  ANSC_STATUS_XML_INVALID_LENGTH;
     }
 
-    if( sTarget)
+    AnscCopyMemory(sTarget, pAttribute->StringData, pAttribute->DataSize);
+
+    if ( *pulSize > pAttribute->DataSize )
     {
-        AnscCopyMemory(sTarget, pAttribute->StringData, pAttribute->DataSize);
+        sTarget[pAttribute->DataSize] = 0;
+    }
+    else
+    {
+        /*
+           Target buffer is not big enough to return a nul terminated string...
+           This should be a fatal error, however historically it hasn't been
+           and there are many callers to this function which work around it
+           by pre-zeroing the target buffer and then passing a fake (too
+           small) value for the buffer size...
+        */
     }
 
     *pulSize = pAttribute->DataSize;
 
-
-    if (*pulSize != 0)
-    {
-        AnscXmlRemoveCharReference(sTarget, pulSize);
-    }
+    AnscXmlRemoveCharReference(sTarget, pulSize);
 
     return  ANSC_STATUS_SUCCESS;
 }
@@ -992,9 +1021,15 @@ AnscXmlDomNodeGetDataString
     /*
      * check text size;
      */
-    if( pXmlNode->DataSize <= 0)
+    if ( pXmlNode->DataSize <= 0 )
     {
+        if ((sTarget != NULL) && (*pulSize > 0))
+        {
+            sTarget[0] = 0;
+        }
+
         *pulSize = 0;
+
         return ANSC_STATUS_SUCCESS;
     }
 
@@ -1007,24 +1042,34 @@ AnscXmlDomNodeGetDataString
 
         return  ANSC_STATUS_XML_INVALID_LENGTH;
     }
-    else if( *pulSize < pXmlNode->DataSize)
+
+    if ( *pulSize < pXmlNode->DataSize )
     {
         *pulSize = pXmlNode->DataSize;
 
         return  ANSC_STATUS_XML_INVALID_LENGTH;
     }
 
-    if( sTarget)
+    AnscCopyMemory(sTarget, pXmlNode->StringData, pXmlNode->DataSize);
+
+    if ( *pulSize > pXmlNode->DataSize )
     {
-        AnscCopyMemory(sTarget, pXmlNode->StringData, pXmlNode->DataSize);
+        sTarget[pXmlNode->DataSize] = 0;
+    }
+    else
+    {
+        /*
+           Target buffer is not big enough to return a nul terminated string...
+           This should be a fatal error, however historically it hasn't been
+           and there are many callers to this function which work around it
+           by pre-zeroing the target buffer and then passing a fake (too
+           small) value for the buffer size...
+        */
     }
 
     *pulSize = pXmlNode->DataSize;
 
-    if (*pulSize != 0)
-    {
-        AnscXmlRemoveCharReference(sTarget, pulSize);
-    }
+    AnscXmlRemoveCharReference(sTarget, pulSize);
 
     return  ANSC_STATUS_SUCCESS;
 }
