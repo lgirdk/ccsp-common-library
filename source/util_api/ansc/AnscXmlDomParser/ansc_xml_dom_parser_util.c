@@ -138,17 +138,6 @@ static const ULONG decSize = 2;
  */
 
 
-
-ULONG
-AnscXmlStringToLong
-    (
-        char*  pString
-    )
-{
-    return  (LONG)_ansc_atol(pString);
-}
-
-
 VOID
 AnscXmlLongToString
     (
