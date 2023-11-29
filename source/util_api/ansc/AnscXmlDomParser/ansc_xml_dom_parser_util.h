@@ -72,13 +72,6 @@
 #ifndef  _ANSC_XML_DOM_PARSER_UTIL
 #define  _ANSC_XML_DOM_PARSER_UTIL
 
-ULONG
-AnscXmlStringToLong
-    (
-        char*  pString
-    );
-
-
 VOID
 AnscXmlLongToString
     (

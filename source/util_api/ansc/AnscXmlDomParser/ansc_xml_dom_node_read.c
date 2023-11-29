@@ -86,6 +86,7 @@
 
 **********************************************************************/
 
+#include <stdlib.h>
 
 #include "ansc_xml_dom_parser_global.h"
 
@@ -663,7 +664,7 @@ AnscXmlDomNodeGetAttrUlong
      */
     if( pulTarget )
     {
-        *pulTarget = (ULONG)AnscXmlStringToLong((PCHAR)pAttribute->StringData);
+        *pulTarget = (ULONG) atoll((const char *) pAttribute->StringData);
     }
 
     return  ANSC_STATUS_SUCCESS;
@@ -1159,7 +1160,7 @@ AnscXmlDomNodeGetDataUlong
      */
     if( pulTarget )
     {
-        *pulTarget = (ULONG)AnscXmlStringToLong((PCHAR)pXmlNode->StringData);
+        *pulTarget = (ULONG) atoll((const char *) pXmlNode->StringData);
     }
 
     return  ANSC_STATUS_SUCCESS;
@@ -1251,7 +1252,7 @@ AnscXmlDomNodeGetDataLong
      */
     if( plTarget )
     {
-        *plTarget = (LONG)AnscXmlStringToLong((PCHAR)pXmlNode->StringData);
+        *plTarget = (LONG) atoll((const char *) pXmlNode->StringData);
     }
 
     /*CID: 67028 Dereference after null check*/
