@@ -271,7 +271,9 @@ static void* rbusInterval_PublishingThreadFunc(void *rec)
                     ((CCSP_MESSAGE_BUS_INFO*)sub_rec->handle)->component_id,
                     sub_rec->parameter,
                     sub_rec->listener,
-                    msg);
+                    msg,
+                    0, /* As subscription Id and rawdata is not supported in ccsp */
+                    false);
             rbusMessage_Release(msg);
             rbusObject_Release(data);
             if(err != RBUSCORE_SUCCESS)

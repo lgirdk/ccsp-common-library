@@ -5849,7 +5849,7 @@ int CcspBaseIf_UnRegister_Event_rbus(
         return CCSP_SUCCESS;
     }
 
-    if(RBUSCORE_SUCCESS != rbus_unsubscribeFromEvent(sender, event_name, NULL))
+    if(RBUSCORE_SUCCESS != rbus_unsubscribeFromEvent(sender, event_name, NULL, false))
     {
         RBUS_LOG_ERR("unsubscribeFromEvent::CcspBaseIf_UnRegister_Event returns error for sender %s for event_name %s \n", sender, event_name);
         return CCSP_FAILURE;

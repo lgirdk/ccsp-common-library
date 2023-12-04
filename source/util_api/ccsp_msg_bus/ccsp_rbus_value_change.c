@@ -273,7 +273,9 @@ static void rbusValueChange_handlePublish(ValueChangeRecord* rec, parameterValSt
         ((CCSP_MESSAGE_BUS_INFO*)rec->handle)->component_id,  
         rec->eventName, /* use the same event name the consumer subscribed with */
         rec->listener, 
-        msg);
+        msg,
+        0, /* As subscription Id and rawdata is not supported in ccsp */
+        false);
 
     rbusMessage_Release(msg);
 
