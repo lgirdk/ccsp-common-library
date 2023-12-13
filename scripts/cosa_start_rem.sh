@@ -292,6 +292,8 @@ if [ -e ./lm ]; then
 fi
 
 if [ "x$BOX_TYPE" == "xTCCBR" ]; then
+    echo_t "***Starting ServiceCtrl****"
+    $BINPATH/ServiceCtrl
 #Added this from cosa_start_atom.sh since in tchxb6 all Ccsp Componets are running on Arm side
 if [ -e ./harvester ]; then
        echo_t "****STARTING HARVESTER***"
