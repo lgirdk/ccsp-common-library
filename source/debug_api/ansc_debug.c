@@ -226,7 +226,6 @@ const char *CcspTraceGetRdkLogModule(const char *pComponentName)
             case 'e':
 #if defined (FEATURE_SUPPORT_EASYMESH_CONTROLLER)
                 if (strcmp(pComponentName, "emctl") == 0)                   return "LOG.RDK.EASYMESHCTL";
-                break;
 #endif
                 if (strcmp(pComponentName, "ethagent") == 0)                return "LOG.RDK.ETHAGENT";
                 break;
