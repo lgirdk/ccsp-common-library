@@ -56,4 +56,5 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
 unsigned int get_writeid(const char *str);
 char* writeid_to_string(unsigned int writeid);
 unsigned int string_to_writeid(const char *str);
+void rbus_type_to_ccsp_type(rbusValueType_t typeVal, enum dataType_e *pType);
 #endif /* CCSP_RBUS_INTERNAL_H */

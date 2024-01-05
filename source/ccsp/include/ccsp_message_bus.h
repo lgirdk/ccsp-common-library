@@ -63,7 +63,7 @@
 
 #include <dbus/dbus.h>
 #include <pthread.h>
-
+#include <rbus/rbus.h>
 /*
 notes: see readme.txt
 */
@@ -194,6 +194,7 @@ typedef struct _CCSP_MESSAGE_BUS_INFO
     int dbus_connect_thread_count;
     int dbus_loop_thread_count;
     void* rbus_callback;
+    rbusHandle_t rbus_handle;
 
 } CCSP_MESSAGE_BUS_INFO;
 

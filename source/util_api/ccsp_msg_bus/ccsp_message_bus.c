@@ -1163,12 +1163,12 @@ CCSP_Message_Bus_Init
 
         /* Register with rbusLog to use CCSPTRACE_LOGS */
         rbus_registerLogHandler(ccsp_rbus_logHandler);
-
-        err = rbus_openBrokerConnection(component_id);
-        if( err != RBUSCORE_SUCCESS &&
-                err != RBUSCORE_ERROR_INVALID_STATE/*connection already opened. which is allowed*/)
+        int rc;
+        rbusHandle_t handle;
+        rc = rbus_open(&handle, component_id);
+        if(rc != RBUS_ERROR_SUCCESS)
         {
-            CcspTraceError(("<%s>: rbus_openBrokerConnection fails for component_id=%s with %d\n", __FUNCTION__,component_id,err));
+            CcspTraceError(("%s(%s): rbus_open failed: %d\n",  __FUNCTION__, component_id, rc));
             fclose(fp);
             bus_info->freefunc(bus_info);
             *bus_handle = NULL;
@@ -1178,57 +1178,70 @@ CCSP_Message_Bus_Init
         {
             CcspTraceInfo(("connection opened for %s\n",component_id));
 
-            if((err = rbus_registerObj(component_id, (rbus_callback_t) bus_info->rbus_callback, bus_info)) != RBUSCORE_SUCCESS)
+            if((rc = rbus_unregisterObj(component_id)) != RBUSCORE_SUCCESS)
             {
-                CcspTraceError(("<%s>: rbus_registerObj fails for %s\n", __FUNCTION__, component_id));
+                CcspTraceError(("%s(%s): rbus_unregisterObj error %d\n", __FUNCTION__, component_id, rc));
+                rbus_close(handle);
+                fclose(fp);
+                bus_info->freefunc(bus_info);
+                *bus_handle = NULL;
+                return -1;
             }
             else
             {
-                if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.tr069pa") == 0)
+                bus_info->rbus_handle = handle;
+                if((err = rbus_registerObj(component_id, (rbus_callback_t) bus_info->rbus_callback, bus_info)) != RBUSCORE_SUCCESS)
                 {
-                    if((err = rbus_registerEvent(component_id,CCSP_DIAG_COMPLETE_SIGNAL,NULL,NULL)) != RBUSCORE_SUCCESS)
-                        RBUS_LOG_ERR("%s : rbus_registerEvent returns Err: %d for diagCompleteSignal\n", __FUNCTION__, err);
+                    CcspTraceError(("<%s>: rbus_registerObj fails for %s\n", __FUNCTION__, component_id));
                 }
-                else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.rm") == 0)
+                else
                 {
-                    if((err = rbus_registerEvent(component_id,CCSP_SYSTEM_REBOOT_SIGNAL,NULL,NULL)) != RBUSCORE_SUCCESS)
-                        RBUS_LOG_ERR("%s : rbus_registerEvent returns Err: %d for systemRebootSignal", __FUNCTION__, err);
-                }
-                else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.webpaagent") == 0)
-                {
-                    rbus_method_table_entry_t table[1] = {
-                                                            {"webconfigSignal", (void*)bus_info, webcfg_signal_rbus},
-                                                         };
-                    if(( err = rbus_registerMethodTable(component_id, table, 1) != RBUSCORE_SUCCESS ))
+                    if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.tr069pa") == 0)
                     {
-                        RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        if((err = rbus_registerEvent(component_id,CCSP_DIAG_COMPLETE_SIGNAL,NULL,NULL)) != RBUSCORE_SUCCESS)
+                            RBUS_LOG_ERR("%s : rbus_registerEvent returns Err: %d for diagCompleteSignal\n", __FUNCTION__, err);
                     }
-                }
-                else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.wifi") == 0)
-                {
-                    rbus_method_table_entry_t table[2] = {
-                                                            {"TunnelStatus", (void*)bus_info, tunnelStatus_signal_rbus},
-                                                            {"WifiDbStatus", (void*)bus_info, wifiDbStatus_signal_rbus},
-                                                         };
-                    if(( err = rbus_registerMethodTable(component_id, table, 2) != RBUSCORE_SUCCESS ))
+                    else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.rm") == 0)
                     {
-                        RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        if((err = rbus_registerEvent(component_id,CCSP_SYSTEM_REBOOT_SIGNAL,NULL,NULL)) != RBUSCORE_SUCCESS)
+                            RBUS_LOG_ERR("%s : rbus_registerEvent returns Err: %d for systemRebootSignal", __FUNCTION__, err);
                     }
-                }
-                else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.telemetry") == 0)
-                {
-                     rbus_method_table_entry_t table[1] = {
-                                {CCSP_TELEMETRY_DATA_SIGNAL, (void*)bus_info, telemetry_send_signal_rbus}, 
-                                        };
-                    if(( err = rbus_registerMethodTable(component_id, table, 1) != RBUSCORE_SUCCESS ))
+                    else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.webpaagent") == 0)
                     {
-                        RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        rbus_method_table_entry_t table[1] = {
+                            {"webconfigSignal", (void*)bus_info, webcfg_signal_rbus},
+                        };
+                        if(( err = rbus_registerMethodTable(component_id, table, 1) != RBUSCORE_SUCCESS ))
+                        {
+                            RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        }
+                    }
+                    else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.wifi") == 0)
+                    {
+                        rbus_method_table_entry_t table[2] = {
+                            {"TunnelStatus", (void*)bus_info, tunnelStatus_signal_rbus},
+                            {"WifiDbStatus", (void*)bus_info, wifiDbStatus_signal_rbus},
+                        };
+                        if(( err = rbus_registerMethodTable(component_id, table, 2) != RBUSCORE_SUCCESS ))
+                        {
+                            RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        }
+                    }
+                    else if(strcmp(component_id,"eRT.com.cisco.spvtg.ccsp.telemetry") == 0)
+                    {
+                        rbus_method_table_entry_t table[1] = {
+                            {CCSP_TELEMETRY_DATA_SIGNAL, (void*)bus_info, telemetry_send_signal_rbus}, 
+                        };
+                        if(( err = rbus_registerMethodTable(component_id, table, 1) != RBUSCORE_SUCCESS ))
+                        {
+                            RBUS_LOG_ERR("%s : rbus_registerMethodTable returns Err: %d",  __FUNCTION__, err);
+                        }
                     }
                 }
             }
         }
-	/*CID: 110434 Resource leak*/
-	fclose(fp);
+        /*CID: 110434 Resource leak*/
+        fclose(fp);
         return 0;
     }
     //    CcspTraceDebug(("<%s>: component id = '%s'\n", __FUNCTION__, bus_info->component_id));
@@ -1467,10 +1480,12 @@ CCSP_Message_Bus_Exit
     if(rbus_enabled)
     {
         rbusCoreError_t err = RBUSCORE_SUCCESS;
-
-        err = rbus_closeBrokerConnection();
+        err = rbus_unregisterObj(bus_info->component_id);
         if(RBUSCORE_SUCCESS != err)
-            CcspTraceError(("<%s>: rbus_closeBrokerConnection fails with %d\n", __FUNCTION__,err));
+            CcspTraceError(("<%s>: rbus_unregisterObj for component %s fails with %d\n", __FUNCTION__, bus_info->component_id, err));
+        int rc = rbus_close(bus_info->rbus_handle);
+        if(RBUS_ERROR_SUCCESS != rc)
+            CcspTraceError(("<%s>: rbus_close fails with %d\n", __FUNCTION__,rc));
         bus_info->freefunc(bus_info);
         bus_info = NULL;
 
@@ -1975,6 +1990,60 @@ CCSP_Message_Bus_Register_Path_Priv
     return ret;
 }
 
+void rbus_type_to_ccsp_type (rbusValueType_t typeVal, enum dataType_e *pType)
+{
+    switch(typeVal)
+    {
+        case RBUS_INT16:
+        case RBUS_INT32:
+            *pType = ccsp_int;
+            break;
+        case RBUS_UINT16:
+        case RBUS_UINT32:
+            *pType = ccsp_unsignedInt;
+            break;
+        case RBUS_INT64:
+            *pType = ccsp_long;
+            break;
+        case RBUS_UINT64:
+            *pType = ccsp_unsignedLong;
+            break;
+        case RBUS_SINGLE:
+            *pType = ccsp_float;
+            break;
+        case RBUS_DOUBLE:
+            *pType = ccsp_double;
+            break;
+        case RBUS_DATETIME:
+            *pType = ccsp_dateTime;
+            break;
+        case RBUS_BOOLEAN:
+            *pType = ccsp_boolean;
+            break;
+        case RBUS_CHAR:
+        case RBUS_INT8:
+            *pType = ccsp_int;
+            break;
+        case RBUS_UINT8:
+        case RBUS_BYTE:
+            *pType = ccsp_byte;
+            break;
+        case RBUS_STRING:
+            *pType = ccsp_string;
+            break;
+        case RBUS_BYTES:
+            *pType = ccsp_base64;
+            break;
+        case RBUS_PROPERTY:
+        case RBUS_OBJECT:
+        case RBUS_NONE:
+        default:
+            *pType = ccsp_none;
+            break;
+    }
+    return;
+}
+
 void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusValueType_t typeVal, enum dataType_e *pType, char** pStringValue)
 {
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
@@ -1985,7 +2054,7 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
     int length = 0;
     char *pTmp = NULL;
     int n = 0;
-
+    rbus_type_to_ccsp_type(typeVal, pType);
     switch(typeVal)
     {
         case RBUS_INT16:
@@ -1994,7 +2063,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "%d", ival) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%d", ival);
-            *pType = ccsp_int;
             break;
 
         case RBUS_UINT16:
@@ -2003,7 +2071,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "%u", (uint32_t)ival) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%u", (uint32_t)ival);
-            *pType = ccsp_unsignedInt;
             break;
 
         case RBUS_INT64:
@@ -2020,8 +2087,7 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
 #else
             snprintf(*pStringValue, (unsigned int)n, "%lld", i64);
 #endif	    
-            *pType = ccsp_long;
-            break;
+           break;
         }
         case RBUS_UINT64:
         {
@@ -2037,7 +2103,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
 #else	
             snprintf(*pStringValue, (unsigned int)n, "%llu", (uint64_t)i64);
 #endif	    
-            *pType = ccsp_unsignedLong;
             break;
         }
         case RBUS_SINGLE:
@@ -2045,14 +2110,12 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "%f", fval) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%f", fval);
-            *pType = ccsp_float;
             break;
         case RBUS_DOUBLE:
             rbusMessage_GetDouble(msg, &fval);
             n = snprintf(pTmp, 0, "%f", fval) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%f", fval);
-            *pType = ccsp_double;
             break;
         case RBUS_DATETIME:
         {
@@ -2088,7 +2151,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             {
                 snprintf(*pStringValue, (unsigned int)n, "%sZ", tmpBuff);
             }
-            *pType = ccsp_dateTime;
         }
             break;
         case RBUS_BOOLEAN:
@@ -2098,7 +2160,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "false") + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%s", boolValue ? "true" : "false");
-            *pType = ccsp_boolean;
             break;
         }
         case RBUS_CHAR:
@@ -2109,7 +2170,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "%d", tmpValue) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%d", tmpValue);
-            *pType = ccsp_int;
             break;
         }
         case RBUS_UINT8:
@@ -2120,7 +2180,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = snprintf(pTmp, 0, "%u", tmpValue) + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%u", tmpValue);
-            *pType = ccsp_unsignedInt;
             break;
         }
         case RBUS_STRING:
@@ -2128,7 +2187,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             n = length + 1;
             *pStringValue = bus_info->mallocfunc(n);
             snprintf(*pStringValue, (unsigned int)n, "%s", (char*)pValue);
-            *pType = ccsp_string;
             break;
         case RBUS_BYTES:
         {
@@ -2139,7 +2197,6 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
             rbusMessage_GetBytes(msg, (uint8_t const**)&pVar, (uint32_t *)&length);
 
             n = (2 * length) + 1;
-            *pType = ccsp_byte;
             pStrVar = bus_info->mallocfunc(n);
             *pStringValue = pStrVar;
             for (k = 0; k < length; k++)
@@ -2155,9 +2212,9 @@ void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusVa
         default:
             *pStringValue = bus_info->mallocfunc(10);
             strncpy(*pStringValue, "", 10);
-            *pType = ccsp_none;
             break;
     }
+    
     return;
 }
 
@@ -2178,27 +2235,27 @@ unsigned int get_writeid(const char *str)
 char* writeid_to_string(unsigned int writeid)
 {
     if(writeid == DSLH_MPA_ACCESS_CONTROL_WEBUI)
-        return "writeid_webui";
+        return "ccsp.phpextension";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_SNMP)
-        return "writeid_snmp";
+        return "ccsp.cisco.spvtg.ccsp.snmp";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_ACS)
-        return "writeid_acs";
+        return "eRT.com.cisco.spvtg.ccsp.tr069pa";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_CLI)
         return "writeid_cli";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_WEBPA)
-        return "writeid_webpa";
+        return "com.cisco.spvtg.ccsp.webpaagent";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_XPC)
         return "writeid_xpc";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_NOTIFY_COMP)
-        return "writeid_notify";
+        return "eRT.com.cisco.spvtg.ccsp.notifycomponent";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_PAM)
         return "eRT.com.cisco.spvtg.ccsp.pam";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_CLIENTTOOL)
-        return "writeid_clienttool";
+        return "ccsp.busclient";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_LM)
-        return "writeid_lm";
+        return "com.cisco.spvtg.ccsp.lms";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_WIFI)
-        return "writeid_wifi";
+        return "eRT.com.cisco.spvtg.ccsp.wifi";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_XMPP)
         return "writeid_xmpp";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_WEBCONFIG)
@@ -2209,34 +2266,34 @@ char* writeid_to_string(unsigned int writeid)
 
 unsigned int string_to_writeid(const char *str)
 {
-    if ( _ansc_strcmp(str, "writeid_webui") == 0 )
+    if ( _ansc_strcmp(str, "ccsp.phpextension") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_WEBUI;
-    else if ( _ansc_strcmp(str, "writeid_snmp") == 0 )
+    else if ( _ansc_strcmp(str, "ccsp.cisco.spvtg.ccsp.snmp") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_SNMP;
-    else if ( _ansc_strcmp(str, "writeid_acs") == 0 )
+    else if ( _ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.tr069pa") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_ACS;
     else if ( _ansc_strcmp(str, "writeid_cli") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_CLI;
-    else if ( _ansc_strcmp(str, "writeid_webpa") == 0 )
+    else if ( (_ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.webpaagent") == 0 )
+                || (_ansc_strcmp(str, "com.cisco.spvtg.ccsp.webpaagent") == 0))
         return DSLH_MPA_ACCESS_CONTROL_WEBPA;
     else if ( _ansc_strcmp(str, "writeid_xpc") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_XPC;
-    else if ( _ansc_strcmp(str, "writeid_notify") == 0 )
+    else if ( _ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.notifycomponent") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_NOTIFY_COMP;
     else if ( _ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.pam") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_PAM;
-    else if ( _ansc_strcmp(str, "writeid_clienttool") == 0 )
+    else if ( _ansc_strcmp(str, "ccsp.busclient") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_CLIENTTOOL;
-    else if ( _ansc_strcmp(str, "writeid_lm") == 0 )
+    else if ( _ansc_strcmp(str, "com.cisco.spvtg.ccsp.lms") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_LM;
-    else if ( _ansc_strcmp(str, "writeid_wifi") == 0 )
+    else if ( _ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.wifi") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_WIFI;
     else if ( _ansc_strcmp(str, "writeid_xmpp") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_XMPP;
     else if ( _ansc_strcmp(str, "webconfig") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_WEBCONFIG;
-
-    return DSLH_MPA_ACCESS_CONTROL_CLI;
+     return DSLH_MPA_ACCESS_CONTROL_CLI;
 }
 
 void get_recursive_wildcard_parameterNames(void* bus_handle, char *parameterName, rbusMessage *req, int *param_size)
