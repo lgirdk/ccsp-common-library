@@ -29,6 +29,7 @@ EnvironmentFile=/etc/device.properties
 WorkingDirectory=/usr/ccsp/advsec
 ExecStartPre=/bin/sh -c "sleep 30"
 ExecStart=/usr/bin/CcspAdvSecuritySsp -subsys $Subsys
+ExecStop=/bin/sh -c '/usr/ccsp/advsec/start_adv_security.sh -disable'
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting CcspAdvSecuritySsp" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
