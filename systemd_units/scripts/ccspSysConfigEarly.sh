@@ -37,7 +37,7 @@ if [ "$MODEL_NUM" = "CGA4332COM" ]; then
 fi
 
 XLE_DISABLE_CORE="false"
-if [ "$BOX_TYPE" = "WNXL11BWL" ]; then
+if [ "$BOX_TYPE" = "WNXL11BWL" ] || [ "$BOX_TYPE" = "SCER11BEL" ]; then
     isgdb=`cat /version.txt | grep -c "gdb"`
     if [ "$isgdb" -eq "0" ]; then
         XLE_DISABLE_CORE="true"
