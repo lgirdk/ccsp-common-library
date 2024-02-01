@@ -83,7 +83,7 @@ else
 	echo_t "Triggered cosa_start_rem script and created tmp/cosa_start_rem_triggered file"
 fi
 
-if [ -f "/etc/AKER_ENABLE" ]; then
+if [ -f "/etc/AKER_ENABLE" ] && [ "x$BOX_TYPE" != "xTCCBR" ]; then
     MAC_ADDR=`echo $(getMacAddressWithoutColon)`
     echo "/usr/bin/aker -p $PARODUS_URL -c $AKER_URL -w parcon -d /nvram/pcs.bin -f /nvram/pcs.bin.md5 -i mac:$MAC_ADDR" > /tmp/aker_cmd.cmd
     aker_cmd=`cat /tmp/aker_cmd.cmd`
