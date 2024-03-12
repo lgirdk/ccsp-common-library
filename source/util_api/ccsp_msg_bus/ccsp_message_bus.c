@@ -2191,6 +2191,8 @@ char* writeid_to_string(unsigned int writeid)
         return "writeid_xpc";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_NOTIFY_COMP)
         return "writeid_notify";
+    else if(writeid == DSLH_MPA_ACCESS_CONTROL_PAM)
+        return "eRT.com.cisco.spvtg.ccsp.pam";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_CLIENTTOOL)
         return "writeid_clienttool";
     else if(writeid == DSLH_MPA_ACCESS_CONTROL_LM)
@@ -2221,6 +2223,8 @@ unsigned int string_to_writeid(const char *str)
         return DSLH_MPA_ACCESS_CONTROL_XPC;
     else if ( _ansc_strcmp(str, "writeid_notify") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_NOTIFY_COMP;
+    else if ( _ansc_strcmp(str, "eRT.com.cisco.spvtg.ccsp.pam") == 0 )
+        return DSLH_MPA_ACCESS_CONTROL_PAM;
     else if ( _ansc_strcmp(str, "writeid_clienttool") == 0 )
         return DSLH_MPA_ACCESS_CONTROL_CLIENTTOOL;
     else if ( _ansc_strcmp(str, "writeid_lm") == 0 )
