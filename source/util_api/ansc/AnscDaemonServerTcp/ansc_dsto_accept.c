@@ -380,8 +380,7 @@ AnscDstoAcceptTask
                     
             if ( error != 0 )
             {
-                CcspTraceError(("!!! getnameinfo host error: %d !!!\n", error));
-                continue;
+                CcspTraceWarning(("!!! getnameinfo host error: %s !!!\n", gai_strerror(error)));
             }
                     
             pNewSocket->HostPort = _ansc_atoi(port);
@@ -401,8 +400,7 @@ AnscDstoAcceptTask
                     
             if ( error != 0 )
             {
-                CcspTraceError(("!!! getnameinfo peer error: %d !!!\n", error));
-                continue;
+                CcspTraceWarning(("!!! getnameinfo peer error: %s !!!\n", gai_strerror(error)));
             }
             
             pNewSocket->PeerPort = _ansc_atoi(port);
@@ -423,8 +421,7 @@ AnscDstoAcceptTask
                     
             if ( error != 0 )
             {
-                CcspTraceError(("!!! getnameinfo host error: %d !!!\n", error));
-                continue;
+                CcspTraceWarning(("!!! getnameinfo host error: %s !!!\n", gai_strerror(error)));
             }
                     
             pNewSocket->HostPort = _ansc_atoi(port);
@@ -444,8 +441,7 @@ AnscDstoAcceptTask
                     
             if ( error != 0 )
             {
-                CcspTraceError(("!!! getnameinfo peer error: %d !!!\n", error));
-                continue;
+                CcspTraceWarning(("!!! getnameinfo peer error: %s !!!\n", gai_strerror(error)));
             }
             
             pNewSocket->PeerPort = _ansc_atoi(port);

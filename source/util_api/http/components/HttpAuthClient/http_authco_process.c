@@ -450,6 +450,7 @@ HttpAuthcoGenerateDigestResponse
     PHTTP_AUTHO_INFO                pAuthInfo    = (PHTTP_AUTHO_INFO       )hAuthInfo;
     PUCHAR                          pDigRep      = NULL;
     ULONG                           ulDigRepSize = 0;
+    ULONG                           RepElSize    = 0;
     PUCHAR                          pHostName    = NULL;
     PUCHAR                          pUriPath     = NULL;
     USHORT                          HostPort     = 0;
@@ -539,10 +540,11 @@ HttpAuthcoGenerateDigestResponse
 
     if ( pAuthInfo->pDigest->pQop )
     {
+        RepElSize = AnscSizeOfString((const char*)pDigRep);
         rc = sprintf_s
             (
-                (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-                ulDigRepSize,
+                (char*)pDigRep + RepElSize,
+                ulDigRepSize - RepElSize,
                 ", %s=\"%s\"",
                 HTTP_AUTH_NAME_qop,
                 pAuthInfo->pDigest->pQop
@@ -555,10 +557,11 @@ HttpAuthcoGenerateDigestResponse
 
     if ( pAuthInfo->pDigest->pAlgorithm )
     {
+        RepElSize = AnscSizeOfString((const char*)pDigRep);
         rc = sprintf_s
             (
-                (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-                ulDigRepSize,
+                (char*)pDigRep + RepElSize,
+                ulDigRepSize - RepElSize,
                 ", %s=\"%s\"",
                 HTTP_AUTH_NAME_algorithm,
                 pAuthInfo->pDigest->pAlgorithm
@@ -570,10 +573,11 @@ HttpAuthcoGenerateDigestResponse
     }
     else
     {
+        RepElSize = AnscSizeOfString((const char*)pDigRep);
         rc = sprintf_s
             (
-                (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-                ulDigRepSize,
+                (char*)pDigRep + RepElSize,
+                ulDigRepSize - RepElSize,
                 ", %s=\"%s\"",
                 HTTP_AUTH_NAME_algorithm,
                 HTTP_AUTH_NAME_md5
@@ -584,10 +588,11 @@ HttpAuthcoGenerateDigestResponse
         }
     }
 
+    RepElSize = AnscSizeOfString((const char*)pDigRep);
     rc = sprintf_s
         (
-            (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-            ulDigRepSize,
+            (char*)pDigRep + RepElSize,
+            ulDigRepSize - RepElSize,
             ", %s=\"%s\"",
             HTTP_AUTH_NAME_digest_uri,
             pUriPath
@@ -599,10 +604,11 @@ HttpAuthcoGenerateDigestResponse
 
     if ( pAuthInfo->pDigest->pNonce )
     {
+        RepElSize = AnscSizeOfString((const char*)pDigRep);
         rc = sprintf_s
             (
-                (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-                ulDigRepSize,
+                (char*)pDigRep + RepElSize,
+                ulDigRepSize - RepElSize,
                 ", %s=\"%s\"",
                 HTTP_AUTH_NAME_nonce,
                 pAuthInfo->pDigest->pNonce
@@ -613,10 +619,11 @@ HttpAuthcoGenerateDigestResponse
         }
     }
 
+    RepElSize = AnscSizeOfString((const char*)pDigRep);
     rc = sprintf_s
         (
-            (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-            ulDigRepSize,
+            (char*)pDigRep + RepElSize,
+            ulDigRepSize - RepElSize,
             ", %s=\"%s\"",
             HTTP_AUTH_NAME_cnonce,
             pAuthInfo->pDigest->pCNonce
@@ -626,10 +633,11 @@ HttpAuthcoGenerateDigestResponse
         ERR_CHK(rc);
     }
 
+    RepElSize = AnscSizeOfString((const char*)pDigRep);
     rc = sprintf_s
         (
-            (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-            ulDigRepSize,
+            (char*)pDigRep + RepElSize,
+            ulDigRepSize - RepElSize,
             ", %s=%.8X",
             HTTP_AUTH_NAME_nc,
             (unsigned int)ulNC
@@ -641,10 +649,11 @@ HttpAuthcoGenerateDigestResponse
 
     if ( pAuthInfo->pDigest->pOpaque )
     {
+        RepElSize = AnscSizeOfString((const char*)pDigRep);
         rc = sprintf_s
             (
-                (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-                ulDigRepSize,
+                (char*)pDigRep + RepElSize,
+                ulDigRepSize - RepElSize,
                 ", %s=\"%s\"",
                 HTTP_AUTH_NAME_opaque,
                 pAuthInfo->pDigest->pOpaque
@@ -655,10 +664,11 @@ HttpAuthcoGenerateDigestResponse
         }
     }
 
+    RepElSize = AnscSizeOfString((const char*)pDigRep);
     rc = sprintf_s
         (
-            (char*)pDigRep + AnscSizeOfString((const char*)pDigRep),
-            ulDigRepSize,
+            (char*)pDigRep + RepElSize,
+            ulDigRepSize - RepElSize,
             ", %s=\"%s\"",
             HTTP_AUTH_NAME_response,
             pRequestDigest

@@ -1018,7 +1018,34 @@ HttpAuthoGetDigestAuthInfo
             break;
         }
 
-        pNext       = (PUCHAR)_ansc_strchr((const char*)pChal, ',');
+        PUCHAR found = 0;
+        ULONG obj_size = 0;
+        PUCHAR DigData_a = (PUCHAR)strdup((char*)pChal);
+        if (DigData_a != NULL)
+        {
+            PUCHAR token = (PUCHAR)_ansc_strtok((char*)DigData_a, "\"");
+            if ( token != NULL )
+            {
+                token = (PUCHAR)_ansc_strtok(NULL, "\"");
+                found = (PUCHAR)_ansc_strchr((const char*)token, ',');
+                if (found)
+                {
+                    obj_size = AnscSizeOfString((const char*)found) + 1;
+                }
+            }
+            free(DigData_a);
+        }
+
+
+        if (obj_size == 0)
+        {
+            pNext       = (PUCHAR)_ansc_strchr((const char*)pChal, ',');
+        }
+        else
+        {
+            pNext       = (PUCHAR)_ansc_strchr((const char*)pChal, ',') + obj_size;
+        }
+
         ulLen       = pNext ? (ULONG)(pNext - pChal) : AnscSizeOfString((const char*)pChal);
 
         pValue      = (PUCHAR)_ansc_memchr(pChal, '=', ulLen);
