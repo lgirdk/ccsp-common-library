@@ -846,6 +846,18 @@
     <Param invisible="true">
       <Name>Device.IP.Diagnostics.TraceRoute.BasePort</Name>
     </Param>
+    <Param invisible="true">
+      <Name>Device.X_RDK_WanManager.Interface.{i}.Selection.Enable</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_RDK_WanManager.Interface.{i}.Name</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_RDK_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Name>
+    </Param>
+    <Param invisible="true">
+      <Name>Device.X_RDK_WanManager.RestorationDelay</Name>
+    </Param>
     <Param>
       <Name>Device.IP.Diagnostics.TraceRoute.X_LGI-COM_BasePort</Name>
     </Param>
@@ -1637,6 +1649,18 @@
     </Param>
     <Param>
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_LGI-COM_DefaultPassphrase</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_WanManager.Interface.{i}.Selection.Enable</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_WanManager.Interface.{i}.Name</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_WanManager.RestorationDelay</Name>
     </Param>
     <Param invisible="true">
       <Name>Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_DefaultKeyPassphrase</Name>
@@ -2828,6 +2852,22 @@
     <Alias>
       <External>Device.Time.X_LGI-COM_MaxPollInterval</External>
       <Internal>Device.Time.MaxPollInterval</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_WanManager.Interface.{i}.Selection.Enable</External>
+      <Internal>Device.X_RDK_WanManager.Interface.{i}.Selection.Enable</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_WanManager.Interface.{i}.Name</External>
+      <Internal>Device.X_RDK_WanManager.Interface.{i}.Name</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_WanManager.Interface.{i}.VirtualInterface.{i}.Name</External>
+      <Internal>Device.X_RDK_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_WanManager.RestorationDelay</External>
+      <Internal>Device.X_RDK_WanManager.RestorationDelay</Internal>
     </Alias>
 </AliasList>
 </Tr069Mapper>
