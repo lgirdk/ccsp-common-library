@@ -520,7 +520,7 @@ AnscSpawnTask3Trace
         pTaskRecord->SsocketError = 0;
 
 #ifdef _ANSC_DEBUG_TASK_
-        _ansc_strncpy(pTaskRecord->CreateFile, GetFileName(pFileName), sizeof(pTaskRecord->CreateFile));
+        strncpy(pTaskRecord->CreateFile, GetFileName(pFileName), sizeof(pTaskRecord->CreateFile));
         pTaskRecord->CreateFile[sizeof(pTaskRecord->CreateFile)-1] = '\0';
         pTaskRecord->CreateLine   = iLineNo;
 #endif
@@ -906,7 +906,7 @@ AnscAddTaskRecordTrace
     }
 
 #ifdef _ANSC_DEBUG_TASK_
-    _ansc_strncpy(pTaskRecord->CreateFile, GetFileName(pFileName), sizeof(pTaskRecord->CreateFile));
+    strncpy(pTaskRecord->CreateFile, GetFileName(pFileName), sizeof(pTaskRecord->CreateFile));
     pTaskRecord->CreateFile[sizeof(pTaskRecord->CreateFile)-1] = '\0';
     pTaskRecord->CreateLine   = iLineNo;
 #endif

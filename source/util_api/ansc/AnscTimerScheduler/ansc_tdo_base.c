@@ -426,7 +426,7 @@ AnscTdoInitialize2
 
 #ifdef _ANSC_TDO_PROFILING_
 
-    _ansc_strncpy(pMyObject->TdoInitFile, GetFileName(pFileName), sizeof(pMyObject->TdoInitFile));
+    strncpy(pMyObject->TdoInitFile, GetFileName(pFileName), sizeof(pMyObject->TdoInitFile));
     pMyObject->TdoInitFile[sizeof(pMyObject->TdoInitFile)-1] = '\0';
     pMyObject->TdoInitLine          = iLineNo;
     pMyObject->TdoFlags             = 1; /* enable it */

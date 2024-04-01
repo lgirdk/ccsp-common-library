@@ -290,7 +290,7 @@ AnscRtspGetRequest
 
                         if ( *ppReqUrl )
                         {
-                            _ansc_strncpy(*ppReqUrl, pCurChar, (pNextChar - pCurChar));
+                            strncpy(*ppReqUrl, pCurChar, (pNextChar - pCurChar));
                         }
                         else
                         {
@@ -409,7 +409,7 @@ AnscRtspGetHeaderValue
             {
                 if ( (ULONG)(pNextChar - pCurChar) < ulValueSize )
                 {
-                    _ansc_strncpy(pValue, pCurChar, (pNextChar - pCurChar));
+                    strncpy(pValue, pCurChar, (pNextChar - pCurChar));
                 }
                 else
                 {
@@ -425,7 +425,7 @@ AnscRtspGetHeaderValue
             }
             else
             {
-                _ansc_strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
+                strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
 
                 *(PULONG)pValue = AnscGetStringUlong(TempStr);
             }
@@ -571,7 +571,7 @@ AnscRtspReadTransportPortRange
     }
     else
     {
-        _ansc_strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
+        strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
         *pulValue1 = AnscGetStringUlong(TempStr);
 
         pCurChar = ++pNextChar;
@@ -596,7 +596,7 @@ AnscRtspReadTransportPortRange
     {
         if ( (pNextChar - pCurChar) < sizeof(TempStr) )
         {
-            _ansc_strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
+            strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
             *pulValue2 = AnscGetStringUlong(TempStr);
 
             if ( *pNextChar == RTSP_SEMI_COLON )
@@ -649,7 +649,7 @@ AnscRtspReadTransportIp
     {
         if ( (pNextChar - pCurChar) < sizeof(TempStr) )
         {
-            _ansc_strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
+            strncpy(TempStr, pCurChar, (pNextChar - pCurChar));
             *pulValue1 = _ansc_inet_addr(TempStr);
 
             if ( *pNextChar == RTSP_SEMI_COLON )
