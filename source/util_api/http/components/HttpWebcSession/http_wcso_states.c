@@ -175,7 +175,7 @@ HttpWcsoSetPeerName
     AnscZeroMemory(pProperty->PeerName, ANSC_DOMAIN_NAME_SIZE);
     rc = strcpy_s(pProperty->PeerName, sizeof(pProperty->PeerName), name);
     ERR_CHK(rc);
-    _ansc_strncpy(pScto->HostName, name, WEB_MAX_HOST_NAME_SIZE);
+    strncpy(pScto->HostName, name, WEB_MAX_HOST_NAME_SIZE);
     pScto->HostName[WEB_MAX_HOST_NAME_SIZE] = 0;
 
     return  ANSC_STATUS_SUCCESS;

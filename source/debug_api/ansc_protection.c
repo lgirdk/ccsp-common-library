@@ -141,7 +141,7 @@ AnscInitializeSpinLock1
     AnscInitializeSpinLockWrapper(&pSpinLock->SpinLock);
 
     pSpinLock->Flags                = 0;
-    _ansc_strncpy(pSpinLock->Name, GetFileName(pFileName), sizeof(pSpinLock->Name));
+    strncpy(pSpinLock->Name, GetFileName(pFileName), sizeof(pSpinLock->Name));
     pSpinLock->Name[sizeof(pSpinLock->Name)-1] = '\0';
     pSpinLock->Line                 = ulLine;
     pSpinLock->MaxHoldName[0]       = '\0';
@@ -262,7 +262,7 @@ AnscReleaseSpinLock1
 
     if ( gbAnscSpinLockProfiling && bMax )
     {
-        _ansc_strncpy(pSpinLock->MaxHoldName, GetFileName(pFileName), sizeof(pSpinLock->MaxHoldName));
+        strncpy(pSpinLock->MaxHoldName, GetFileName(pFileName), sizeof(pSpinLock->MaxHoldName));
         pSpinLock->MaxHoldName[sizeof(pSpinLock->MaxHoldName)-1] = '\0';
     }
 

@@ -1395,7 +1395,7 @@ AnscPdoBreakAtTrace
         pRef = (PANSC_BUFFER_REFCOUNT_TRACE)AnscAllocateMemory(sizeof(ANSC_BUFFER_REFCOUNT_TRACE));
         if( pRef )
         {
-            _ansc_strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
+            strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
             pRef->RefFile[sizeof(pRef->RefFile)-1] = '\0';
             pRef->RefLine       = iLineNo;
             pRef->RefCountInc   = 2;
@@ -1515,7 +1515,7 @@ AnscPdoBreakAt2Trace
         pRef = (PANSC_BUFFER_REFCOUNT_TRACE)AnscAllocateMemory(sizeof(ANSC_BUFFER_REFCOUNT_TRACE));
         if( pRef )
         {
-            _ansc_strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
+            strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
             pRef->RefFile[sizeof(pRef->RefFile)-1] = '\0';
             pRef->RefLine       = iLineNo;
             pRef->RefCountInc   = 2;
@@ -1820,7 +1820,7 @@ AnscAllocateBdoTrace
     {
         ULONG                       count;
         
-        _ansc_strncpy(pBdo->AllocFile, GetFileName(pFileName), sizeof(pBdo->AllocFile));
+        strncpy(pBdo->AllocFile, GetFileName(pFileName), sizeof(pBdo->AllocFile));
         pBdo->AllocFile[sizeof(pBdo->AllocFile)-1] = '\0';
         pBdo->AllocLine = iLineNo;
         AnscDListInitializeHeader(&pBdo->RefHead);
@@ -2016,7 +2016,7 @@ AnscFreeBdoTrace
         pRef = (PANSC_BUFFER_REFCOUNT_TRACE)AnscAllocateMemory(sizeof(ANSC_BUFFER_REFCOUNT_TRACE));
         if( pRef )
         {
-            _ansc_strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
+            strncpy(pRef->RefFile, GetFileName(pFileName), sizeof(pRef->RefFile));
             pRef->RefFile[sizeof(pRef->RefFile)-1] = '\0';
             pRef->RefLine       = iLineNo;
             pRef->RefCountInc   = -1;
