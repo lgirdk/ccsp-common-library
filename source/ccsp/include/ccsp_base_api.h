@@ -160,7 +160,8 @@ Notes:
 #define CCSP_INVALID_PSMCLI_CMD                     209
 
 typedef unsigned int dbus_bool ; //1 is true, 0 is false
-extern int rbus_enabled;
+
+#define rbus_enabled 1
 
 #define DBUS_MESSAGE_APPEND_STRING(iter,string) do {   \
     if(string)  \
