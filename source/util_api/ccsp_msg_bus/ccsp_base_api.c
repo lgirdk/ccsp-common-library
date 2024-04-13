@@ -86,6 +86,11 @@ int CcspBaseIf_freeResources(
     int priority
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+    UNREFERENCED_PARAMETER(dbus_path);
+    UNREFERENCED_PARAMETER(priority);
+
     RBUS_LOG("rbus %s supports this function in different way\n", __FUNCTION__);
 
     return CCSP_SUCCESS;
@@ -1571,6 +1576,12 @@ int CcspBaseIf_discComponentSupportingDynamicTbl (
     componentStruct_t **component
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+    UNREFERENCED_PARAMETER(name_space);
+    UNREFERENCED_PARAMETER(subsystem_prefix);
+    UNREFERENCED_PARAMETER(component);
+
     RBUS_LOG_ERR("%s unsupported function in rbus is called, please check\n", __FUNCTION__);
 
     return CCSP_FAILURE;
@@ -1776,6 +1787,12 @@ int CcspBaseIf_checkNamespaceDataType (
     const char *subsystem_prefix,
     dbus_bool *typeMatch)
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+    UNREFERENCED_PARAMETER(name_space);
+    UNREFERENCED_PARAMETER(subsystem_prefix);
+    UNREFERENCED_PARAMETER(typeMatch);
+
     RBUS_LOG_ERR("%s unsupported function in rbus is called, please check\n", __FUNCTION__);
 
     return CCSP_FAILURE;
@@ -1786,6 +1803,9 @@ int CcspBaseIf_dumpComponentRegistry (
     const char* dst_component_id
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+
     RBUS_LOG_ERR("%s unsupported function in rbus is called, please check\n", __FUNCTION__);
 
     return CCSP_FAILURE;
@@ -2177,6 +2197,9 @@ int CcspBaseIf_busCheck(
     const char* dst_component_id
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+
     RBUS_LOG("rbus %s supports this function in a differnt way\n", __FUNCTION__);
 
     return CCSP_SUCCESS;
@@ -2187,6 +2210,9 @@ int CcspBaseIf_finalize(
     const char* dst_component_id
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+
     RBUS_LOG("rbus %s supports this function in a different way\n", __FUNCTION__);
 
     return CCSP_SUCCESS;
@@ -2197,6 +2223,9 @@ int CcspBaseIf_initialize(
     const char* dst_component_id
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(dst_component_id);
+
     RBUS_LOG("rbus %s supports this function in a different way\n", __FUNCTION__);
 
     return CCSP_SUCCESS;
@@ -2534,6 +2563,7 @@ int CcspBaseIf_SendTelemetryDataSignal (
     char* telemetry_data
 )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
     pthread_t thread_id;
 
     pthread_create(&thread_id, NULL, CcspBaseIf_SendTelemetryDataSignal_rbus, (void*)telemetry_data); 
@@ -3493,6 +3523,9 @@ int  CcspIf_Register_Event
     const char* dbus_interface_event
 )
 {
+    UNREFERENCED_PARAMETER(dbus_path_event);
+    UNREFERENCED_PARAMETER(dbus_interface_event);
+
     return CcspBaseIf_Register_Event(bus_handle, sender, event_name);
 }
 
@@ -3505,6 +3538,9 @@ int  CcspIf_UnRegister_Event
     const char* dbus_interface_event
 )
 {
+    UNREFERENCED_PARAMETER(dbus_path_event);
+    UNREFERENCED_PARAMETER(dbus_interface_event);
+
     return CcspBaseIf_UnRegister_Event(bus_handle, sender, event_name);
 }
 
@@ -3524,6 +3560,11 @@ CcspIf_notifyCwmpEventToAP
         char*                               pTimeStamp
     )
 {
+    UNREFERENCED_PARAMETER(bus_handle);
+    UNREFERENCED_PARAMETER(ulEventCode);
+    UNREFERENCED_PARAMETER(pEventDesp);
+    UNREFERENCED_PARAMETER(pTimeStamp);
+
     RBUS_LOG_ERR("%s unsupported function in rbus is called, please check\n", __FUNCTION__);
 
     return CCSP_FAILURE;
