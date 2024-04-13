@@ -3119,47 +3119,29 @@ int PSM_Set_Record_Value
         ERR_CHK(rc);
     }
 
-    if (rbus_enabled == 1)
-    {
-        rbusProperty_t prop = NULL;
-        rbusValue_t value = NULL;
-        rbusObject_t inParams = NULL,outParams = NULL;
-        rbusValue_Init(&value);
-        rbusValueType_t type = rbus_GetDataType(val[0].type);
-        rbusObject_Init(&inParams, NULL);
-        rbusValue_SetFromString(value, type, val[0].parameterValue);
-        rbusProperty_Init(&prop, val[0].parameterName, value);
-        rbusObject_SetProperty(inParams,prop);
-        rbusValue_Release(value);
-        rbusProperty_Release(prop);
-        int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle, "SetPSMRecordValue()", inParams, &outParams);
-        if(inParams) {
-            rbusObject_Release(inParams);
-        }
-        if (RBUS_ERROR_SUCCESS != rbus_ret) {
-            ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
-        }
-        else
-            ret = CCSP_SUCCESS;
-        if (outParams)
-            rbusObject_Release(outParams);
+    rbusProperty_t prop = NULL;
+    rbusValue_t value = NULL;
+    rbusObject_t inParams = NULL,outParams = NULL;
+    rbusValue_Init(&value);
+    rbusValueType_t type = rbus_GetDataType(val[0].type);
+    rbusObject_Init(&inParams, NULL);
+    rbusValue_SetFromString(value, type, val[0].parameterValue);
+    rbusProperty_Init(&prop, val[0].parameterName, value);
+    rbusObject_SetProperty(inParams,prop);
+    rbusValue_Release(value);
+    rbusProperty_Release(prop);
+    int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle, "SetPSMRecordValue()", inParams, &outParams);
+    if(inParams) {
+        rbusObject_Release(inParams);
+    }
+    if (RBUS_ERROR_SUCCESS != rbus_ret) {
+        ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
     }
     else
-    {
+        ret = CCSP_SUCCESS;
+    if (outParams)
+        rbusObject_Release(outParams);
 
-        ret =  CcspBaseIf_setParameterValues(
-                bus_handle,
-                psmName,
-                CCSP_DBUS_PATH_PSM,
-                0,
-                0,
-                val,
-                1,
-                1,
-                &str
-                );
-
-    }
     if(var_string)
         bus_info->freefunc(var_string);
     if(str)
@@ -3200,90 +3182,76 @@ int PSM_Get_Record_Value
         rc = strcpy_s(psmName, sizeof(psmName), CCSP_DBUS_PSM);
         ERR_CHK(rc);
     }
-    if (rbus_enabled == 1)
+
+    rbusValue_t value = NULL;
+    rbusProperty_t prop = NULL;
+    rbusObject_t inParams = NULL, outParams = NULL;
+
+    rbusObject_Init(&inParams, NULL);
+    rbusValue_Init(&value);
+    rbusProperty_Init(&prop, (char *)pRecordName, value);
+    rbusObject_SetProperty(inParams,prop);
+    rbusValue_Release(value);
+    rbusProperty_Release(prop);
+
+    int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle,"GetPSMRecordValue()", inParams, &outParams);
+    if(inParams) {
+        rbusObject_Release(inParams);
+    }
+    if (RBUS_ERROR_SUCCESS == rbus_ret)
     {
-        rbusValue_t value = NULL;
-        rbusProperty_t prop = NULL;
-        rbusObject_t inParams = NULL, outParams = NULL;
-
-        rbusObject_Init(&inParams, NULL);
-        rbusValue_Init(&value);
-        rbusProperty_Init(&prop, (char *)pRecordName, value);
-        rbusObject_SetProperty(inParams,prop);
-        rbusValue_Release(value);
-        rbusProperty_Release(prop);
-
-        int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle,"GetPSMRecordValue()", inParams, &outParams);
-        if(inParams) {
-            rbusObject_Release(inParams);
-        }
-        if (RBUS_ERROR_SUCCESS == rbus_ret)
+        ret = CCSP_SUCCESS;
+        prop = rbusObject_GetProperties(outParams);
+        while(prop)
         {
-            ret = CCSP_SUCCESS;
-            prop = rbusObject_GetProperties(outParams);
-            while(prop)
-            {
-                size++;
-                prop = rbusProperty_GetNext(prop);
-            }
+            size++;
+            prop = rbusProperty_GetNext(prop);
+        }
 
-            if(size)
+        if(size)
+        {
+            val = bus_info->mallocfunc(size*sizeof(parameterValStruct_t *));
+            memset(val, 0, size*sizeof(parameterValStruct_t *));
+            rbusProperty_t next = rbusObject_GetProperties(outParams);
+            for (i = 0; i < size; i++)
             {
-                val = bus_info->mallocfunc(size*sizeof(parameterValStruct_t *));
-                memset(val, 0, size*sizeof(parameterValStruct_t *));
-                rbusProperty_t next = rbusObject_GetProperties(outParams);
-                for (i = 0; i < size; i++)
+                val[i] = bus_info->mallocfunc(sizeof(parameterValStruct_t));
+                memset(val[i], 0, sizeof(parameterValStruct_t));
+                /*Get Name */
+                val[i]->parameterName = bus_info->mallocfunc(strlen(rbusProperty_GetName(next))+1);
+                strcpy_s(val[i]->parameterName, (strlen(rbusProperty_GetName(next))+1), rbusProperty_GetName(next));
+
+                rbusValue_t value = rbusProperty_GetValue(next);
+
+                /*Get Type*/
+                rbusValueType_t rbus_type = rbusValue_GetType(value);
+                rbus_type_to_ccsp_type(rbus_type, &val[i]->type);
+
+                /*Get Value*/
+                if (RBUS_BOOLEAN == rbus_type)
                 {
-                    val[i] = bus_info->mallocfunc(sizeof(parameterValStruct_t));
-                    memset(val[i], 0, sizeof(parameterValStruct_t));
-                    /*Get Name */
-                    val[i]->parameterName = bus_info->mallocfunc(strlen(rbusProperty_GetName(next))+1);
-                    strcpy_s(val[i]->parameterName, (strlen(rbusProperty_GetName(next))+1), rbusProperty_GetName(next));
-
-                    rbusValue_t value = rbusProperty_GetValue(next);
-
-                    /*Get Type*/
-                    rbusValueType_t rbus_type = rbusValue_GetType(value);
-                    rbus_type_to_ccsp_type(rbus_type, &val[i]->type);
-
-                    /*Get Value*/
-                    if (RBUS_BOOLEAN == rbus_type)
-                    {
-                        int n = snprintf(pTmp, 0, "false") + 1;
-                        val[i]->parameterValue = bus_info->mallocfunc(n);
-                        snprintf(val[i]->parameterValue, (unsigned int)n, "%s", rbusValue_GetBoolean(value) ? "true" : "false");
-                    }
-                    else
-                    {
-                        char* sValue = rbusValue_ToString(value, NULL, 0);
-                        val[i]->parameterValue = bus_info->mallocfunc(strlen(sValue)+1);
-                        strcpy_s(val[i]->parameterValue, (strlen(sValue)+1), sValue);
-                        bus_info->freefunc(sValue);
-                    }
-
-                    next = rbusProperty_GetNext(next);
+                    int n = snprintf(pTmp, 0, "false") + 1;
+                    val[i]->parameterValue = bus_info->mallocfunc(n);
+                    snprintf(val[i]->parameterValue, (unsigned int)n, "%s", rbusValue_GetBoolean(value) ? "true" : "false");
                 }
+                else
+                {
+                    char* sValue = rbusValue_ToString(value, NULL, 0);
+                    val[i]->parameterValue = bus_info->mallocfunc(strlen(sValue)+1);
+                    strcpy_s(val[i]->parameterValue, (strlen(sValue)+1), sValue);
+                    bus_info->freefunc(sValue);
+                }
+
+                next = rbusProperty_GetNext(next);
             }
         }
-        else
-        {
-            ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
-        }
-        if(outParams)
-            rbusObject_Release(outParams);
     }
     else
     {
-        ret = CcspBaseIf_getParameterValues(
-                bus_handle,
-                psmName,
-                CCSP_DBUS_PATH_PSM,
-                parameterNames,
-                1,
-                &size,
-                &val
-                );
+        ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
     }
+    if(outParams)
+        rbusObject_Release(outParams);
 
     if(ret != CCSP_SUCCESS )
         return ret;
@@ -3424,48 +3392,31 @@ int PSM_Set_Record_Value2
         ERR_CHK(rc);
     }
     val[0].parameterValue = (char *)pVal;
-    if (rbus_enabled == 1)
-    {
-        rbusProperty_t prop = NULL;
-        rbusValue_t value = NULL;
-        rbusObject_t inParams = NULL, outParams = NULL;
-        rbusValue_Init(&value);
-        rbusObject_Init(&inParams, NULL);
-        rbusValueType_t type = rbus_GetDataType(val[0].type);
-        rbusObject_Init(&inParams, NULL);
-        rbusValue_SetFromString(value, type, val[0].parameterValue);
-        rbusProperty_Init(&prop, val[0].parameterName, value);
-        rbusObject_SetProperty(inParams, prop);
-        rbusValue_Release(value);
-        rbusProperty_Release(prop);
-        int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle, "SetPSMRecordValue()", inParams, &outParams);
-        if(inParams) {
-            rbusObject_Release(inParams);
-        }
-        if (RBUS_ERROR_SUCCESS != rbus_ret) {
-            ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
-        }
-        else
-            ret = CCSP_SUCCESS;
-        if (outParams)
-            rbusObject_Release(outParams);
+
+    rbusProperty_t prop = NULL;
+    rbusValue_t value = NULL;
+    rbusObject_t inParams = NULL, outParams = NULL;
+    rbusValue_Init(&value);
+    rbusObject_Init(&inParams, NULL);
+    rbusValueType_t type = rbus_GetDataType(val[0].type);
+    rbusObject_Init(&inParams, NULL);
+    rbusValue_SetFromString(value, type, val[0].parameterValue);
+    rbusProperty_Init(&prop, val[0].parameterName, value);
+    rbusObject_SetProperty(inParams, prop);
+    rbusValue_Release(value);
+    rbusProperty_Release(prop);
+    int rbus_ret = rbusMethod_Invoke(bus_info->rbus_handle, "SetPSMRecordValue()", inParams, &outParams);
+    if(inParams) {
+        rbusObject_Release(inParams);
+    }
+    if (RBUS_ERROR_SUCCESS != rbus_ret) {
+        ret = Rbus2_to_CCSP_error_mapper(rbus_ret);
     }
     else
-    {
-        ret = CcspBaseIf_setParameterValues(
-                bus_handle,
-                psmName,
-                CCSP_DBUS_PATH_PSM,
-                0,
-                0,
-                val,
-                1,
-                1,
-                &str
-                );
-        if(str)
-            bus_info->freefunc(str);
-    }
+        ret = CCSP_SUCCESS;
+    if (outParams)
+        rbusObject_Release(outParams);
+
     return ret;
 }
 

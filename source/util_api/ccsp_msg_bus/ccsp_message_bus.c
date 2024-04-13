@@ -1099,11 +1099,14 @@ CCSP_Message_Bus_Exit
 )
 {
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    rbusCoreError_t err = RBUSCORE_SUCCESS;
 
-    err = rbus_closeBrokerConnection();
-    if (RBUSCORE_SUCCESS != err)
-        CcspTraceError(("<%s>: rbus_closeBrokerConnection fails with %d\n", __FUNCTION__,err));
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
+    err = rbus_unregisterObj(bus_info->component_id);
+    if(RBUSCORE_SUCCESS != err)
+        CcspTraceError(("<%s>: rbus_unregisterObj for component %s fails with %d\n", __FUNCTION__, bus_info->component_id, err));
+    int rc = rbus_close(bus_info->rbus_handle);
+    if(RBUS_ERROR_SUCCESS != rc)
+        CcspTraceError(("<%s>: rbus_close fails with %d\n", __FUNCTION__,rc));
     bus_info->freefunc(bus_info);
     bus_info = NULL;
 }
