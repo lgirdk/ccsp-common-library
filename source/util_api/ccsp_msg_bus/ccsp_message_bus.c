@@ -145,7 +145,6 @@ static int wifiDbStatus_signal_rbus(const char * destination, const char * metho
 static int telemetry_send_signal_rbus(const char * destination, const char * method, rbusMessage request, void * user_data, rbusMessage *response, const rtMessageHeader* hdr);
 static int cssp_event_subscribe_override_handler_rbus(char const* object,  char const* paramName,  char const* eventName, char const* listener, int added, int componentId, int interval, int duration, rbusFilter_t filter, void* userData);
 static void Ccsp_Rbus_ReadPayload(rbusMessage payload, int32_t* componentId, int32_t* interval, int32_t* duration, rbusFilter_t* filter);
-int rbus_enabled = 0;
 
 // External Interface, defined in ccsp_message_bus.h
 /*
@@ -1034,11 +1033,6 @@ CCSP_Msg_IsRbus_enabled
 void
 )
 {
-    if (0 == rbus_enabled)
-    {
-        rbus_enabled = (RBUS_ENABLED == rbus_checkStatus()) ? 1 : 0;
-    }
-
     CcspTraceWarning(("%s is enabled\n", rbus_enabled ? "RBus" : "DBus"));
     return rbus_enabled;
 }
@@ -1154,10 +1148,6 @@ CCSP_Message_Bus_Init
        bus_info->component_id[sizeof(bus_info->component_id)-1] = '\0';
     }
 
-    CCSP_Msg_IsRbus_enabled();
-    RBUS_LOG("%s is enabled\n", rbus_enabled ? "RBus" : "DBus");  
-    if(rbus_enabled)
-    {
         rbusCoreError_t err = RBUSCORE_SUCCESS;
         CCSP_Message_Bus_Register_Path_Priv_rbus(bus_info, thread_path_message_func_rbus, bus_info);
 
@@ -1230,203 +1220,6 @@ CCSP_Message_Bus_Init
 	/*CID: 110434 Resource leak*/
 	fclose(fp);
         return 0;
-    }
-    //    CcspTraceDebug(("<%s>: component id = '%s'\n", __FUNCTION__, bus_info->component_id));
-
-    // init var, mutex, msg_queue
-    pthread_mutex_init(&bus_info->info_mutex, NULL);
-    bus_info->msg_queue = NULL;
-    bus_info->msg_queue = (CCSP_MSG_QUEUE*)bus_info->mallocfunc(sizeof(CCSP_MSG_QUEUE));
-    if( ! bus_info->msg_queue)
-    {
-        CcspTraceError(("<%s>: No memory\n", __FUNCTION__));
-        fclose(fp);/*RDKB-6234, CID-33427, free the resource before return*/
-        bus_info->freefunc(bus_info);
-        return -1;
-    }
-    CcspMsgQueueInit(bus_info->msg_queue);
-    pthread_mutex_init(&bus_info->msg_mutex, NULL);
-
-    if (NewCondVar(&bus_info->msg_threshold_cv) == -1)
-    {
-        CcspTraceError(("<%s>: Couldn't initialize condition variable!\n", __FUNCTION__));
-        fclose(fp);
-        bus_info->freefunc(bus_info);
-        return -1;
-    }
-
-    bus_info->dbus_connect_thread_count = 0;
-    bus_info->dbus_loop_thread_count = 0;
- 
-    pthread_mutex_lock(&bus_info->info_mutex);
-    bus_info->run = 1;
-    pthread_mutex_unlock(&bus_info->info_mutex);
-
-    // init the default Dbus threads
-    if(ccsp_bus_ref_count == 0)
-        dbus_threads_init_default();
-
-    ccsp_bus_ref_count++;
-
-    /* Set up the new connections */
-    pthread_mutex_lock(&bus_info->msg_mutex);
-    while (fgets(address, sizeof(address), fp) && 
-           count < CCSP_MESSAGE_BUS_MAX_CONNECTION)
-    {
-        /*assume the first address is our primary connection*/
-        CCSP_Message_Bus_Strip(address);  // strip out \cr and \lf
-        if(*address == 0) break;
-        strncpy
-            (   
-                bus_info->connection[count].address, 
-                address, 
-                sizeof(bus_info->connection[count].address)-1
-             );
-        (bus_info->connection[count].address)[sizeof(bus_info->connection[count].address)-1] = '\0';
-
-        /*
-        CcspTraceDebug(
-            (   
-                "<%s>:"
-                " socket address = '%s'\n", 
-                __FUNCTION__, 
-                bus_info->connection[count].address
-            ));
-        */
-
-        // start the loop and connect threads, should be just one of each, even if count > 1
-        bus_info->dbus_loop_thread_count++;
-
-        /* Lock protecting the dispatch status of this connection */
-        pthread_mutex_init(&bus_info->connection[count].dispatch_mutex, NULL);
-
-        /* Lock protecting the connection state of this connection */
-        pthread_mutex_init(&bus_info->connection[count].connect_mutex, NULL);
-     
-        bus_info->connection[count].bus_info_ptr = (void *)bus_info;
-        bus_info->connection[count].loop = dbus_loop_new();
-        
-        /* Create the self pipe and set both ends to non-blocking */
-        if ( (rc = pipe(bus_info->connection[count].self_pipe)) != -1 )
-        {
-            flags = fcntl(bus_info->connection[count].self_pipe[0], F_GETFL);
-            flags |= O_NONBLOCK;
-            rc = fcntl(bus_info->connection[count].self_pipe[0], F_SETFL, flags);
-        }
-        if (rc != -1)
-        {
-            flags = fcntl(bus_info->connection[count].self_pipe[1], F_GETFL);
-            flags |= O_NONBLOCK;
-            rc = fcntl(bus_info->connection[count].self_pipe[1], F_SETFL, flags);
-        }
-        if (rc != -1)
-        {
-            if (!dbus_loop_add_wake(bus_info->connection[count].loop, bus_info->connection[count].self_pipe[0]))
-            {
-                CcspTraceError(("<%s>: Couldn't add mainloop wakeup watch!\n", __FUNCTION__));
-                rc = -1;
-            }
-        }
-        if (rc == -1)
-        {
-            CcspTraceError(("<%s>: Couldn't create self pipe for waking mainloop!\n", __FUNCTION__));
-            fclose(fp);
-            close(bus_info->connection[count].self_pipe[0]);
-            close(bus_info->connection[count].self_pipe[1]);
-            bus_info->freefunc(bus_info);
-            ccsp_bus_ref_count--;
-            pthread_mutex_unlock(&bus_info->msg_mutex);
-            pthread_mutex_destroy(&bus_info->msg_mutex);
-            pthread_cond_destroy (&bus_info->msg_threshold_cv);
-            pthread_mutex_destroy(&bus_info->connection[count].dispatch_mutex);
-            pthread_mutex_destroy(&bus_info->connection[count].connect_mutex);
-            return -1;
-        }
-
-        bus_info->dbus_connect_thread_count++;
-
-        pthread_create
-            (
-                &bus_info->connection[count].connect_thread, 
-                NULL, 
-                CCSP_Message_Bus_Connect_Thread, 
-                (void *)(&(bus_info->connection[count]))
-             );
-
-        count++;
-    }
-    fclose(fp);
-    rc = 0;
-    NewTimeout(&timeout, CCSP_MESSAGE_BUS_CONNECT_TIMEOUT_SECONDS, 0);
-    while ((bus_info->dbus_connect_thread_count > 0) && (rc == 0))
-        rc = pthread_cond_timedwait(&bus_info->msg_threshold_cv, &bus_info->msg_mutex, &timeout);
-
-    /*
-       Something really bad happened.
-       A timeout while waiting for the counter to return to 0 means that one or
-       more CCSP_Message_Bus_Connect_Thread threads got stuck and failed to
-       terminate. We print an error and continue but it's really a fatal error.
-    */
-    if (rc != 0) {
-        CcspTraceError(("<%s>: error %d waiting for dbus_connect_thread_count to return to 0\n", __FUNCTION__, rc));
-    }
-
-    /* Now that the threads are connected and configured, start the mainloops */
-    for (count = 0; count < CCSP_MESSAGE_BUS_MAX_CONNECTION; count++)
-    {
-        if (bus_info->connection[count].conn && bus_info->connection[count].loop)
-        {
-            dbus_connection_set_wakeup_main_function
-                (
-                    bus_info->connection[count].conn,
-                    (void *)&wake_mainloop,
-                    (void *)(&bus_info->connection[count]),
-                    NULL
-                );
-
-            pthread_create
-                (
-                    &bus_info->connection[count].loop_thread, 
-                    NULL, 
-                    CCSP_Message_Bus_Loop_Thread, 
-                    (void *)(&(bus_info->connection[count]))
-                 );
-        }
-    }    
-    pthread_mutex_unlock(&bus_info->msg_mutex);
-
-    //create a thread to handle dbus request
-    pthread_create(&thread_dbus_process, NULL, CCSP_Message_Bus_Process_Thread, (void *)bus_info);
-
-    //create a thread to monitor deadlock. Currently Only PandM enabled
-    if ( strstr(bus_info->component_id, "com.cisco.spvtg.ccsp.pam" ) != 0 )
-    {
-        if (mallocfc) deadlock_detection_log =(DEADLOCK_ARRAY*) mallocfc(sizeof(DEADLOCK_ARRAY));
-        else deadlock_detection_log =(DEADLOCK_ARRAY*) malloc(sizeof(DEADLOCK_ARRAY));
-        if ( ! deadlock_detection_log ) 
-        {
-            CcspTraceError(("<%s>: No memory for deadlock log\n", __FUNCTION__));
-            return -1;
-        }
-        memset(deadlock_detection_log, 0, sizeof(DEADLOCK_ARRAY));
-
-        deadlock_detection_enable = 1;
-        CcspBaseIf_deadlock_detection_time_normal_seconds = CcspBaseIf_timeout_seconds        + 30 + CcspBaseIf_timeout_protect_plus_seconds;
-        CcspBaseIf_deadlock_detection_time_getval_seconds = CcspBaseIf_timeout_getval_seconds + 30 + CcspBaseIf_timeout_protect_plus_seconds;
-        pthread_mutex_init(&(deadlock_detection_info.info_mutex), NULL);
-
-        pthread_create
-            (
-                &thread_dbus_deadlock_monitor, 
-                NULL, 
-                CcspBaseIf_Deadlock_Detection_Thread, 
-                (void *)bus_info
-             ); 
-
-        CcspTraceDebug(("<%s>: Deadlock monitor for %s started.\n", __FUNCTION__, bus_info->component_id));
-    }
-
-    return 0;
 }
 
 /* 
@@ -1464,146 +1257,13 @@ CCSP_Message_Bus_Exit
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
     struct timespec timeout = { 0, 0 };
 
-    if(rbus_enabled)
-    {
-        rbusCoreError_t err = RBUSCORE_SUCCESS;
+    rbusCoreError_t err = RBUSCORE_SUCCESS;
 
-        err = rbus_closeBrokerConnection();
-        if(RBUSCORE_SUCCESS != err)
-            CcspTraceError(("<%s>: rbus_closeBrokerConnection fails with %d\n", __FUNCTION__,err));
-        bus_info->freefunc(bus_info);
-        bus_info = NULL;
-
-        return;
-    }
-
-    /* First set run to 0 so processing thread will exit */
-    pthread_mutex_lock(&bus_info->info_mutex);
-    bus_info->run = 0;
-    pthread_mutex_unlock(&bus_info->info_mutex);
-
-    /* Tell the main loop threads to stop and close the connections */
-    pthread_mutex_lock(&bus_info->msg_mutex);
-    for(i = 0; i < CCSP_MESSAGE_BUS_MAX_CONNECTION; i++)
-    {
-        /* Stop all the loop threads */
-        if(bus_info->connection[i].loop && bus_info->connection[i].conn )
-        {
-            dbus_connection_lock(bus_info->connection[i].conn);
-            wake_mainloop(&bus_info->connection[i]);
-            dbus_connection_unlock(bus_info->connection[i].conn);
-        }
-    }
-
-    /* Wake up any threads waiting on the condition variable so that they will shut down */
-    pthread_cond_signal(&bus_info->msg_threshold_cv);
-    pthread_mutex_unlock(&bus_info->msg_mutex);
-
-    { // join all the threads started in init
-
-        char *msg = NULL;
-
-        /*
-           All CCSP_Message_Bus_Connect_Thread threads are detachd and will have
-           terminated long before we reach this point, so they don't need to be
-           handled here.
-
-           All CCSP_Message_Bus_Process_Thread threads will terminate themselves
-           when bus_info->run is set to 0. We still need to wait for this thread 
-           to terminate though before freeing the dbus resources it uses.
-
-           The CcspBaseIf_Deadlock_Detection_Thread thread is not detached, so
-           we need to call pthread_join for it.
-        */
-
-        if(thread_dbus_deadlock_monitor && (ret = pthread_join(thread_dbus_deadlock_monitor, (void **)&msg)) != 0) {
-            CcspTraceError(("<%s>: thread deadlock monitor join returned %d with error %s\n", __FUNCTION__, ret, msg));
-        }
-        if(msg) {
-            free(msg);
-            msg = NULL;
-        }
-
-        if(thread_dbus_process && (ret = pthread_join(thread_dbus_process, (void **)&msg)) != 0) {
-            CcspTraceError(("<%s>: thread dbus process join returned %d with error %s\n", __FUNCTION__, ret, msg));
-        }
-        if(msg) {
-            free(msg);
-            msg = NULL;
-        }
-    }
-
-    pthread_mutex_lock(&bus_info->msg_mutex);
-    /* Wait for loop threads to stop */
-    if (bus_info->dbus_loop_thread_count > 0)
-    {
-        ret = 0;
-        NewTimeout(&timeout, CCSP_MESSAGE_BUS_DISCONNECT_TIMEOUT_SECONDS, 0);
-        while ((bus_info->dbus_loop_thread_count > 0) && (ret == 0)) {
-            ret = pthread_cond_timedwait(&bus_info->msg_threshold_cv, &bus_info->msg_mutex, &timeout);
-        }
-    }
-    pthread_mutex_unlock(&bus_info->msg_mutex);
-
-    /* Get rid of all the connections and free the resources */
-    for(i = 0; i < CCSP_MESSAGE_BUS_MAX_CONNECTION; i++)
-    {
-        if(bus_info->connection[i].conn )
-        {
-            dbus_connection_close(bus_info->connection[i].conn);
-            dbus_connection_unref(bus_info->connection[i].conn);
-            close(bus_info->connection[i].self_pipe[0]);
-            close(bus_info->connection[i].self_pipe[1]);
-            pthread_mutex_destroy(&bus_info->connection[i].dispatch_mutex);
-            pthread_mutex_destroy(&bus_info->connection[i].connect_mutex);
-        }
-    }
-
-    // RTian 5/3/2013    CCSP_Msg_SleepInMilliSeconds(1000);
-    pthread_mutex_lock(&bus_info->info_mutex);
-    for(i = 0; i < CCSP_MESSAGE_BUS_MAX_FILTER; i++)
-    {
-        if(bus_info->filters[i].sender)    bus_info->freefunc(bus_info->filters[i].sender);
-        if(bus_info->filters[i].path)      bus_info->freefunc(bus_info->filters[i].path);
-        if(bus_info->filters[i].interface) bus_info->freefunc(bus_info->filters[i].interface);
-        if(bus_info->filters[i].event)     bus_info->freefunc(bus_info->filters[i].event);
-    }
-
-    for(i = 0; i < CCSP_MESSAGE_BUS_MAX_PATH; i++)
-    {
-        if(bus_info->path_array[i].path) {
-            bus_info->freefunc(bus_info->path_array[i].path);
-        }
-    }
-
-    if(bus_info->CcspBaseIf_func) bus_info->freefunc(bus_info->CcspBaseIf_func);
-
-    if(bus_info->msg_queue)
-    {
-        PCCSP_MSG_SINGLE_LINK_ENTRY entry = NULL;
-        CCSP_REQ_DESCRIPTOR *req_rec = NULL;       
-        while((entry = CcspMsgQueuePopEntry(bus_info->msg_queue)) != NULL) {
-            req_rec = CCSP_MSG_ACCESS_CONTAINER(entry,CCSP_REQ_DESCRIPTOR,Linkage);
-            dbus_message_unref(req_rec->message);            
-            bus_info->freefunc(req_rec);
-        }
-
-        bus_info->freefunc(bus_info->msg_queue);
-        bus_info->msg_queue = NULL;
-        pthread_mutex_destroy(&bus_info->msg_mutex);
-        pthread_cond_destroy (&bus_info->msg_threshold_cv);
-    }
-    pthread_mutex_unlock(&bus_info->info_mutex);
-    pthread_mutex_destroy(&bus_info->info_mutex);
-
+    err = rbus_closeBrokerConnection();
+    if (RBUSCORE_SUCCESS != err)
+        CcspTraceError(("<%s>: rbus_closeBrokerConnection fails with %d\n", __FUNCTION__,err));
     bus_info->freefunc(bus_info);
     bus_info = NULL;
-    ccsp_bus_ref_count--;
-   // if(ccsp_bus_ref_count == 0) dbus_shutdown();
-
-    //    CcspTraceDebug(("<%s>: component_id = '%s'\n", __FUNCTION__, bus_info->component_id));
-    
-    return;
 }
 
 static void
@@ -1939,40 +1599,15 @@ CCSP_Message_Bus_Register_Path_Priv
         }
     }
     
-    if(rbus_enabled)
-    {
-        pthread_mutex_unlock(&bus_info->info_mutex);
-        dbus_error_free(&error);
-        return CCSP_Message_Bus_OK;
-        /*
-         * this is already handed by CCSP_Message_Bus_Register_Path_Priv_rbus during init
-         * hence there is no need to progress further in this function in rbus mode.
-        */
-    }
-    
-    if(i != CCSP_MESSAGE_BUS_MAX_PATH) 
-    {
-        for(j = 0; j < CCSP_MESSAGE_BUS_MAX_CONNECTION; j++)
-        {
-            if(bus_info->connection[j].connected && bus_info->connection[j].conn )
-            {
-                if(dbus_connection_try_register_object_path
-                        (
-                         bus_info->connection[j].conn,
-                         path,
-                         &bus_info->path_array[i].echo_vtable,
-                         (void*)user_data,
-                         &error
-                        ))
-                    ret = CCSP_Message_Bus_OK;
-            }
-        }
-    }
+    /*
+     * this is already handed by CCSP_Message_Bus_Register_Path_Priv_rbus during init
+     * hence there is no need to progress further in this function in rbus mode.
+     */
 
     pthread_mutex_unlock(&bus_info->info_mutex);
     dbus_error_free(&error);
 
-    return ret;
+    return CCSP_Message_Bus_OK;
 }
 
 void ccsp_handle_rbus_component_reply (void* bus_handle, rbusMessage msg, rbusValueType_t typeVal, enum dataType_e *pType, char** pStringValue)
