@@ -329,43 +329,6 @@ void CcspBaseIf_SetCallback2
 
 }
 
-#define CCSP_DBUS_LARGE_REPLY_SIZE_MIN 75000  // bytes
-#define MAX_DBUS_PARAM_SIZE 50000
-
-DBusHandlerResult
-CcspBaseIf_base_path_message_func (DBusConnection  *conn,
-                                   DBusMessage     *message,
-                                   DBusMessage     *reply,
-                                   const char *interface,
-                                   const char *method,
-                                   CCSP_MESSAGE_BUS_INFO *bus_info)
-{
-    UNREFERENCED_PARAMETER(conn);
-    UNREFERENCED_PARAMETER(message);
-    UNREFERENCED_PARAMETER(reply);
-    UNREFERENCED_PARAMETER(interface);
-    UNREFERENCED_PARAMETER(method);
-    UNREFERENCED_PARAMETER(bus_info);
-
-    CcspTraceError(("came inside %s in rbus it should be handled in thread_path_message_func_rbus\n",__FUNCTION__));
-
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-DBusHandlerResult
-CcspBaseIf_evt_callback (DBusConnection  *conn,
-              DBusMessage     *message,
-              void            *user_data)
-{
-    UNREFERENCED_PARAMETER(conn);
-    UNREFERENCED_PARAMETER(message);
-    UNREFERENCED_PARAMETER(user_data);
-
-    CcspTraceInfo(("came inside %s in rbus it will be handled in CcspBaseIf_evt_callback_rbus\n",__FUNCTION__));
-
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
 /* Handle a value change event from an rbus 2.0 api component
  * As we migrate components from Ccsp to rbus2, more and will be based on rbus2
  */
@@ -491,16 +454,8 @@ int CcspBaseIf_evt_callback_rbus(const char * object_name, const char * event_na
     return RBUSCORE_SUCCESS;
 }
 
-void  CcspBaseIf_Set_Default_Event_Callback
-(
-    void* bus_handle,
-    DBusObjectPathMessageFunction   callback
-)
-{
-    CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    bus_info->default_sig_callback = callback;
-    
-}
+/* To be removed as part of dropping dependency on dbus... but needs more review so keep for now */
+#if 1
 
 /*
     This function is used to save dbus call in a round queue.
@@ -858,4 +813,6 @@ CcspBaseIf_Deadlock_Detection_Thread
     
     return NULL;
 }
+
+#endif
 
