@@ -856,6 +856,9 @@
       <Name>Device.X_RDK_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Name>
     </Param>
     <Param invisible="true">
+      <Name>Device.X_RDK_WanManager.Interface.{i}.Status</Name>
+    </Param>
+    <Param invisible="true">
       <Name>Device.X_RDK_WanManager.RestorationDelay</Name>
     </Param>
     <Param>
@@ -1658,6 +1661,9 @@
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Name>
+    </Param>
+    <Param>
+      <Name>Device.X_LGI-COM_WanManager.Interface.{i}.Status</Name>
     </Param>
     <Param>
       <Name>Device.X_LGI-COM_WanManager.RestorationDelay</Name>
@@ -2864,6 +2870,10 @@
     <Alias>
       <External>Device.X_LGI-COM_WanManager.Interface.{i}.VirtualInterface.{i}.Name</External>
       <Internal>Device.X_RDK_WanManager.Interface.{i}.VirtualInterface.{i}.Name</Internal>
+    </Alias>
+    <Alias>
+      <External>Device.X_LGI-COM_WanManager.Interface.{i}.Status</External>
+      <Internal>Device.X_RDK_WanManager.Interface.{i}.Status</Internal>
     </Alias>
     <Alias>
       <External>Device.X_LGI-COM_WanManager.RestorationDelay</External>
