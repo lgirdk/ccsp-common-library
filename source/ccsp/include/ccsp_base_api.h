@@ -161,58 +161,6 @@ Notes:
 
 typedef unsigned int dbus_bool ; //1 is true, 0 is false
 
-#define rbus_enabled 1
-
-#define DBUS_MESSAGE_APPEND_STRING(iter,string) do {   \
-    if(string)  \
-        dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &string); \
-    else \
-    {  \
-        char *tmp = ""; \
-        dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &tmp); \
-	} \
-  } while (0)
-
-#define DBUS_MESSAGE_ITER_RECURSE(iter,subiter,type, val, ret, freefc) do {   \
-	if(dbus_message_iter_get_arg_type(iter) == type) \
-	  dbus_message_iter_recurse(iter,subiter); \
-	else \
-	{ \
-	    freefc(val); \
-	    dbus_message_unref (reply); \
-	    dbus_message_unref (message); \
-		return ret; \
-	} \
-  } while (0)
-
-
-#define DBUS_MESSAGE_ITER_RECURSE_SRV(iter,subiter,type, val, freefc) do {   \
-	if(dbus_message_iter_get_arg_type(iter) == type) \
-	  dbus_message_iter_recurse(iter,subiter); \
-	else \
-	{ \
-	    freefc(val); \
-	    dbus_message_unref (reply); \
-	    reply = dbus_message_new_error (message, \
-	                                    DBUS_ERROR_INVALID_ARGS, \
-	                                    "InvalidArgs"); \
-	    dbus_connection_send (conn, reply, NULL); \
-	    dbus_message_unref (reply); \
-	    return DBUS_HANDLER_RESULT_HANDLED; \
-	} \
-  } while (0)
-
-  
-#define DBUS_MESSAGE_ITER_RECURSE_SIG(iter,subiter,type, val, freefc) do {   \
-	if(dbus_message_iter_get_arg_type(iter) == type) \
-	  dbus_message_iter_recurse(iter,subiter); \
-	else \
-	{ \
-	    freefc(val); \
-	    return DBUS_HANDLER_RESULT_HANDLED; \
-	} \
-  } while (0)
-
 #define RBUS_LOG(...) do {\
     if (0 /* && (access("/nvram/rbus_support_log_to_file", F_OK) == 0) */ ) {\
         CcspTraceInfo((__VA_ARGS__));\
@@ -872,12 +820,6 @@ int CcspBaseIf_SendcurrentSessionIDSignal (
     int sessionID
 );
 
-int CcspBaseIf_WebConfigSignal (
-    void* bus_handle,
-    char* webconfig
-);
-
-
 //server side function
 typedef int  (*CCSPBASEIF_FREERESOURCES)(
     int priority,
@@ -1170,21 +1112,6 @@ void CcspBaseIf_SetCallback2
 int CcspBaseIf_getObjType(char *parentName, char *name, int *inst_num, char *buf);
 
 
-
-DBusHandlerResult
-CcspBaseIf_base_path_message_func (DBusConnection  *conn,
-                                   DBusMessage     *message,
-                                   DBusMessage     *reply,
-                                   const char *interface,
-                                   const char *method,
-                                   CCSP_MESSAGE_BUS_INFO *bus_info);
-
-DBusHandlerResult
-CcspBaseIf_evt_callback (DBusConnection  *conn,
-              DBusMessage     *message,
-              void            *user_data
-);
-                                   
 /* The function is called to register event, if the interface name and data path is NULL. Default is register the base interface*/
 int  CcspIf_Register_Event
 (
@@ -1262,13 +1189,6 @@ int  CcspBaseIf_UnRegister_Event
     void* bus_handle,
     const char* sender,
     const char* event_name
-);
-
-//call this if you need handle signal other than standard signals like component_die,parameterValueChangeSignal..
-void  CcspBaseIf_Set_Default_Event_Callback
-(
-    void* bus_handle,
-    DBusObjectPathMessageFunction   callback
 );
 
 int CcspBaseIf_SendSignal(
