@@ -22,6 +22,7 @@ Description=Cosa-start service
 [Service]
 Type=forking
 WorkingDirectory=/usr/ccsp
+AppArmorProfile=-cosa_start.sh
 ExecStartPre=/bin/sh -c 'sleep 50'
 ExecStart=/bin/sh -c '/usr/ccsp/cosa_start.sh'
 ExecStop=/bin/sh -c '/usr/ccsp/cosa_start.sh stop'
