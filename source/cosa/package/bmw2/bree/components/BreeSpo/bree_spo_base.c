@@ -260,13 +260,6 @@ BreeSpoRemove
         pBreeSrmo->Remove((ANSC_HANDLE)pBreeSrmo);
     }
 
-#ifdef   _ANSC_FILE_ZLIB_
-    if ( g_pCryptoObj )
-    {
-        g_pCryptoObj->Remove((ANSC_HANDLE)g_pCryptoObj);
-    }
-#endif
-
 #endif
 
     if (pBreeSoaIf)
@@ -327,13 +320,6 @@ BreeSpoEnrollObjects
                     (ANSC_HANDLE)NULL
                 );
     }
-
-#ifdef   _ANSC_FILE_ZLIB_
-    if ( !g_pCryptoObj )
-    {
-        g_pCryptoObj  = (PANSC_CRYPTO_OBJECT)AnscCreateCrypto((ANSC_HANDLE)pMyObject);
-    }
-#endif
 
 #endif
 

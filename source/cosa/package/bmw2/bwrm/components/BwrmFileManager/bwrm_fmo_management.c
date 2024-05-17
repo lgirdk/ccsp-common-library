@@ -167,7 +167,7 @@ BwrmFmoGetFile
         AnscOpenFile
             (
                 pFileName,
-                ANSC_FILE_MODE_READ | ANSC_FILE_MODE_ZLIB_COMPRESSED,
+                ANSC_FILE_MODE_READ,
                 ANSC_FILE_TYPE_READ
             );
 #endif
@@ -333,7 +333,7 @@ BwrmFmoSetFile
         AnscOpenFile
             (
                 pFileName,
-                ANSC_FILE_MODE_WRITE | ANSC_FILE_MODE_TRUNC | ANSC_FILE_MODE_ZLIB_COMPRESSED,
+                ANSC_FILE_MODE_WRITE | ANSC_FILE_MODE_TRUNC,
                 ANSC_FILE_TYPE_WRITE
             );
 
@@ -453,7 +453,7 @@ BwrmFmoNewFile
         AnscOpenFile
             (
                 pFileName,
-                ANSC_FILE_MODE_WRITE | ANSC_FILE_MODE_CREATE | ANSC_FILE_MODE_APPEND | ANSC_FILE_MODE_ZLIB_COMPRESSED,
+                ANSC_FILE_MODE_WRITE | ANSC_FILE_MODE_CREATE | ANSC_FILE_MODE_APPEND,
                 ANSC_FILE_TYPE_WRITE
             );
 
