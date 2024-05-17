@@ -378,12 +378,6 @@ AnscCopyFile
     );
 
 ANSC_STATUS
-AnscDeleteFile
-    (
-        char*                       file_name
-    );
-
-ANSC_STATUS
 AnscRenameFile
     (
         char*                       old_file_name,

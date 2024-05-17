@@ -98,9 +98,6 @@ extern inline int
 user_delete_directory(char* dir);
 
 extern inline int
-user_delete_file(char *filename);
-
-extern inline int
 user_get_file_size(PVOID h);
 
 extern inline  int
@@ -398,17 +395,6 @@ user_delete_directory
     args[1].arg = dir;
 
     return exec_command(3, args);
-}
-
-inline int
-user_delete_file(char *filename)
-{
-    if ( ! unlink(filename) )
-    {
-        return 1;
-    }
-
-	return 0;
 }
 
 inline int
