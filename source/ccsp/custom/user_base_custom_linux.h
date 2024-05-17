@@ -113,7 +113,6 @@
 /* #define  _ANSC_X509_CERT_ */
 
 #define  _ANSC_FILE_SEARCH_
-/*#define  _ANSC_FILE_GZIP_*/
 /*#define  _ANSC_FILE_ZLIB_*/
 
 /*#define  _ANSC_SLAP_LPC_*/
