@@ -142,9 +142,6 @@
     #define  _ansc_get_file_stat                    user_get_file_stat
     #define  _ansc_is_directory                     user_is_directory
 
-    #define  _ansc_create_directory                 user_create_directory
-    #define  _ansc_delete_directory                 user_delete_directory
-    #define  _ansc_copy_directory                   user_copy_directory
     #define  _ansc_move_file                        user_move_file
 
     #ifdef  _ANSC_FILE_SEARCH_
@@ -210,15 +207,9 @@ ANSC_FILE_PROPERTY,  *PANSC_FILE_PROPERTY;
 int
 user_rename_file(char* old_file_name, char* new_file_name);
 int
-user_create_directory(char* dir_name);
-int
 user_get_file_stat(char* file_name, void* h_file_property);
 int
 user_move_file(char* srcFile, char* dstFile);
-int
-user_copy_directory(char* srcDir, char* dstDir);
-int
-user_delete_directory(char* dir);
 int
 user_get_file_size(PVOID h);
 #ifdef  _ANSC_FILE_SEARCH_
