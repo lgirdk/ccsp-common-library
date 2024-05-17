@@ -200,10 +200,6 @@ AnscOpenFile
 
             return  (ANSC_HANDLE)NULL;
         }
-        else if ( mode & ANSC_FILE_MODE_ZLIB_COMPRESSED )
-        {
-            pFileInfo->bZlibCompressed = TRUE;
-        }
     }
 
     rc = strcpy_s(pFileInfo->Name, sizeof(pFileInfo->Name), name);

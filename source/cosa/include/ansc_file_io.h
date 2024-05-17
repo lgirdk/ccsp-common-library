@@ -96,11 +96,8 @@
 #define  ANSC_FILE_MODE_CREATE                      0x00000004
 #define  ANSC_FILE_MODE_TRUNC                       0x00000008
 #define  ANSC_FILE_MODE_APPEND                      0x00000010
-#ifdef  _ANSC_FILE_ZLIB_
-#define  ANSC_FILE_MODE_ZLIB_COMPRESSED             0x00000020
-#else
-#define  ANSC_FILE_MODE_ZLIB_COMPRESSED             0
-#endif
+
+#define  ANSC_FILE_MODE_ZLIB_COMPRESSED             0 /* No effect, to be removed */
 
 #define  ANSC_FILE_MAX_EXT_LEN                      6
 #define  ANSC_FILE_EXT_ARRAY_SIZE                   17

@@ -92,17 +92,7 @@
 #include "bree_srm_interface.h"
 #include "bree_srm_exported_api.h"
 
-#ifdef   _ANSC_FILE_ZLIB_
-#include "ansc_crypto_interface.h"
-#include "ansc_crypto_external_api.h"
-#endif
-
-    extern   PBREE_SRM_OBJECT           g_pBreeSrmo;
-
-    #ifdef   _ANSC_FILE_ZLIB_
-    extern   PANSC_CRYPTO_OBJECT        g_pCryptoObj;
-
-#endif
+extern PBREE_SRM_OBJECT g_pBreeSrmo;
 
 int
 BreeSpoCookedResOpen
