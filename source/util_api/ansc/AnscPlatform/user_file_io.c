@@ -82,20 +82,11 @@
 extern inline int
 user_rename_file(char* old_file_name, char* new_file_name);
 
-extern inline int
-user_create_directory(char* dir_name);
-
 extern inline  int
 user_get_file_stat(char* file_name, void* h_file_property);
 
 extern inline int
 user_move_file(char* srcFile, char* dstFile);
-
-extern inline int
-user_copy_directory(char* srcDir, char* dstDir);
-
-extern inline int
-user_delete_directory(char* dir);
 
 extern inline int
 user_get_file_size(PVOID h);
@@ -269,16 +260,6 @@ user_rename_file
     return  !rename(old_file_name, new_file_name); /* changed since 0 is success */
 }
 
-inline int
-user_create_directory(char* dir_name)
-{
-    COMMOND_ARG                     args[2] = {{"mkdir", 0}, {NULL, 1}};
-
-    args[1].arg = dir_name;
-
-    return exec_command(2, args);
-}
-
 inline  int
 user_get_file_stat
     (
@@ -367,35 +348,6 @@ user_move_file
     return exec_command(3, args);
 }
 
-
-inline  int
-user_copy_directory
-    (
-        char*                       srcDir,
-        char*                       dstDir
-    )
-{
-    COMMOND_ARG                     args[4] = {{"cp", 0}, {NULL, 1}, {NULL, 1}, {"-r", 0}};
-
-    args[1].arg = srcDir;
-    args[2].arg = dstDir;
-
-    return exec_command(4, args);
-}
-
-
-inline  int
-user_delete_directory
-    (
-        char*                       dir
-    )
-{
-    COMMOND_ARG                     args[3] = {{"rm", 0}, {NULL, 1}, {"-r", 0}};
-
-    args[1].arg = dir;
-
-    return exec_command(3, args);
-}
 
 inline int
 user_get_file_size(PVOID h)

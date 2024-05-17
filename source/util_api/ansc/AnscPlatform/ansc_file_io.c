@@ -61,9 +61,6 @@
         *   AnscGetFileExt2
         *   AnscGetFileProperty
         *   AnscGetMimeType
-        *   AnscCreateDirectory
-        *   AnscDeleteDirectory
-        *   AnscCopyDirectory
         *   AnscMoveFile
         *   AnscCreateGzipFile
         *   AnscOpenGzipFile
@@ -724,37 +721,6 @@ AnscGetMimeType
 
     return  ANSC_STATUS_CANT_FIND;
 }
-
-ANSC_STATUS
-AnscCreateDirectory
-    (
-        char*                       dir_name
-    )
-{
-    return ( _ansc_create_directory(dir_name) ? ANSC_STATUS_SUCCESS : ANSC_STATUS_FAILURE );
-}
-
-
-ANSC_STATUS
-AnscDeleteDirectory
-    (
-        char*                       dir_name
-    )
-{
-    return ( _ansc_delete_directory(dir_name) ? ANSC_STATUS_SUCCESS : ANSC_STATUS_FAILURE );
-}
-
-
-ANSC_STATUS
-AnscCopyDirectory
-    (
-        char*                       src_dir,
-        char*                       dst_dir
-    )
-{
-    return ( _ansc_copy_directory(src_dir, dst_dir) ? ANSC_STATUS_SUCCESS : ANSC_STATUS_FAILURE );
-}
-
 
 ANSC_STATUS
 AnscMoveFile
