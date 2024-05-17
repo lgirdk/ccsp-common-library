@@ -137,7 +137,6 @@
     #define  _ansc_write_file                       user_write_file
     #define  _ansc_seek_file                        user_seek_file
     #define  _ansc_copy_file                        user_copy_file
-    #define  _ansc_delete_file                      user_delete_file
     #define  _ansc_rename_file                      user_rename_file
     #define  _ansc_get_file_size                    user_get_file_size
     #define  _ansc_get_file_stat                    user_get_file_stat
@@ -220,8 +219,6 @@ int
 user_copy_directory(char* srcDir, char* dstDir);
 int
 user_delete_directory(char* dir);
-int
-user_delete_file(char *filename);
 int
 user_get_file_size(PVOID h);
 #ifdef  _ANSC_FILE_SEARCH_
