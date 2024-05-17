@@ -151,14 +151,6 @@
     #define  _ansc_copy_directory                   user_copy_directory
     #define  _ansc_move_file                        user_move_file
 
-    #ifdef  _ANSC_FILE_GZIP_
-    #define  _ansc_open_gzip_file                   user_open_gzip_file
-    #define  _ansc_close_gzip_file                  user_close_gzip_file
-    #define  _ansc_read_gzip_file                   user_read_gzip_file
-    #define  _ansc_write_gzip_file                  user_write_gzip_file
-    #define  _ansc_seek_gzip_file                   user_seek_gzip_file
-    #endif
-
     #ifdef  _ANSC_FILE_SEARCH_
     #define  _ansc_find_first_file                  user_find_first_file
     #define  _ansc_find_next_file                   user_find_next_file

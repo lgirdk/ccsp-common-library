@@ -155,12 +155,6 @@ USER_FILE_PROPERTY,  *PUSER_FILE_PROPERTY;
 /*#define  user_rename_file                           rename*/
 /*#define  user_create_directory                      mkdir*/
 
-#define  user_open_gzip_file                             gzopen
-#define  user_close_gzip_file                            gzclose
-#define  user_read_gzip_file                             gzread
-#define  user_write_gzip_file                            gzwrite
-#define  user_seek_gzip_file                             gzseek
-
 int
 user_copy_file(char *src, char *dst, int fail_if_exists);
 
