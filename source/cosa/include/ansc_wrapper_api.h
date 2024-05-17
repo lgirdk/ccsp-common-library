@@ -417,25 +417,6 @@ AnscGetMimeType
     );
 
 ANSC_STATUS
-AnscCreateDirectory
-    (
-        char*                       dir_name
-    );
-
-ANSC_STATUS
-AnscDeleteDirectory
-    (
-        char*                       dir_name
-    );
-
-ANSC_STATUS
-AnscCopyDirectory
-    (
-        char*                       src_dir,
-        char*                       dst_dir
-    );
-
-ANSC_STATUS
 AnscMoveFile
     (
         char*                       src_file,
