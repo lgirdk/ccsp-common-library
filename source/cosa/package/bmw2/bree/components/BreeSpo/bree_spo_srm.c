@@ -75,10 +75,6 @@
 
 #ifdef   _BREE_SPO_USE_SRMO
 
-#ifdef   _ANSC_FILE_ZLIB_
-PANSC_CRYPTO_OBJECT                 g_pCryptoObj    = NULL;
-#endif
-
 
 int
 BreeSpoCookedResOpen
@@ -103,61 +99,6 @@ BreeSpoCookedResOpen
 
     hRes = (ANSC_HANDLE)g_pBreeSrmo->MapCookedResource((ANSC_HANDLE)g_pBreeSrmo, pResPath);
 
-#ifdef   _ANSC_FILE_ZLIB_
-    if ( hRes )
-    {
-        PBREE_SRM_RES_ITEM          pRes        = (PBREE_SRM_RES_ITEM)hRes;
-        ULONG                       ulLen       = 0;
-        PUCHAR                      pBuf;
-        ANSC_STATUS                 status;
-        PBREE_SRM_RES_ITEM          pPlainRes   = (PBREE_SRM_RES_ITEM)NULL;
-
-        hRes   = (ANSC_HANDLE)NULL;
-
-        status = 
-            g_pCryptoObj->GzipDecompress
-                (
-                    pRes->pContent,
-                    pRes->ulContentLen,
-                    NULL,
-                    &ulLen
-                );
-
-        if ( ulLen != 0 )
-        {
-            pBuf    = (PUCHAR)AnscAllocateMemory(ulLen);
-
-            if ( pBuf )
-            {
-                status = 
-                    g_pCryptoObj->GzipDecompress
-                        (
-                            pRes->pContent,
-                            pRes->ulContentLen,
-                            pBuf,
-                            &ulLen
-                        );
-
-                pPlainRes   = (PBREE_SRM_RES_ITEM)AnscAllocateMemory(sizeof(BREE_SRM_RES_ITEM));
-
-                if ( !pPlainRes )
-                {
-                    AnscFreeMemory(pBuf);
-                }
-                else
-                {
-                    pPlainRes->pPath        = pRes->pPath;
-                    pPlainRes->pName        = pRes->pName;
-                    pPlainRes->pContent     = pBuf;
-                    pPlainRes->ulContentLen = ulLen;
-
-                    hRes    = (ANSC_HANDLE)pPlainRes;
-                }
-            }
-        }
-    }
-#endif
-
     return (int)hRes;
 }
 
@@ -169,14 +110,6 @@ BreeSpoCookedResClose
     )
 {
     PBREE_SRM_RES_ITEM              pRes    = (PBREE_SRM_RES_ITEM)handle;
-
-#ifdef   _ANSC_FILE_ZLIB_
-    if ( pRes )
-    {
-        AnscFreeMemory(pRes->pContent);
-        AnscFreeMemory(pRes);
-    }
-#endif
 
     return 0;
 }
