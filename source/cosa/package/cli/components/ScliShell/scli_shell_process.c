@@ -93,6 +93,7 @@
 **********************************************************************/
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "scli_shell_global.h"
 #include "safec_lib_common.h"
@@ -4340,7 +4341,7 @@ ScliShoRunShellCmd
         ERR_CHK(rc);
     }
 
-    AnscDeleteFile(tmp_fname);
+    unlink(tmp_fname);
 
     system(sys_cmd);
 
@@ -4411,7 +4412,7 @@ ScliShoRunShellCmd
         */
 
         AnscCloseFile(hFile);
-        AnscDeleteFile(tmp_fname);
+        unlink(tmp_fname);
 
         pCenIf->Notify
         (
