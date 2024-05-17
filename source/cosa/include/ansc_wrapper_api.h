@@ -448,61 +448,6 @@ AnscMoveFile
         char*                       dst_file
     );
 
-#ifdef  _ANSC_FILE_GZIP_
-
-ANSC_HANDLE
-AnscCreateGzipFile
-    (
-        char*                       name,
-        ULONG                       mode
-    );
-
-ANSC_HANDLE
-AnscOpenGzipFile
-    (
-        char*                       name,
-        ULONG                       mode
-    );
-
-ANSC_STATUS
-AnscCloseGzipFile
-    (
-        ANSC_HANDLE                 hFile
-    );
-
-ANSC_STATUS
-AnscReadGzipFile
-    (
-        ANSC_HANDLE                 hFile,
-        PVOID                       buffer,
-        PULONG                      pulSize
-    );
-
-ANSC_STATUS
-AnscWriteGzipFile
-    (
-        ANSC_HANDLE                 hFile,
-        PVOID                       buffer,
-        PULONG                      pulSize
-    );
-
-ANSC_STATUS
-AnscSeekGzipFile
-    (
-        ANSC_HANDLE                 hFile,
-        ULONG                       ulOffset,
-        int                         iPos
-    );
-
-ULONG
-AnscGetGzipFileSize
-    (
-        ANSC_HANDLE                 hFile
-    );
-
-#endif
-
-
 #ifdef  _ANSC_FILE_SEARCH_
 
 ANSC_HANDLE
