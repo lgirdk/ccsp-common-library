@@ -55,7 +55,6 @@
         *   AnscWriteFile
         *   AnscSeekFile
         *   AnscCopyFile
-        *   AnscDeleteFile
         *   AnscRenameFile
         *   AnscGetFileSize
         *   AnscGetFileExt
@@ -455,21 +454,6 @@ AnscCopyFile
     )
 {
     if ( _ansc_copy_file(pSrcFile, pDstFile, !bOverwriteDst) )
-    {
-        return  ANSC_STATUS_SUCCESS;
-    }
-
-    return  ANSC_STATUS_FAILURE;
-}
-
-
-ANSC_STATUS
-AnscDeleteFile
-    (
-        char*                       file_name
-    )
-{
-    if ( _ansc_delete_file(file_name) )
     {
         return  ANSC_STATUS_SUCCESS;
     }
