@@ -99,10 +99,5 @@
 #include "bree_spo_srm.h"
 #include "bree_spo_cooked_page.h"
 
-#ifdef   _ANSC_FILE_ZLIB_
-#include "ansc_crypto_interface.h"
-#include "ansc_crypto_external_api.h"
-#endif
-
 #endif
 
