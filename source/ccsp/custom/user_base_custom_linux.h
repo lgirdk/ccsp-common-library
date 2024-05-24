@@ -103,14 +103,6 @@
  *  custom definition header files.
  */
 
-/*#define  _ANSC_MULTICAST_ROUTING_*/
-
-/*#define  _ANSC_LEAN_SNPU10_*/
-/*#define  _ANSC_MEAN_SNPU10_*/
-
-/*#define  _ANSC_ARP_CACHE_ARRAY_*/
-/* #define  _ANSC_X509_CERT_ */
-
 #define  _ANSC_FILE_SEARCH_
 
 /*#define  _ANSC_SLAP_LPC_*/
