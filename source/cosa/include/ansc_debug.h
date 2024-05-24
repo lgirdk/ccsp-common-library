@@ -251,11 +251,7 @@ extern   ANSC_TRACE_ID_CFG                          gTraceIdArray[];
  */
 
     #ifdef  ANSC_DEBUG_ENABLED
-        #ifdef  _ANSC_TRACE_F_
-            #define  AnscTraceWrapper               AnscTraceF
-        #else
-            #define  AnscTraceWrapper               UserTrace
-        #endif
+        #define  AnscTraceWrapper                   UserTrace
     #else
         #define  AnscTraceWrapper                   0 &&
     #endif
@@ -519,42 +515,6 @@ AnscTraceIpPacket
     (
         ANSC_HANDLE                 hIpPacket
     );
-
-/*
-__inline  static  void
-AnscTraceF(char*  pDebugStr, ...)
-{
-    char*                           pTempChar = (char*)AnscAllocateMemory(1024);
-    va_list				            val;
-
-    if ( !pTempChar )
-    {
-        return;
-    }
-    else
-    {
-        va_start(val, pDebugStr);
-        _ansc_vsprintf(pTempChar, pDebugStr, val);
-        va_end(val);
-    }
-
-    AnscTrace1(__FILE__, pTempChar);
-
-    AnscFreeMemory(pTempChar);
-
-    return;
-}
- */
- 
-#ifdef  _ANSC_TRACE_F_
-__inline  static  void
-AnscTraceF(char*  pDebugStr, ...)
-{
-    /* TraceF is obsoleted */
-    UNREFERENCED_PARAMETER(pDebugStr);
-    return;
-}
-#endif
 
 ANSC_STATUS
 AnscTraceSetIdCfg
