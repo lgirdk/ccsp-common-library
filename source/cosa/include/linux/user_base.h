@@ -112,10 +112,6 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdarg.h>
-#if !defined(_ANSC_LINUX_NO_NCURSES)
-    /* for console apps */
-    #include <ncurses.h>
-#endif
 
 /***********************************************************
         DEFINITION OF BASIC DATA TYPE AND STRUCTURES

@@ -88,10 +88,6 @@
 /***************************************************************
                 OS Specific Definitions
 ***************************************************************/
-/*
- *  Indicates whether libncurse is available
- */
-#define  _ANSC_LINUX_NO_NCURSES
 
 /*
  *  Indicates whether TmGmt function is available
