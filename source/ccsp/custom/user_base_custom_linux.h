@@ -109,7 +109,6 @@
 #define _SLAP_IPC_USE_TCP_SOCKET
 
 /*#define  _ANSC_DIRTY_PDO_*/
-/*#define  _ANSC_TRACE_F_*/
 
 /*#define  _ANSC_IP4S_IGMPV2_*/
 /*#define  _ANSC_IP4S_IGMPV3_*/
