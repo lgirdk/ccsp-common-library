@@ -106,7 +106,6 @@
  *  Leave them here temporarily, should move to individual module
  *  custom definition header files.
  */
-/*#define  _ANSC_SOCKET_TLS_LAYER_*/
 
 /*#define  _ANSC_MULTICAST_ROUTING_*/
 
