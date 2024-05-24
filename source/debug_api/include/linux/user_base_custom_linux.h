@@ -126,16 +126,5 @@
 
 /*#define  _ANSC_MIB2_PRINT_MIB_REG_*/
 
-/*
-#define  _ANSC_GNPS_GRE_
-#define  _ANSC_GNPS_PPTP_PAC_
-#define  _ANSC_GNPS_L2TP_LAC_
-#define  _ANSC_GNPS_PPPOE_
-#define  _ANSC_GNPS_PPP_
-#define  _ANSC_GNPS_SNPU3_
-#define  _ANSC_GNPS_SNPU4_
-#define  _ANSC_GNPS_TRUNKING_
- */
-
 #endif
 
