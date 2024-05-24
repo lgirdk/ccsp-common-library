@@ -96,8 +96,6 @@
  * socket functions with better names, we simplify the interface a little bit.
  */
 
-#ifndef  _ANSC_SOCKET_LIBRARY_
-
     typedef             int             ANSC_SOCKET,            *PANSC_SOCKET;
     typedef  struct     in_addr         ansc_in_addr,           *pansc_in_addr;
     typedef  struct     sockaddr_in     ansc_socket_addr_in,    *pansc_socket_addr_in;
@@ -241,8 +239,6 @@
     #define  ANSC_SOCKET_IP_MULTICAST_LOOP          IP_MULTICAST_LOOP
     #define  ANSC_SOCKET_IP_RECV_UNICAST            0
 
-#endif
-
 
 /***********************************************************
     PLATFORM DEPENDENT DATA TYPE AND MACRO DEFINITIONS
@@ -256,21 +252,10 @@
  * other similar approaches. To solve this problem, we define following macros, which always link
  * to the external socket library, hence "xskt".
  */
-#if 1
 
     #define  SD_RECEIVE                             (0x00)
     #define  SD_SEND                                (0x01)
     #define  SD_BOTH                                (0x02)
-
-#ifdef  _ANSC_SOCKET_LIBRARY_   /* in case this is not defined at above */
-    typedef  struct
-    _ansc_fd_set
-    {
-        unsigned int                fd_count;
-        fd_set                      set;
-    }
-    ansc_fd_set, *pansc_fd_set;
-#endif
 
     typedef             int             XSKT_SOCKET,            *PXSKT_SOCKET;
     typedef  struct     in_addr         xskt_in_addr,           *pxskt_in_addr;
@@ -509,8 +494,5 @@
     #define  XSKT_SOCKET_IP_DROP_MEMBERSHIP         IP_DROP_MEMBERSHIP
     #define  XSKT_SOCKET_IP_MULTICAST_LOOP          IP_MULTICAST_LOOP
     #define  XSKT_SOCKET_IP_RECV_UNICAST            0
-
-#endif
-
 
 #endif
