@@ -102,7 +102,6 @@
  *  Leave them here temporarily, should move to individual module
  *  custom definition header files.
  */
-/*#define  _ANSC_SOCKET_TLS_LAYER_*/
 
 #define  _ANSC_FILE_SEARCH_
 /*#define  _ANSC_FILE_ZLIB_*/
