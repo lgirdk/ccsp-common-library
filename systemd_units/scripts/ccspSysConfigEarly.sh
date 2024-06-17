@@ -46,7 +46,7 @@ if [ "$BOX_TYPE" = "WNXL11BWL" ] || [ "$BOX_TYPE" = "SCER11BEL" ]; then
     fi
 fi
 
-if [ "$BOX_TYPE" = "HUB4" ] || [ "$BOX_TYPE" = "XB6" -a "$MANUFACTURE" = "Technicolor" ] || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ] || [ "$XLE_DISABLE_CORE" = "true" ]; then
+if [ "$BOX_TYPE" = "HUB4" ] || ( [ "$BOX_TYPE" = "XB6" ] && ( [ "$MANUFACTURE" = "Technicolor" ] || [ "$MANUFACTURE" = "Sercomm" ] ) ) || [ "$BOX_TYPE" = "SR300" ] || [ "$BOX_TYPE" = "SR213" ] || [ "$XLE_DISABLE_CORE" = "true" ]; then
     #Disable core dump generation
     ulimit -c 0
 else
