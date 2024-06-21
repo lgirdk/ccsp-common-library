@@ -116,21 +116,21 @@ AnscCryptoGetRandomUlong
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char                            hashString[20];
+    char                            hashString[4 * sizeof(ULONG)];
     ANSC_CRYPTO_HASH                hashResult;
 
-    *(PULONG)&hashString[ 0] = AnscGetTickInMilliSeconds();
-    *(PULONG)&hashString[ 4] = rand_seed;
-    *(PULONG)&hashString[ 8] = g_ulAdaptiveSeed;
-    *(PULONG)&hashString[12] = (ULONG)hashString;
+    *(PULONG)&hashString[0 * sizeof(ULONG)] = AnscGetTickInMilliSeconds();
+    *(PULONG)&hashString[1 * sizeof(ULONG)] = rand_seed;
+    *(PULONG)&hashString[2 * sizeof(ULONG)] = g_ulAdaptiveSeed;
+    *(PULONG)&hashString[3 * sizeof(ULONG)] = (ULONG)hashString;
 
-    AnscCryptoMd5Digest(hashString, 16, &hashResult);
+
+    AnscCryptoMd5Digest(hashString, (4 * sizeof(ULONG)), &hashResult);
 
     g_ulAdaptiveSeed += *(PULONG)&hashResult.Value[0];
 
-    return  *(PULONG)&hashResult.Value[4];
+    return  *(PULONG)&hashResult.Value[sizeof(ULONG)];
 }
-
 
 /**********************************************************************
 
@@ -169,21 +169,20 @@ AnscCryptoGetRandomUshort
     )
 {
     UNREFERENCED_PARAMETER(hThisObject);
-    char                            hashString[20];
+    char                            hashString[4 * sizeof(ULONG)];
     ANSC_CRYPTO_HASH                hashResult;
 
-    *(PULONG)&hashString[ 0] = AnscGetTickInMilliSeconds();
-    *(PULONG)&hashString[ 4] = rand_seed;
-    *(PULONG)&hashString[ 8] = g_ulAdaptiveSeed;
-    *(PULONG)&hashString[12] = (ULONG)hashString;
+    *(PULONG)&hashString[0 * sizeof(ULONG)] = AnscGetTickInMilliSeconds();
+    *(PULONG)&hashString[1 * sizeof(ULONG)] = rand_seed;
+    *(PULONG)&hashString[2 * sizeof(ULONG)] = g_ulAdaptiveSeed;
+    *(PULONG)&hashString[3 * sizeof(ULONG)] = (ULONG)hashString;
 
-    AnscCryptoMd5Digest(hashString, 16, &hashResult);
+    AnscCryptoMd5Digest(hashString, (4 * sizeof(ULONG)), &hashResult);
 
     g_ulAdaptiveSeed += *(PULONG)&hashResult.Value[0];
 
-    return  *(PUSHORT)&hashResult.Value[4];
+    return  *(PUSHORT)&hashResult.Value[sizeof(ULONG)];
 }
-
 
 /**********************************************************************
 

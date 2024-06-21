@@ -1229,7 +1229,7 @@ SlapVcoHexStringToUint32
     ULONG                           ulUcharCount = 0;
     ULONG                           ulTmpValue   = 0;
     ULONG                           i            = 0;
-    UCHAR                           tempValue[4] = {0};
+    UCHAR                           tempValue[sizeof(ULONG)] = {0};
     char                            temp_char[3];
 
     if ( !hex_string )
@@ -1267,7 +1267,7 @@ SlapVcoHexStringToUint32
         tempValue[i] = (UCHAR)ulTmpValue;
     }
 
-    return  AnscUlongFromNToH((ULONG)tempValue);
+    return  AnscUlongFromNToH(*(PUINT)tempValue);
 }
 
 
