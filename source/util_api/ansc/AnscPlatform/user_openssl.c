@@ -521,24 +521,76 @@ SSL * openssl_connect (int fd, hostNames *hosts)
      AnscTraceWarning(("openssl_connect - Hostnames added to verify \n"));
   }
 
+  // Make the socket non-blocking
+  int ret = fcntl(fd, F_GETFL, 0);
+  if (ret == -1) {
+    AnscTraceWarning(("openssl_connect - failed fcntl\n"));
+    goto error;
+  }
+  ret = fcntl(fd, F_SETFL, ret | O_NONBLOCK);
+  if (ret == -1) {
+    AnscTraceWarning(("openssl_connect - failed fcntl\n"));
+    goto error;
+  }
 
-  if (!SSL_set_fd (ssl, fd))
-  {
+  // Associate socket with SSL object
+  if (!SSL_set_fd(ssl, fd)) {
     AnscTraceWarning(("openssl_connect - failed to associate socket %d to SSL handle %p\n", fd, ssl));
     goto error;
   }
 
   AnscTraceWarning(("openssl_connect - associated socket %d to SSL handle %p\n", fd, ssl));
-  SSL_set_connect_state (ssl);
-
+  SSL_set_connect_state(ssl);
   AnscTraceWarning(("openssl_connect - set the SSL object into the connect state SSL handle %p \n", ssl));
 
+  // Define timeout for select
+  struct timeval timeout;
+  timeout.tv_sec = 30;
+  timeout.tv_usec = 0;
+
+  fd_set read_fds;
+  FD_ZERO(&read_fds);
+  FD_SET(fd, &read_fds);
+
+  // Loop for non-blocking SSL_connect
+  while (1) {
+    int ret = SSL_connect(ssl);
+    if (ret == -1) {
+      int ssl_err = SSL_get_error(ssl, ret);
+      if (ssl_err == SSL_ERROR_WANT_READ || ssl_err == SSL_ERROR_WANT_WRITE) {
+        ret = select(fd + 1, NULL, &read_fds, NULL, &timeout);
+        if (ret == -1) {
+          AnscTraceWarning(("openssl_connect - select failed! \n"));
+          goto error;
+        } else if (ret == 0) {
+          // Timeout occurred
+          AnscTraceWarning(("openssl_connect - timeout waiting for read\n"));
+          goto error;
+        }
+        // Continue the loop after checking for read availability
+        continue;
+      } else {
+        AnscTraceWarning(("openssl_connect - failed in SSL_connect, error: %d\n", ssl_err));
+        goto error;
+      }
+      } else if (ret == 0) {
+        // SSL handshake needs more negotiation, continue the loop
+        AnscTraceWarning(("openssl_connect - ret = 0 so needs more time \n"));
+        continue;
+      } else {
+        // Successful connection established, break out of the loop
+        AnscTraceWarning(("openssl_connect - Successful connection established \n"));
+        break;
+      }
+  }
+
+  // Check SSL state after successful connect
 #if (OPENSSL_VERSION_NUMBER >= 0x10101000L)
-  if (SSL_connect (ssl) <= 0 || SSL_get_state(ssl) != TLS_ST_OK)
+  if ( SSL_get_state(ssl) != TLS_ST_OK)
 #elif (OPENSSL_VERSION_NUMBER >= 0x10100000L)
-  if (SSL_connect (ssl) <= 0 || SSL_state(ssl) != TLS_ST_OK)
+  if (SSL_state(ssl) != TLS_ST_OK)
 #else
-  if (SSL_connect (ssl) <= 0 || ssl->state != SSL_ST_OK)
+  if (ssl->state != SSL_ST_OK)
 #endif
   {
     AnscTraceWarning(("openssl_connect - failed in SSL_set_connect_state \n"));
