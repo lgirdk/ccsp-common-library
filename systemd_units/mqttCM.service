@@ -24,7 +24,8 @@ Description=mqttConnManager service
 Type=simple
 Environment="LOG4C_RCPATH=/etc"
 EnvironmentFile=/etc/device.properties
-ExecStart=/usr/bin/mqttConnManager
+ExecStartPre=/bin/sh -c 'while true; do if [ -f "/tmp/cm_initialized" ]; then break; fi; sleep 5; done'
+ExecStart=/bin/sh -c '/etc/mqttcm/mqtt_cert_init.sh mqttcert-fetch'
 ExecStopPost=/bin/sh -c 'echo "`date`: Stopping/Restarting mqttConnManager" >> ${PROCESS_RESTART_LOG}'
 Restart=always
 
