@@ -124,6 +124,8 @@ UserGetTickInMilliSeconds2();
 
 #define UserGetTickInMilliSecondsAbs UserGetTickInMilliSeconds2
 
+void UserSetDelta (void);
+
 void
 UserGetNtpTime(time_t*  ltime);
 void
