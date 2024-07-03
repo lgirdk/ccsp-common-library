@@ -70,9 +70,6 @@
 #include "user_base.h"
 #include "user_time.h"
 
-
-extern __inline void UserSetDelta();
-
 struct delta_t {
     unsigned long  sec;
     unsigned long  millisec;
@@ -159,8 +156,7 @@ UserGetTickInSeconds()
     /*return UserGetTickInMilliSeconds()/1000;*/
 }
 
-__inline void
-UserSetDelta()
+void UserSetDelta (void)
 {
     struct timeval                  tv = {0};
     int fd;
