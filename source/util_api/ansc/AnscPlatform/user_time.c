@@ -118,8 +118,6 @@ char* zonemap[ZONE_NUM][3] = {
     {"", "",""}
 };
 
-void UserSetDelta();
-
 /***********************************************************
        BASIC OPERATIONS BY MACROS AND INLINE FUNCTIONS
 ***********************************************************/
