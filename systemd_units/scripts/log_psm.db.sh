@@ -20,6 +20,8 @@
 
 
 if [ ! -f "/tmp/psm_db_logged" ]; then
-	cp /tmp/bbhm_cur_cfg.xml /rdklogs/logs/bbhm_cur_cfg_before_psminit.xml
+
+	sed 's/WPSPin" type="astr">[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/WPSPin" type="astr">/g' /tmp/bbhm_cur_cfg.xml > /rdklogs/logs/bbhm_cur_cfg_before_psminit.xml
 	touch /tmp/psm_db_logged
+
 fi
