@@ -552,28 +552,11 @@ AnscCryptoZlibDecompress
         PULONG                      pOutSize
     )
 {
-#ifndef _NO_ANSC_ZLIB_
-
-    LONG                            errCode;
-
-    if( plain == NULL || compact == NULL || size == 0 || pOutSize == NULL)
-    {
-        return ANSC_STATUS_FAILURE;
-    }
-
-    errCode = uncompress(plain, pOutSize, compact, size);
-
-    if( errCode != 0)
-    {
-        return ANSC_STATUS_FAILURE;
-    }
-
-#else
     UNREFERENCED_PARAMETER(compact);
     UNREFERENCED_PARAMETER(size);
     UNREFERENCED_PARAMETER(plain);
     UNREFERENCED_PARAMETER(pOutSize);
-#endif
+
     return ANSC_STATUS_SUCCESS;
 }
 
