@@ -616,28 +616,11 @@ AnscCryptoZlibCompress
         PULONG                      pOutSize
     )
 {
-
-#ifndef _NO_ANSC_ZLIB_
-
-    LONG                            errCode;
-
-    if( plain == NULL || compact == NULL || size == 0 || pOutSize == NULL)
-    {
-        return ANSC_STATUS_FAILURE;
-    }
-
-    errCode = compress(compact, pOutSize, plain, size);
-
-    if( errCode != 0)
-    {
-        return ANSC_STATUS_FAILURE;
-    }
-
-#endif
     UNREFERENCED_PARAMETER(plain);
     UNREFERENCED_PARAMETER(size);
     UNREFERENCED_PARAMETER(compact);
     UNREFERENCED_PARAMETER(pOutSize);
+
     return ANSC_STATUS_SUCCESS;
 }
 
