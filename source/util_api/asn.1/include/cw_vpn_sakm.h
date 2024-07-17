@@ -78,13 +78,6 @@
 ***********************************************************/
 
 /*
- * some compression algorithms have different performance controled by different parameters
- */
-#define	 LZS_PERFORMANCE_MODE_0                     0x0000
-#define  LZS_PERFORMANCE_MODE_1                     0x0008
-#define  LZS_PERFORMANCE_MODE_2                     0x0010
-
-/*
  * the key length for HMAC
  * note: actually it's the block size of different hash function / bytes
  */

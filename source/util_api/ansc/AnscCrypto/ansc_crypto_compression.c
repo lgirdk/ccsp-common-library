@@ -51,7 +51,6 @@
         *   AnscCryptoCompress
         *   AnscCryptoOutCompress
         *   AnscCryptoDeflateCompress
-        *   AnscCryptoLzsCompress
         *   AnscCryptoV42bisCompress
         *   AnscCryptoZlibCompress
         *   AnscCryptoGzipCompress
@@ -177,27 +176,6 @@ AnscCryptoCompress
 
                 break;
 
-                /* remove LZS related APIs, two reasons:
-                 * LZS is NOT free software
-                 * LzsCompress/Decompress, as a IPSec compression option, is not used by vendors
-                 */
-
-#ifdef _ANSC_LZS_USED_
-        case    ANSC_CRYPTO_COMPRESSION_LZS :
-
-                ulResult =
-                    AnscCryptoLzsCompress
-                        (
-                            plain,
-                            size,
-                            compact,
-                            pOutSize,
-                            mode,
-                            flag
-                        );
-
-                break;
-#endif
         case    ANSC_CRYPTO_COMPRESSION_V42BIS :
 
                 ulResult =
@@ -378,133 +356,6 @@ AnscCryptoDeflateCompress
     UNREFERENCED_PARAMETER(flag);
     return  size;
 }
-
-/* remove LZS related APIs, two reasons:
- * LZS is NOT free software
- * LzsCompress/Decompress, as a IPSec compression option, is not used by vendors
- */
-
-# ifdef _ANSC_LZS_USED_
-/**********************************************************************
-
-    caller:     owner of the object
-
-    prototype:
-
-        ANSC_STATUS
-        AnscCryptoLzsCompress
-            (
-                PVOID                       plain,
-                ULONG                       size,
-                PVOID                       compact,
-                PULONG                      pOutSize,
-                ULONG                       mode,
-                ULONG                       flag
-            );
-
-    description:
-
-        This function performs cryptography computation.
-
-    argument:   PVOID                       plain
-                Specifies the data buffer to which the cryptography
-                algorithm is to be applied.
-
-                ULONG                       size
-                Specifies the size of the data buffer.
-
-                PVOID                       compact
-                Specifies the data buffer to which the cryptography
-                algorithm is to be applied.
-
-                PULONG                      pOutSize,
-                The buffer of output size;
-
-                ULONG                       mode
-                Specifies the cryptography parameter to be used.
-
-                ULONG                       flag
-                Specifies the cryptography parameter to be used.
-
-    return:     the status of the operation
-
-**********************************************************************/
-
-ANSC_STATUS
-AnscCryptoLzsCompress
-    (
-        PVOID                       plain,
-        ULONG                       size,
-        PVOID                       compact,
-        PULONG                      pOutSize,
-        ULONG                       mode,
-        ULONG                       flag
-    )
-{
-    PVOID                           pCompressedBuffer      = NULL;
-    PVOID                           pCompressedData        = NULL;
-    ULONG                           ulCompressedBufferSize = 0;
-    ULONG                           ulCompressedDataSize   = 0;
-    PVOID                           pScratchRam            = NULL;
-
-    /*
-     * dynamically allocate memory for holding the compressed data
-     * note: I don't know if the implementation of LZS I have can deal with the situation that the input and output
-     * buffer are the same address, for safe, we allocate intermediate memory for holding the compressed data
-     */
-    ulCompressedBufferSize = size + size / 8 + 256;
-    ulCompressedDataSize   = ulCompressedBufferSize;
-    pCompressedBuffer      = AnscAllocateMemory(ulCompressedBufferSize);
-    pCompressedData        = pCompressedBuffer;
-
-    /*
-     * dynamically allocate memory for holding the LZS history data
-     */
-    pScratchRam = AnscAllocateMemory(LZS_HISTORY_SIZE);
-
-    /*
-     * perform LZS compression
-     */
-    LZS_InitHistory(pScratchRam);
-
-    LZS_Compress
-        (
-            (unsigned char**)&plain,
-            (unsigned char**)&pCompressedBuffer,
-            &size,
-            &ulCompressedDataSize,
-            pScratchRam,
-            (USHORT)(LZS_SOURCE_FLUSH | LZS_DEST_FLUSH | mode),
-            (USHORT)flag
-        );
-
-    ulCompressedDataSize = ulCompressedBufferSize - ulCompressedDataSize;
-
-    /*
-     * copy the compressed data into the output buffer provided by the COMP engine
-     */
-    AnscCopyMemory
-        (
-            compact,
-            pCompressedData,
-            ulCompressedDataSize
-        );
-
-    /*
-     * don't forget to flush the allocated intermediate memory buffer
-     */
-    AnscFreeMemory(pCompressedData);
-    AnscFreeMemory(pScratchRam);
-
-    /*
-     * return the size of compressed result to caller
-     */
-    *pOutSize =  ulCompressedDataSize;
-
-    return ANSC_STATUS_SUCCESS;
-}
-
-#endif
 
 /**********************************************************************
 
