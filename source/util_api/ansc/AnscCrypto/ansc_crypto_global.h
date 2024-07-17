@@ -82,11 +82,6 @@
 #include "ansc_crypto_internal_api.h"
 #include "ansc_crypto_external_api.h"
 
-#ifdef   _ANSC_LZS_USED_
-	#include "lzsc.h"
-#endif
-
-
 	#ifdef _ANSC_DES_USED_
 	#include "openssl/des.h"
 	#endif
