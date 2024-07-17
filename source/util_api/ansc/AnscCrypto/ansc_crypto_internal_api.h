@@ -532,17 +532,6 @@ AnscCryptoDeflateCompress
     );
 
 ANSC_STATUS
-AnscCryptoLzsCompress
-    (
-        PVOID                       plain,
-        ULONG                       size,
-        PVOID                       compact,
-        PULONG                      pOutSize,
-        ULONG                       mode,
-        ULONG                       flag
-    );
-
-ANSC_STATUS
 AnscCryptoV42bisCompress
     (
         PVOID                       plain,
@@ -596,15 +585,6 @@ AnscCryptoOutDecompress
 
 ANSC_STATUS
 AnscCryptoDeflateDecompress
-    (
-        PVOID                       compact,
-        ULONG                       size,
-        PVOID                       plain,
-        PULONG                      pOutSize
-    );
-
-ANSC_STATUS
-AnscCryptoLzsDecompress
     (
         PVOID                       compact,
         ULONG                       size,

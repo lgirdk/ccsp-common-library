@@ -137,13 +137,6 @@
 #define  ANSC_DECRYPTION_MODE                       0
 
 /*
- * Some compression algorithms have different performance controled by different parameters.
- */
-#define	 ANSC_LZS_PERFORMANCE_MODE_0                0x0000
-#define  ANSC_LZS_PERFORMANCE_MODE_1                0x0008
-#define  ANSC_LZS_PERFORMANCE_MODE_2                0x0010
-
-/*
  * define the structure of keys that we will use in the encryption and authentication algorithms
  */
 typedef  struct
