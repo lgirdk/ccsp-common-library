@@ -726,15 +726,6 @@ typedef  AL_CRYPTO_DH_PB            AL_CRYPTO_DH_PARAMETERS, *PAL_CRYPTO_DH_PARA
                 COMPRESSION
 **********************************************/
 
-/*
- * some compression algorithms have different performance controled by different parameters
- */
-#define	LZS_PERFORMANCE_MODE_0                      0x0000
-#define LZS_PERFORMANCE_MODE_1                      0x0008
-#define LZS_PERFORMANCE_MODE_2                      0x0010
-
-#define LZS_DEFAULT_PERFORMANCE_VALUE               8
-
 typedef struct
 _AL_CRYPTO_COMPRESSION_PB
 {
@@ -754,12 +745,6 @@ _AL_CRYPTO_COMPRESSION_PB
      *  OUT -- output size
      */
     ULONG                           OutputSize;
-
-    /*
-     *  only for LZS -- see above definitions
-     */
-    ULONG                           PerformanceMode;
-    ULONG                           PerformanceValue;
 }
 AL_CRYPTO_COMPRESSION_PB, *PAL_CRYPTO_COMPRESSION_PB;
 

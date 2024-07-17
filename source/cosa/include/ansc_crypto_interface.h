@@ -528,17 +528,6 @@ typedef  ANSC_STATUS
     );
 
 typedef  ANSC_STATUS
-(*PFN_CRYPTO_LZS_COMPRESS)
-    (
-        PVOID                       plain,
-        ULONG                       size,
-        PVOID                       compact,
-        PULONG                      pOutSize,
-        ULONG                       mode,
-        ULONG                       flag
-    );
-
-typedef  ANSC_STATUS
 (*PFN_CRYPTO_V42BIS_COMPRESS)
     (
         PVOID                       plain,
@@ -588,15 +577,6 @@ typedef  ANSC_STATUS
 
 typedef  ANSC_STATUS
 (*PFN_CRYPTO_DEFLATE_DECOMPRESS)
-    (
-        PVOID                       compact,
-        ULONG                       size,
-        PVOID                       plain,
-        PULONG                      pOutSize
-    );
-
-typedef  ANSC_STATUS
-(*PFN_CRYPTO_LZS_DECOMPRESS)
     (
         PVOID                       compact,
         ULONG                       size,
@@ -996,7 +976,6 @@ _ANSC_CRYPTO_OBJECT
     PFN_CRYPTO_COMPRESS             Compress;
     PFN_CRYPTO_OUT_COMPRESS         OutCompress;
     PFN_CRYPTO_DEFLATE_COMPRESS     DeflateCompress;
-    PFN_CRYPTO_LZS_COMPRESS         LzsCompress;
     PFN_CRYPTO_V42BIS_COMPRESS      V42bisCompress;
     PFN_CRYPTO_ZLIB_COMPRESS        ZlibCompress;
     PFN_CRYPTO_GZIP_COMPRESS        GzipCompress;
@@ -1004,7 +983,6 @@ _ANSC_CRYPTO_OBJECT
     PFN_CRYPTO_DECOMPRESS           Decompress;
     PFN_CRYPTO_OUT_DECOMPRESS       OutDecompress;
     PFN_CRYPTO_DEFLATE_DECOMPRESS   DeflateDecompress;
-    PFN_CRYPTO_LZS_DECOMPRESS       LzsDecompress;
     PFN_CRYPTO_V42BIS_DECOMPRESS    V42bisDecompress;
     PFN_CRYPTO_ZLIB_DECOMPRESS      ZlibDecompress;
     PFN_CRYPTO_GZIP_DECOMPRESS      GzipDecompress;

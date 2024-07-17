@@ -179,15 +179,7 @@ AnscCryptoCreate
     pMyObject->Compress               = AnscCryptoCompress;
     pMyObject->OutCompress            = AnscCryptoOutCompress;
     pMyObject->DeflateCompress        = AnscCryptoDeflateCompress;
-    /* remove LZS related APIs, two reasons:
-     * LZS is NOT free software
-     * LzsCompress/Decompress, as a IPSec compression option, is not used by vendors
-     */
 
-# ifdef _ANSC_LZS_USED_
-    pMyObject->LzsCompress            = AnscCryptoLzsCompress;
-    pMyObject->LzsDecompress          = AnscCryptoLzsDecompress;
-# endif
     pMyObject->V42bisCompress         = AnscCryptoV42bisCompress;
     pMyObject->ZlibCompress           = AnscCryptoZlibCompress;
 #ifdef _ANSC_GZIP_USED_

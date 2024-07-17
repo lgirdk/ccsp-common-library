@@ -51,7 +51,6 @@
         *   AnscCryptoDecompress
         *   AnscCryptoOutDecompress
         *   AnscCryptoDeflateDecompress
-        *   AnscCryptoLzsDecompress
         *   AnscCryptoV42bisDecompress
         *   AnscCryptoZlibDecompress
         *   AnscCryptoGzipDecompress
@@ -163,25 +162,6 @@ AnscCryptoDecompress
 
                 break;
 
-                /* remove LZS related APIs, two reasons:
-                 * LZS is NOT free software
-                 * LzsCompress/Decompress, as a IPSec compression option, is not used by vendors
-                 */
-
-#ifdef _ANSC_LZS_USED_
-        case    ANSC_CRYPTO_COMPRESSION_LZS :
-
-                ulResult =
-                    AnscCryptoLzsDecompress
-                        (
-                            compact,
-                            size,
-                            plain,
-                            pOutSize
-                        );
-
-                break;
-#endif
         case    ANSC_CRYPTO_COMPRESSION_V42BIS :
 
                 ulResult =
@@ -336,123 +316,6 @@ AnscCryptoDeflateDecompress
     UNREFERENCED_PARAMETER(pOutSize);
     return  size;
 }
-
-/* remove LZS related APIs, two reasons:
- * LZS is NOT free software
- * LzsCompress/Decompress, as a IPSec compression option, is not used by vendors
- */
-
-# ifdef _ANSC_LZS_USED_
-
-/**********************************************************************
-
-    caller:     owner of the object
-
-    prototype:
-
-        ANSC_STATUS
-        AnscCryptoLzsDecompress
-            (
-                PVOID                       compact,
-                ULONG                       size,
-                PVOID                       plain,
-                PULONG                      pOutSize
-            );
-
-    description:
-
-        This function performs cryptography computation.
-
-    argument:   PVOID                       compact
-                Specifies the data buffer to which the cryptography
-                algorithm is to be applied.
-
-                ULONG                       size
-                Specifies the size of the data buffer.
-
-                PVOID                       plain
-                Specifies the data buffer to which the cryptography
-                algorithm is to be applied.
-
-                PULONG                      pOutSize
-                The buffer of output size;
-
-    return:     the status of the operation.
-
-**********************************************************************/
-
-ANSC_STATUS
-AnscCryptoLzsDecompress
-    (
-        PVOID                       compact,
-        ULONG                       size,
-        PVOID                       plain,
-        PULONG                      pOutSize
-    )
-{
-    PVOID                           pDecompressedBuffer      = NULL;
-    PVOID                           pDecompressedData        = NULL;
-    ULONG                           ulDecompressedBufferSize = 0;
-    ULONG                           ulDecompressedDataSize   = 0;
-    PVOID                           pScratchRam              = NULL;
-
-    /*
-     * dynamically allocate memory for holding the decompressed data
-     * note: I don't know if the implementation of LZS I have can deal with the situation that the input and output
-     * buffer are the same address, for safe, we allocate intermediate memory for holding the decompressed data
-     */
-    ulDecompressedBufferSize = ANSC_MAX_RAW_BUFFER_SIZE + 256;
-    ulDecompressedDataSize   = ulDecompressedBufferSize;
-    pDecompressedBuffer      = AnscAllocateMemory(ulDecompressedBufferSize);
-    pDecompressedData        = pDecompressedBuffer;
-
-    /*
-     * dynamically allocate memory for holding the LZS history data
-     */
-    pScratchRam = AnscAllocateMemory(LZS_HISTORY_SIZE);
-
-    /*
-     * perform LZS decompression
-     */
-    LZS_InitHistory(pScratchRam);
-
-    LZS_Decompress
-        (
-            (unsigned char**)&compact,
-            (unsigned char**)&pDecompressedBuffer,
-            &size,
-            &ulDecompressedDataSize,
-            pScratchRam,
-            LZS_RESET
-        );
-
-    ulDecompressedDataSize = ulDecompressedBufferSize - ulDecompressedDataSize;
-
-    /*
-     * copy the decompressed data into the output buffer provided by the COMP engine
-     */
-    AnscCopyMemory
-        (
-            plain,
-            pDecompressedData,
-            ulDecompressedDataSize
-        );
-
-    /*
-     * don't forget to flush the allocated intermediate memory buffer
-     */
-    AnscFreeMemory(pDecompressedData);
-    AnscFreeMemory(pScratchRam);
-
-    /*
-     * return the size of decompressed result to caller
-     */
-    *pOutSize = ulDecompressedDataSize;
-
-    return ANSC_STATUS_SUCCESS;
-}
-
-#endif
 
 /**********************************************************************
 
