@@ -1062,11 +1062,15 @@ COSARepopulateTable
     PDSLH_MPR_INTERFACE             pDslhMprIf          = (PDSLH_MPR_INTERFACE        )pDslhCpeController->GetDslhMprIf(pDslhCpeController);
     PDSLH_OBJ_RECORD_OBJECT         pObjRecord          = (PDSLH_OBJ_RECORD_OBJECT    )NULL;
     PDSLH_OBJ_ENTITY_OBJECT         pObjEntity          = (PDSLH_OBJ_ENTITY_OBJECT    )NULL;
+    PDSLH_WMP_DATABASE_OBJECT       pDslhWmpDatabase    = (PDSLH_WMP_DATABASE_OBJECT  )NULL;
+    BOOL                            returnStatus        = FALSE;
 
     if( !pTabName || !pDslhMprIf)
     {
         return FALSE;
     }
+    pDslhWmpDatabase   = (PDSLH_WMP_DATABASE_OBJECT  )pDslhCpeController->hDslhWmpDatabase;
+    AnscAcquireTsLock(&pDslhWmpDatabase->AccessTsLock);
 
     /* increase the request counter by one */
     pDslhMprIf->IncReqCounter(pDslhMprIf->hOwnerContext);
@@ -1082,7 +1086,7 @@ COSARepopulateTable
     {
         AnscTrace("Invalid table object name '%s' in COSARepopulateTable.\n", pTabName);
 
-        return FALSE;
+        goto  EXIT;
     }
 
     pObjEntity     = (PDSLH_OBJ_ENTITY_OBJECT)pObjRecord->hDslhObjEntity;
@@ -1093,7 +1097,7 @@ COSARepopulateTable
         {
             AnscTrace("It's not a table : '%s'\n", pTabName);
 
-            return FALSE;
+            goto  EXIT;
         }
 
         if( !pObjEntity->ObjDescr->bDynamic)
@@ -1104,7 +1108,10 @@ COSARepopulateTable
         }
     }
 
-    return TRUE;
+    returnStatus = TRUE;
+EXIT:
+    AnscReleaseTsLock(&pDslhWmpDatabase->AccessTsLock);
+    return  returnStatus;
 }
 
 /**********************************************************************
