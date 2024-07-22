@@ -141,12 +141,6 @@
     #define  _ansc_get_file_size                    user_get_file_size
     #define  _ansc_get_file_stat                    user_get_file_stat
 
-    #ifdef  _ANSC_FILE_SEARCH_
-    #define  _ansc_find_first_file                  user_find_first_file
-    #define  _ansc_find_next_file                   user_find_next_file
-    #define  _ansc_find_close                       user_find_close
-    #endif
-
 
 /*
  * Instead of passing back and forth the OS-specific file handle directly, we use following data
@@ -207,27 +201,5 @@ int
 user_get_file_stat(char* file_name, void* h_file_property);
 int
 user_get_file_size(PVOID h);
-#ifdef  _ANSC_FILE_SEARCH_
-void
-user_find_close
-    (
-        void*                      h_find_context
-    );
-int
-user_find_first_file
-    (
-        char*                       dir_name,
-        char*                       tar_file_name,
-        void**                      ph_find_context,
-        char*                       pb_directory,    /* 0 file, !0 dir */
-        char*                       first_file_name
-    );
-int
-user_find_next_file
-    (
-        void*                       h_find_context,
-        char*                       pb_directory,
-        char*                       next_file_name
-    );
-#endif
+
 #endif

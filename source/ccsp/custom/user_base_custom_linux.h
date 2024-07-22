@@ -103,8 +103,6 @@
  *  custom definition header files.
  */
 
-#define  _ANSC_FILE_SEARCH_
-
 /*#define  _ANSC_SLAP_LPC_*/
 #define _SLAP_IPC_USE_TCP_SOCKET
 
