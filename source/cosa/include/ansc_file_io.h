@@ -142,8 +142,6 @@
     #define  _ansc_get_file_stat                    user_get_file_stat
     #define  _ansc_is_directory                     user_is_directory
 
-    #define  _ansc_move_file                        user_move_file
-
     #ifdef  _ANSC_FILE_SEARCH_
     #define  _ansc_find_first_file                  user_find_first_file
     #define  _ansc_find_next_file                   user_find_next_file
@@ -208,8 +206,6 @@ int
 user_rename_file(char* old_file_name, char* new_file_name);
 int
 user_get_file_stat(char* file_name, void* h_file_property);
-int
-user_move_file(char* srcFile, char* dstFile);
 int
 user_get_file_size(PVOID h);
 #ifdef  _ANSC_FILE_SEARCH_
