@@ -67,9 +67,6 @@
         *   AnscWriteGzipFile
         *   AnscSeekGzipFile
         *   AnscGetGzipFileSize
-        *   AnscSearchFirstFile
-        *   AnscSearchNextFile
-        *   AnscCloseSearch
 
     ---------------------------------------------------------------
 
@@ -676,71 +673,3 @@ AnscGetFileProperty
     return  (ANSC_HANDLE)NULL;
 }
 
-
-#ifdef  _ANSC_FILE_SEARCH_
-
-ANSC_HANDLE
-AnscSearchFirstFile
-    (
-        char*                       dir_name,
-        char*                       target_file_name,   /* can be wildcard, cannot be NULL */
-        PBOOL                       pbDirectory,
-        char*                       first_file_name
-    )
-{
-    ANSC_HANDLE                     hSearchContext  = NULL;
-	/*printf("in ansc_file_io.c, AnscSearchFirstFile begin\n");*/
-
-    if ( _ansc_find_first_file
-            (
-                dir_name,
-                target_file_name,
-                &hSearchContext,
-                (char *)pbDirectory,
-                first_file_name
-            ) )
-    {
-		/*printf("in ansc_file_io.c, AnscSearchFirstFile end 1 hSearchContext: %d\n", hSearchContext);*/
-        return  hSearchContext;
-    }
-
-	/*printf("in ansc_file_io.c, AnscSearchFirstFile end 2 hSearchContext: %d\n", hSearchContext);*/
-    return  NULL;
-}
-
-
-BOOL
-AnscSearchNextFile
-    (
-        ANSC_HANDLE                 hSearchContext,
-        PBOOL                       pbDirectory,
-        char*                       file_name
-    )
-{
-	/*printf("in ansc_file_io.c before _ansc_find_next_file\n");*/
-    if ( _ansc_find_next_file
-            (
-                hSearchContext,
-                (char *)pbDirectory,
-                file_name
-            ) )
-    {
-		/*printf("in ansc_file_io.c after _ansc_find_next_file return true file_name: %s\n", file_name);*/
-        return  TRUE;
-    }
-
-	/*printf("in ansc_file_io.c after _ansc_find_next_file return false file_name: %s\n", file_name);*/
-    return  FALSE;
-}
-
-
-void
-AnscCloseSearch
-    (
-        ANSC_HANDLE                 hSearchContext
-    )
-{
-    _ansc_find_close(hSearchContext);
-}
-
-#endif

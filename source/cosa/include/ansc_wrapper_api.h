@@ -408,33 +408,6 @@ AnscGetFileProperty
         char*                       file_name
     );
 
-#ifdef  _ANSC_FILE_SEARCH_
-
-ANSC_HANDLE
-AnscSearchFirstFile
-    (
-        char*                       dir_name,
-        char*                       target_file_name,   /* can be wildcard, cannot be NULL */
-        PBOOL                       pbDirectory,
-        char*                       first_file_name     /* buffer size must large enough - 260 bytes */
-    );
-
-BOOL
-AnscSearchNextFile
-    (
-        ANSC_HANDLE                 hSearchContext,
-        PBOOL                       pbDirectory,
-        char*                       file_name
-    );
-
-void
-AnscCloseSearch
-    (
-        ANSC_HANDLE                 hSearchContext
-    );
-
-#endif
-
 
 /***********************************************************
             FUNCTIONS IMPLEMENTED IN ANSC_HASH.C
