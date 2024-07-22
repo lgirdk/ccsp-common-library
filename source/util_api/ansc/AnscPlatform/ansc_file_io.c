@@ -60,7 +60,6 @@
         *   AnscGetFileExt
         *   AnscGetFileExt2
         *   AnscGetFileProperty
-        *   AnscGetMimeType
         *   AnscCreateGzipFile
         *   AnscOpenGzipFile
         *   AnscCloseGzipFile
@@ -677,49 +676,6 @@ AnscGetFileProperty
     return  (ANSC_HANDLE)NULL;
 }
 
-
-ANSC_STATUS
-AnscGetMimeType
-    (
-        ANSC_HANDLE                 hFile,
-        PULONG                      pulMediaType,
-        PULONG                      pulSubType
-    )
-{
-    PANSC_FILE_INFO                 pFileInfo    = (PANSC_FILE_INFO)hFile;
-    char*                           pFileExt     = NULL;
-    ULONG                           i            = 0;
-
-    *pulMediaType = IANA_MEDIA_TYPE_CODE_RESERVED;
-    *pulSubType   = 0;
-
-    if ( !pFileInfo )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-    else
-    {
-        pFileExt = AnscGetFileExt(hFile);
-    }
-
-    if ( !pFileExt )
-    {
-        return  ANSC_STATUS_UNAPPLICABLE;
-    }
-
-    for ( i = 0; i < ANSC_FILE_EXT_ARRAY_SIZE; i++ )
-    {
-        if ( strcasecmp(pFileExt,g_FileExtArray[i]) == 0 )
-        {
-            *pulMediaType = g_MediaTypeArray[i];
-            *pulSubType   = g_SubTypeArray[i];
-
-            return  ANSC_STATUS_SUCCESS;
-        }
-    }
-
-    return  ANSC_STATUS_CANT_FIND;
-}
 
 #ifdef  _ANSC_FILE_SEARCH_
 

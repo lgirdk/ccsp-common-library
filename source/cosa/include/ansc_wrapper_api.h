@@ -408,14 +408,6 @@ AnscGetFileProperty
         char*                       file_name
     );
 
-ANSC_STATUS
-AnscGetMimeType
-    (
-        ANSC_HANDLE                 hFile,
-        PULONG                      pulMediaType,
-        PULONG                      pulSubType
-    );
-
 #ifdef  _ANSC_FILE_SEARCH_
 
 ANSC_HANDLE
