@@ -61,7 +61,6 @@
         *   AnscGetFileExt2
         *   AnscGetFileProperty
         *   AnscGetMimeType
-        *   AnscMoveFile
         *   AnscCreateGzipFile
         *   AnscOpenGzipFile
         *   AnscCloseGzipFile
@@ -721,17 +720,6 @@ AnscGetMimeType
 
     return  ANSC_STATUS_CANT_FIND;
 }
-
-ANSC_STATUS
-AnscMoveFile
-    (
-        char*                       src_file,
-        char*                       dst_file
-    )
-{
-    return ( _ansc_move_file(src_file, dst_file) ? ANSC_STATUS_SUCCESS : ANSC_STATUS_FAILURE );
-}
-
 
 #ifdef  _ANSC_FILE_SEARCH_
 
