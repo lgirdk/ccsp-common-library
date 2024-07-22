@@ -416,13 +416,6 @@ AnscGetMimeType
         PULONG                      pulSubType
     );
 
-ANSC_STATUS
-AnscMoveFile
-    (
-        char*                       src_file,
-        char*                       dst_file
-    );
-
 #ifdef  _ANSC_FILE_SEARCH_
 
 ANSC_HANDLE

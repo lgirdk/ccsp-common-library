@@ -86,9 +86,6 @@ extern inline  int
 user_get_file_stat(char* file_name, void* h_file_property);
 
 extern inline int
-user_move_file(char* srcFile, char* dstFile);
-
-extern inline int
 user_get_file_size(PVOID h);
 
 extern inline  int
@@ -330,24 +327,6 @@ user_get_file_stat
 
     return  (!ret);
 }
-
-
-inline  int
-user_move_file
-    (
-        char*                       srcFile,
-        char*                       dstFile
-    )
-{
-    /*return MoveFile(srcFile, dstFile);*/
-    COMMOND_ARG                     args[3] = {{"mv", 0}, {NULL, 1}, {NULL, 1}};
-
-    args[1].arg = srcFile;
-    args[2].arg = dstFile;
-
-    return exec_command(3, args);
-}
-
 
 inline int
 user_get_file_size(PVOID h)
