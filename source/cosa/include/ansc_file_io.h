@@ -141,7 +141,6 @@
     #define  _ansc_rename_file                      user_rename_file
     #define  _ansc_get_file_size                    user_get_file_size
     #define  _ansc_get_file_stat                    user_get_file_stat
-    #define  _ansc_is_directory                     user_is_directory
 
     #define  _ansc_create_directory                 user_create_directory
     #define  _ansc_delete_directory                 user_delete_directory
