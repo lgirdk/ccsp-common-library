@@ -140,7 +140,6 @@
     #define  _ansc_rename_file                      user_rename_file
     #define  _ansc_get_file_size                    user_get_file_size
     #define  _ansc_get_file_stat                    user_get_file_stat
-    #define  _ansc_is_directory                     user_is_directory
 
     #ifdef  _ANSC_FILE_SEARCH_
     #define  _ansc_find_first_file                  user_find_first_file
