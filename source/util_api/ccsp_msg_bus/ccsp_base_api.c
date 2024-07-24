@@ -1622,14 +1622,20 @@ void free_parameterAttributeStruct_t(void *bus_handle, int size, parameterAttrib
 {
     int i;
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
-    if(size)
-    {
-        for(i = 0; i < size; i++)
-        {
-            if(val[i]->parameterName)  bus_info->freefunc(val[i]->parameterName);
-            bus_info->freefunc(val[i]);
-        }
 
+    if(val)
+    {
+        if(size)
+        {
+            for(i = 0; i < size; i++)
+            {
+                if(val[i])
+                {
+                    if(val[i]->parameterName)  bus_info->freefunc(val[i]->parameterName);
+                    bus_info->freefunc(val[i]);
+                }
+            }
+        }
         bus_info->freefunc(val);
     }
 }
@@ -2066,13 +2072,20 @@ void free_parameterInfoStruct_t (void *bus_handle, int size, parameterInfoStruct
 {
     int i;
     CCSP_MESSAGE_BUS_INFO *bus_info = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
+
+	if(val)
+	{
     if(size)
     {
         for(i = 0; i < size; i++)
         {
+        		if(val[i])
+				{
             if(val[i]->parameterName)  bus_info->freefunc(val[i]->parameterName);
             bus_info->freefunc(val[i]);
         }
+        	}
+    	}
 
         bus_info->freefunc(val);
     }

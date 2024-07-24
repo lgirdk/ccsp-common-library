@@ -191,6 +191,9 @@ CcspCcMbi_GetParameterValues
         pDslhMprIf         = (PDSLH_MPR_INTERFACE        )pCpeco->GetDslhMprIf((ANSC_HANDLE)pCpeco); 
     }
 
+    *val      = ppReturnVal;
+    *val_size = ulArraySize;
+
     if ( !parameterNames || ( size == 0 ) )
     {
         AnscTraceError(("Input parameter invalid for ssp_SsdMbi_GetParameterValues\n"));
@@ -1114,6 +1117,9 @@ CcspCcMbi_GetParameterNames
         pDslhMpaIf         = (PDSLH_MPA_INTERFACE        )pCpeco->GetDslhMpaIf((ANSC_HANDLE)pCpeco);
         pDslhMprIf         = (PDSLH_MPR_INTERFACE        )pCpeco->GetDslhMprIf((ANSC_HANDLE)pCpeco); 
     }
+
+    *val = ppReturnVal;
+    *size = i;
 
     if ( !parameterName )
     {

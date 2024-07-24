@@ -2864,6 +2864,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                     }
                                     parameterValStruct_t **val = 0;
                                     unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
+                                    size = 0;
                                     if (func->getParameterValues)
                                     {
                                         err = func->getParameterValues(writeID, (char **)&parameter_name, 1, &size, &val , func->getParameterValues_data);
@@ -2882,6 +2883,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                         unsigned int requestedDepth = 1;
                                         int32_t result = 0;
                                         parameterInfoStruct_t **val = 0;
+                                        size = 0;
                                         result = func->getParameterNames((char*)parameter_name, requestedDepth, &size, &val, func->getParameterNames_data);
                                         if( result == CCSP_SUCCESS)
                                         {
@@ -2922,6 +2924,7 @@ static int thread_path_message_func_rbus(const char * destination, const char * 
                                             rbusValue_t value = NULL;
                                             rbusValue_Init(&value);
                                             unsigned int writeID = DSLH_MPA_ACCESS_CONTROL_ACS;
+                                            size = 0;
                                             err = func->getParameterValues(writeID, (char **)&parameter_name, 1, &size, &val , func->getParameterValues_data);
                                             rbusValue_SetString(value, val[0]->parameterValue);
                                             rbusObject_SetValue(data, "initialValue", value);
