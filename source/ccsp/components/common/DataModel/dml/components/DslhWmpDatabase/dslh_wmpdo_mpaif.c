@@ -873,6 +873,10 @@ DslhWmpdoMpaSetParameterValues
 		    if(vcSig.oldValue == NULL || vcSig.newValue == NULL)
 	            {
                     	CcspTraceWarning(("<< %s Old or  New value is NULL>>\n", __FUNCTION__));
+                        if(vcSig.newValue)
+                            AnscFreeMemory((char*)vcSig.newValue);
+                        if(vcSig.oldValue)
+                            AnscFreeMemory((char*)vcSig.oldValue);
 	            	goto  EXIT0;
 	            }
 		    if(strcmp(vcSig.newValue,vcSig.oldValue))

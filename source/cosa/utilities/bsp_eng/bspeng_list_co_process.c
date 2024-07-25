@@ -1355,6 +1355,10 @@ BspTemplateListCacheTemplates
 
     if (!pTemplates)
     {
+        if (pEntry->pName){
+            AnscFreeMemory(pEntry->pName);
+            pEntry->pName = NULL;
+        }
         AnscFreeMemory(pEntry);
 
         return ANSC_STATUS_RESOURCES;
