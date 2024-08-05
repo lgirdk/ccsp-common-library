@@ -369,12 +369,10 @@ SSL * openssl_connect (int fd, hostNames *hosts)
          X509_VERIFY_PARAM_add1_host(param, hosts->hostNames[i],0);
      }
      SSL_set_verify(ssl, SSL_VERIFY_PEER, 0);
+
+     AnscTraceWarning(("openssl_connect - Hostnames added to verify\n"));
   }
   
-  if ( hosts->peerVerify ) {
-     AnscTraceWarning(("openssl_connect - Hostnames added to verify \n"));
-  }
-
   if (!SSL_set_fd (ssl, fd))
     goto error;
 
