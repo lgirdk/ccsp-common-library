@@ -346,11 +346,6 @@ AnscDstoEngage
         goto  EXIT2;
     }
 
-    /*
-     * If the compilation option '_ANSC_SOCKET_TLS_LAYER_' is enabled, we can simply let the ANSC
-     * socket layer to perform the SSL/TLS functionality; otherwise, we need to prepare for doing
-     * SSL/TLS internally.
-     */
     if ( pMyObject->Mode & ANSC_DSTO_MODE_TLS_ENABLED )
     {
 #ifdef _ANSC_USE_OPENSSL_
@@ -363,19 +358,11 @@ AnscDstoEngage
         }
 
 #else
-        #ifdef  _ANSC_SOCKET_TLS_LAYER_
-        {
-            _ansc_en_usetls(pMyObject->Socket);
-
-            pMyObject->bTlsEnabled = FALSE;
-        }
-        #else
         {
             pMyObject->hTlsScsIf   = (pMyObject->hTlsScsIf != NULL)? pMyObject->hTlsScsIf : AnscSocketTlsGetScsIf();
             pMyObject->bTlsEnabled = TRUE;
             pMyObject->bTlsReqCert = (pMyObject->Mode & ANSC_DSTO_MODE_TLS_REQ_CERT);
         }
-        #endif
 #endif
     }
 
