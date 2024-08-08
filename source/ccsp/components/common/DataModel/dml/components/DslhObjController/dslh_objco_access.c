@@ -1030,10 +1030,12 @@ DslhObjcoGetParamValueByName
     /* check whether it's a count of table (xxxNumberOfEntries) or not */
 #ifdef _64BIT_ARCH_SUPPORT_
     if(pSlapVariable->Syntax == (ULONG)SLAP_VAR_SYNTAX_uint32)
+    {
+	    AnscTraceWarning(("DslhObjcoGetParamValueByName SlapVariable syntax is uint \n\n"));
 #else
     if(pSlapVariable->Syntax == SLAP_VAR_SYNTAX_uint32)
-#endif
     {
+#endif
         pFind = _ansc_strstr(pName, TR69_NUMBER_OF_ENTRIES_STRING);
 
         if( pFind != NULL && (ULONG)(pFind - pName) == AnscSizeOfString(pName) - AnscSizeOfString(TR69_NUMBER_OF_ENTRIES_STRING))
