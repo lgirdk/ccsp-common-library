@@ -85,7 +85,7 @@ then
 	echo '|/bin/false' >/proc/sys/kernel/core_pattern
 	ulimit -c 0
 else
-	echo /tmp/%t_core.prog_%e.signal_%s >/proc/sys/kernel/core_pattern
+	echo "|/usr/ccsp/core_compress.sh %p %e %s" >/proc/sys/kernel/core_pattern
 	ulimit -c unlimited
 fi
 
