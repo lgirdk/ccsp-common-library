@@ -90,7 +90,7 @@ fi
 export LD_LIBRARY_PATH=$PWD:.:$PWD/../../lib:$PWD/../../.:/lib:/usr/lib:$LD_LIBRARY_PATH
 export BOX_TYPE ATOM_ARPING_IP
 
-if [ "$BUILD_TYPE" = "prod" ]; then
+if [ "$BUILD_TYPE" = "prod" ] || [ "$BOX_TYPE" = "MV3" ] ; then
 	echo '|/bin/false' >/proc/sys/kernel/core_pattern
 	ulimit -c 0
 else
