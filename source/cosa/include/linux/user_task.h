@@ -104,7 +104,7 @@ UserDestroyTask
 #define  UserJanitorTaskRoutine                   AnscTaskJanitorRoutine
 #define  UserGetProcessId()                       getpid()
 #define  UserGetCurTaskHandle()                   pthread_self()
-#define  USER_DEFAULT_TASK_STACK_SIZE             (32 * 1024)
+#define  USER_DEFAULT_TASK_STACK_SIZE             (48 * 1024)
 #define  USER_DEFAULT_TASK_PRIORITY               50
 #define  USER_USE_TASK_POOL_MANAGER               FALSE
 #define  USER_USE_TASK_POOL_JANITOR               FALSE
