@@ -262,7 +262,9 @@ const char *CcspTraceGetRdkLogModule(const char *pComponentName)
 #endif
                 break;
             case 'm':
+#if !defined (NO_MOCA_FEATURE_SUPPORT)
                 if (strcmp(pComponentName, "moca") == 0)                    return "LOG.RDK.MOCA";
+#endif
                 if (strcmp(pComponentName, "mta") == 0)                     return "LOG.RDK.MTA";
                 break;
             case 'n':
