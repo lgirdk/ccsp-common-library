@@ -569,9 +569,9 @@ SSL * openssl_connect (int fd, hostNames *hosts)
         goto error;
       }
       } else if (ret == 0) {
-        // SSL handshake needs more negotiation, continue the loop
-        AnscTraceWarning(("openssl_connect - ret = 0 so needs more time \n"));
-        continue;
+        // Connection was closed before completion. Go to error.
+        AnscTraceWarning(("openssl_connect - ret = 0, connection closed unexpectedly\n"));
+        goto error;
       } else {
         // Successful connection established, break out of the loop
         AnscTraceWarning(("openssl_connect - Successful connection established \n"));
